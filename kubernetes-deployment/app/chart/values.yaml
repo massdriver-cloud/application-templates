@@ -1,0 +1,42 @@
+image:
+  repository:
+  tag:
+
+nameOverride: thing
+
+command: []
+args: []
+
+envs: []
+port:
+
+serviceAccount:
+  annotations: {}
+  name:
+
+resourceRequests: {}
+resourceLimits: {}
+
+replicaCount:
+autoscaling:
+  enabled: false
+  minReplicas:
+  maxReplicas:
+  targetCPUUtilizationPercentage:
+
+ingress:
+  annotations: {}
+  enabled: true
+  className:
+  host:
+  path:
+
+labels: {}
+
+# nodeSelector: {}
+
+# tolerations: []
+
+# affinity: {}
+
+
