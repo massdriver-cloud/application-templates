@@ -1,7 +1,8 @@
+# These fields need to be rewritten after generation
 schema: draft-07
-name: k8s-app
-description: Massdriver K8s App
-ref: github.com/massdriver-cloud/k8s-app
+name: k8s-job
+description: Massdriver K8s Job
+ref: github.com/massdriver-cloud/k8s-job
 access: private
 type: application
 
@@ -28,8 +29,6 @@ params:
           type: string
         memory:
           type: string
-    port:
-      type: integer
     autoscaling:
       type: object
       properties:
@@ -45,16 +44,6 @@ params:
         targetCPUUtilizationPercentage:
           type: integer
           default: 90
-    ingress:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-        host:
-          type: string
-        path:
-          type: string
-          default: '/'
     envs:
       type: array
       items:
@@ -65,27 +54,6 @@ params:
           value:
             type: string
 
-
 ui:
   ui:order:
-    - name
-    - namespace
-    - image
-    - resource_requests
-    - autoscaling
-    - envs
-    - port
-    - ingress
-  autoscaling:
-    items:
-      ui:order:
-        - enabled
-        - minReplicas
-        - maxReplicas
-        - targetCPUUtilizationPercentage
-  ingress:
-    items:
-      ui:order:
-        - enabled
-        - host
-        - path
+    - "*"
