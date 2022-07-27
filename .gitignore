@@ -111,3 +111,4 @@ $RECYCLE.BIN/
 
 .terraform.lock.hcl
 schema-*.json
+*_variables.tf.json
