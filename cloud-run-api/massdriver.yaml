@@ -1,0 +1,40 @@
+schema: draft-07
+name: cloud-run-api
+description: Cloud Run API
+ref: github.com/massdriver-cloud/cloud-run-api
+access: private
+type: application
+
+params:
+  examples:
+    - __name: "cloudrun-api"
+  properties:
+    container_repository:
+      type: string
+    cloud_dns_managed_zone:
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-dns-managed-zone.json
+    subdomain:
+      type: string
+      default: api
+
+connections:
+  required:
+    - subnetwork
+    - gcp_authentication
+  properties:
+    subnetwork:
+      $ref: massdriver/gcp-subnetwork
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+
+ui:schema:
+  ui:order:
+    - container_repository
+    - cloud_dns_managed_zone
+    - "*"
+  container_repository:
+    ui:field: containerRepositoriesDropdown
+  cloud_dns_managed_zone:
+    name:
+      ui:field: dnsZonesDropdown
+      cloud: gcp
