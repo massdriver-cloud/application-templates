@@ -1,8 +1,7 @@
-# These fields need to be rewritten after generation
 schema: draft-07
-name: k8s-job
-description: Massdriver K8s Job
-ref: github.com/massdriver-cloud/k8s-job
+name: <md .Name md>
+description: <md .Description md>
+ref: github.com/YOUR_ORG/<md .Name md>
 access: private
 type: application
 
