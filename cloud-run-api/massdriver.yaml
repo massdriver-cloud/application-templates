@@ -17,15 +17,13 @@ params:
       type: string
       default: api
 
-connections:
-  required:
-    - subnetwork
-    - gcp_authentication
-  properties:
-    subnetwork:
-      $ref: massdriver/gcp-subnetwork
-    gcp_authentication:
-      $ref: massdriver/gcp-service-account
+dependencies:
+  subnetwork:
+    type: massdriver/gcp-subnetwork
+    required: true
+  gcp_authentication:
+    type: massdriver/gcp-service-account
+    required: true
 
 ui:schema:
   ui:order:
