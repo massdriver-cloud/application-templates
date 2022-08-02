@@ -28,6 +28,8 @@ params:
           type: string
         memory:
           type: string
+    port:
+      type: integer
     autoscaling:
       type: object
       properties:
@@ -43,6 +45,16 @@ params:
         targetCPUUtilizationPercentage:
           type: integer
           default: 90
+    ingress:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        host:
+          type: string
+        path:
+          type: string
+          default: '/'
     envs:
       type: array
       items:
@@ -53,6 +65,44 @@ params:
           value:
             type: string
 
+dependencies:
+  kubernetes_cluster:
+    type: massdriver/kubernetes-cluster
+    required: true
+<md if (eq .CloudProvider "aws") md>  aws_authentication:
+    type: massdriver/aws-iam-role
+    required: true
+<md end md>
+<md if (eq .CloudProvider "azure") md>  azure_service_principal:
+    type: massdriver/azure-service-principal
+    required: true
+<md end md>
+<md if (eq .CloudProvider "gcp") md>  gcp_authentication:
+    type: massdriver/gcp-service-account
+    required: true
+<md end md>
+
+
 ui:
   ui:order:
-    - "*"
+    - name
+    - namespace
+    - image
+    - resource_requests
+    - autoscaling
+    - envs
+    - port
+    - ingress
+  autoscaling:
+    items:
+      ui:order:
+        - enabled
+        - minReplicas
+        - maxReplicas
+        - targetCPUUtilizationPercentage
+  ingress:
+    items:
+      ui:order:
+        - enabled
+        - host
+        - path
