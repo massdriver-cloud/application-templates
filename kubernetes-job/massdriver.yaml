@@ -69,6 +69,11 @@ dependencies:
     type: massdriver/gcp-service-account
     required: true
 <md end md>
+<md range $key, $art:= .Dependencies md>
+  <md $key md>:
+    type: <md $art md>
+    required: true
+<md end md>
 
 ui:
   ui:order:
