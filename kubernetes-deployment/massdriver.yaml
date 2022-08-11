@@ -65,26 +65,13 @@ params:
           value:
             type: string
 
-dependencies:
-  kubernetes_cluster:
-    type: massdriver/kubernetes-cluster
-    required: true
-<md- range $key, $art:= .Dependencies md>
-  <md $key md>:
-    type: <md $art md>
-    required: true
+connections:
+  required: ["*"]
+  properties:
+<md- range $key, $art:= .Connections md>
+    <md $key md>:
+      $ref: <md $art md>
 <md- end md>
-  # uncomment one of these below
-  # we'll infer this soon
-  # aws_authentication:
-  #   type: massdriver/aws-iam-role
-  #   required: true
-  # azure_service_principal:
-  #   type: massdriver/azure-service-principal
-  #   required: true
-  # gcp_authentication:
-  #   type: massdriver/gcp-service-account
-  #   required: true
 
 
 ui:

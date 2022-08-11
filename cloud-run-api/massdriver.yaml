@@ -17,17 +17,12 @@ params:
       type: string
       default: api
 
-dependencies:
-  subnetwork:
-    type: massdriver/gcp-subnetwork
-    required: true
-  gcp_authentication:
-    type: massdriver/gcp-service-account
-    required: true
-<md- range $key, $art:= .Dependencies md>
-  <md $key md>:
-    type: <md $art md>
-    required: true
+connections:
+  required: ["*"]
+  properties:
+<md- range $key, $art:= .Connections md>
+    <md $key md>:
+      $ref: <md $art md>
 <md- end md>
 
 ui:schema:
