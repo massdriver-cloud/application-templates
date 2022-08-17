@@ -71,7 +71,10 @@ connections:
 
 <md if .Connections md>
 connections:
-  required: ["*"]
+  required:
+  <md- range $key, $art:= .Connections md>
+    - <md $key md>
+  <md- end md>
   properties:
   <md- range $key, $art:= .Connections md>
     <md $key md>:
