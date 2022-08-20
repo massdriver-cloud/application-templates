@@ -82,24 +82,30 @@ params:
           type: string
           default: '/'
 
-# TODO: kubernetes_cluster should be included by default
-<md if not .Connections md>
-connections:
-  properties: {}
-<md end -md>
-
-<md if .Connections md>
+# TODO: if this fails during template rendering because .Conditions isn't present, we shouldn't propogate nils, it should return an empty map
 connections:
   required:
+    - kubernetes_cluster
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
+  oneOf:
+    - required: ["aws_authentication"]
+    - required: ["gcp_authentication"]
+    - required: ["azure_authentication"]
   properties:
+    kubernetes_cluster:
+      $ref: massdriver/kubernetes-cluster
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    azure_authentication:
+      $ref: massdriver/azure-service-principal
   <md- range $key, $art:= .Connections md>
     <md $key md>:
       $ref: <md $art md>
   <md- end md>
-<md- end md>
 
 artifacts:
   properties:
