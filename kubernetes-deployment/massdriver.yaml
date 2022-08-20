@@ -5,32 +5,53 @@ ref: github.com/YOUR_ORG/<md .Name md>
 access: private
 type: application
 
+app:
+  envs:
+    # Use jq expressions to build environment variables from input params or connections
+    LOG_LEVEL: .params.log_level
+    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+  policies: []
+    # Use jq expressions to select policies from artifact security blocks
+    # - .connections.sqs.data.security.iam.subscribe
+
 params:
   properties:
-    name:
-      type: string
     namespace:
+      title: Kubernetes Namespace
       type: string
       default: default
     image:
+      title: Container Image
       type: object
       properties:
         repository:
-          type: string
-        sha:
+          title: Repository
+          description: "Container image repository to use for this application. See: https://app.massdriver.cloud/container-repositories"
           type: string
         tag:
+          title: Tag
+          description: 
           type: string
-    resource_requests:
+          minLength: 1
+    resourceRequests:
       type: object
       properties:
         cpu:
+          title: CPU
+          description: The minimum CPU resources required for this application.
           type: string
+          # TODO: use custom rjsf widget here
         memory:
+          title: Memory
+          description: The minimum Memory resources required for this application.
           type: string
+          # TODO: use custom rjsf widget here
     port:
+      title: Port
+      description: The container port the application will listen on.
       type: integer
     autoscaling:
+      title: Horizonal Autoscaling
       type: object
       properties:
         enabled:
@@ -46,24 +67,21 @@ params:
           type: integer
           default: 90
     ingress:
+      title: Ingress
+      description: Configure the application for public 
       type: object
       properties:
         enabled:
+          title: Enable Public Internet Access
           type: boolean
         host:
+          title: Hostname
+          description: TBD, is this the right field name?
           type: string
         path:
           type: string
           default: '/'
-    envs:
-      type: array
-      items:
-        type: object
-        properties:
-          name:
-            type: string
-          value:
-            type: string
+
 <md if not .Connections md>
 connections:
   properties: {}
@@ -83,13 +101,17 @@ connections:
 <md- end md>
 
 ui:
+  image:
+    repository:
+      # Custom field docs: https://github.com/massdriver-cloud/docs/issues/8
+      ui:field: "containerRepositoriesDropdown"
+      # TODO: we need to make a cloud agnositc query var "any" or default to "any" if `cloud` is omitted
+      cloud: "aws"
   ui:order:
-    - name
     - namespace
     - image
     - resource_requests
     - autoscaling
-    - envs
     - port
     - ingress
   autoscaling:
