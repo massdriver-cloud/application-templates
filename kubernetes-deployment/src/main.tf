@@ -7,6 +7,10 @@
 module "application" {
   source = "github.com/massdriver-cloud/terraform-modules//massdriver-application"
   name   = var.md_metadata.name_prefix
+
+  # TODO: this will need to be finagled per cloud type to get the right k8s bits.
+  # This could be moved into the module w/ a simpler api here like
+  # service = "ec2" | "lambda" | "k8s:the-data-in-some-consisten-way-that-the-module-can-parse"
   identity = {
     assume_role_policy = <<EOF
 {
@@ -29,22 +33,29 @@ module "application" {
   }
 }
 
-# TODO: remove this artifact
-resource "massdriver_artifact" "tmp" {
-  field                = "tmp"
-  provider_resource_id = "tmp:${timestamp()}"
-  name                 = "Debugging output for guestbook app ${timestamp()}"
-  artifact = jsonencode(
-    {
-      data = {
-        vars = [
-          { key = "policies", value = jsonencode(module.application.policies) },
-          { key = "envs", value = jsonencode(module.application.envs) },
-          { key = "cloud", value = module.application.cloud }
-        ]
+locals {
+  helm_additional_values = {
+    envs = module.application.envs
+    ingress = {
+      className = "nginx" // eventually this should come from the kubernetes artifact
+      annotations = {
+        "cert-manager.io/cluster-issuer" : "letsencrypt-prod"     // eventually this should come from kubernetes artifact
+        "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true" // hardcoding this for now, dependent on nginx
       }
-      specs = {}
     }
-  )
+  }
 }
 
+resource "helm_release" "application" {
+  name             = var.md_metadata.name_prefix
+  chart            = "${path.module}/chart"
+  namespace        = var.namespace
+  create_namespace = true
+  force_update     = true
+
+  values = [
+    fileexists("${path.module}/chart/values.yaml") ? file("${path.module}/chart/values.yaml") : "",
+    yamlencode(module.application.params),
+    yamlencode(local.helm_additional_values)
+  ]
+}

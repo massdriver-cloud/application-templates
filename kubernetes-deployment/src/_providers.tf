@@ -7,6 +7,10 @@ terraform {
     massdriver = {
       source = "massdriver-cloud/massdriver"
     }
+
+    helm = {
+      source = "hashicorp/helm"
+    }
   }
 }
 
@@ -23,3 +27,17 @@ provider "mdxc" {
     external_id = var.aws_authentication.data.external_id
   }
 }
+
+# TODO: sniff this from kubernetes_cluster
+# provider "helm" {
+#   kubernetes {
+#     host                   = data.aws_eks_cluster.cluster.endpoint
+#     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+#     # token                  = local.kubernetes_cluster.data.authentication.user.token
+#     # this returns a value that doesn't work for the cluster
+#     # I'm not sure if it's the creds I used in the AWS provider
+#     # but I tried to use the ones that made the cluster
+#     # in GCP, we use all fields from the artifact, what are your thoughts on this?
+#     token = data.aws_eks_cluster_auth.auth.token
+#   }
+# }

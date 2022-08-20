@@ -30,7 +30,7 @@ params:
           type: string
         tag:
           title: Tag
-          description: 
+          description:
           type: string
           minLength: 1
     resourceRequests:
@@ -68,7 +68,7 @@ params:
           default: 90
     ingress:
       title: Ingress
-      description: Configure the application for public 
+      description: Configure the application for public
       type: object
       properties:
         enabled:
@@ -82,6 +82,7 @@ params:
           type: string
           default: '/'
 
+# TODO: kubernetes_cluster should be included by default
 <md if not .Connections md>
 connections:
   properties: {}
@@ -100,6 +101,10 @@ connections:
   <md- end md>
 <md- end md>
 
+artifacts:
+  properties:
+    debug:
+      $ref: massdriver/env-file
 ui:
   image:
     repository:
