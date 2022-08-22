@@ -1,4 +1,3 @@
-# TODO: chart name comes from var.md_metadata.name_prefix
 # TODO: make sure the 'host' field is actually just the subdomain, k8s will be handling the zone. Make this clear in the description
 # TODO: I dont see any external-dns in the chart...
 
@@ -29,31 +28,4 @@ module "application" {
 	}
    EOF
   }
-}
-
-locals {
-  helm_additional_values = {
-    envs = module.application.envs
-    ingress = {
-      className = "nginx" // eventually this should come from the kubernetes artifact
-      annotations = {
-        "cert-manager.io/cluster-issuer" : "letsencrypt-prod"     // eventually this should come from kubernetes artifact
-        "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true" // hardcoding this for now, dependent on nginx
-      }
-    }
-  }
-}
-
-resource "helm_release" "application" {
-  name             = var.md_metadata.name_prefix
-  chart            = "${path.module}/chart"
-  namespace        = var.namespace
-  create_namespace = true
-  force_update     = true
-
-  values = [
-    fileexists("${path.module}/chart/values.yaml") ? file("${path.module}/chart/values.yaml") : "",
-    yamlencode(module.application.params),
-    yamlencode(local.helm_additional_values)
-  ]
 }

@@ -68,7 +68,7 @@ params:
           default: 90
     ingress:
       title: Ingress
-      description: Configure the application for public
+      description: Configure the application for public internet accessibility
       type: object
       properties:
         enabled:

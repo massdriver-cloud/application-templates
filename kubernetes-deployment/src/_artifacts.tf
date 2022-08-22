@@ -9,8 +9,7 @@ resource "massdriver_artifact" "debug" {
         vars = [
           { key = "policies", value = jsonencode(module.application.policies) },
           { key = "envs", value = jsonencode(module.application.envs) },
-          { key = "cloud", value = module.application.cloud },
-          { key = "params", value = jsonencode(module.application.params) }
+          { key = "cloud", value = module.application.cloud }
         ]
       }
       specs = {}
