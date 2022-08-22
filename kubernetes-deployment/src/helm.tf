@@ -20,7 +20,15 @@ locals {
     }
   })
 
-  gcp_additional_values   = merge(local.base_helm_additional_values, {})
+  gcp_additional_values = merge(local.base_helm_additional_values, {
+    serviceAccount = {
+      annotations = {
+        "iam.gke.io/gcp-service-account" = module.application.id
+      }
+    }
+  })
+
+  # TODO: Add azure, I dont think this has an annotation equiv, will probably be ENV Vars w/ secret
   azure_additional_values = merge(local.base_helm_additional_values, {})
 
   cloud_specific_helm_additional_values = {
