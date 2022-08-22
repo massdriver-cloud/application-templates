@@ -5,4 +5,9 @@ module "application" {
   source  = "github.com/massdriver-cloud/terraform-modules//massdriver-application"
   name    = var.md_metadata.name_prefix
   service = "kubernetes"
+
+  kubernetes = {
+    namespace        = var.namespace
+    cluster_artifact = var.kubernetes_cluster
+  }
 }
