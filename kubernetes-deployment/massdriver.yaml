@@ -82,7 +82,6 @@ params:
           type: string
           default: '/'
 
-# TODO: if this fails during template rendering because .Conditions isn't present, we shouldn't propogate nils, it should return an empty map
 connections:
   required:
     - kubernetes_cluster
