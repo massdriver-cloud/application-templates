@@ -5,32 +5,60 @@ ref: github.com/YOUR_ORG/<md .Name md>
 access: private
 type: application
 
+app:
+  envs:
+    # Use jq expressions to build environment variables from input params or connections
+    LOG_LEVEL: .params.log_level
+    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+  policies: []
+    # Use jq expressions to select policies from artifact security blocks
+    # - .connections.sqs.data.security.iam.subscribe
+
 params:
   properties:
-    name:
-      type: string
     namespace:
+      title: Kubernetes Namespace
       type: string
       default: default
     image:
+      title: Container Image
       type: object
       properties:
         repository:
+          title: Repository
+          # Container repositories can be created or imported into massdriver at: https://app.massdriver.cloud/container-repositories
+          # You'll generally want to hard code your container repository in your bundle code, but it can be helpful to show it
+          # in your schema as well.
+          # If you need to allow an end-user developer to select the container repo, you can use our drop down widget documented here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+          description: "Container repository to use for this application."
           type: string
-        sha:
-          type: string
+          enum:
+            - nginxdemos/hello
         tag:
+          title: Tag
+          description:
           type: string
-    resource_requests:
+          minLength: 1
+          default: latest
+    resourceRequests:
       type: object
       properties:
         cpu:
+          title: CPU
+          description: The minimum CPU resources required for this application.
           type: string
+          # TODO: use custom rjsf widget here
         memory:
+          title: Memory
+          description: The minimum Memory resources required for this application.
           type: string
+          # TODO: use custom rjsf widget here
     port:
+      title: Port
+      description: The container port the application will listen on.
       type: integer
     autoscaling:
+      title: Horizonal Autoscaling
       type: object
       properties:
         enabled:
@@ -46,50 +74,57 @@ params:
           type: integer
           default: 90
     ingress:
+      title: Ingress
+      description: Configure the application for public internet accessibility
       type: object
       properties:
         enabled:
+          title: Enable Public Internet Access
           type: boolean
         host:
+          title: Hostname
+          description: TBD, is this the right field name?
           type: string
         path:
           type: string
           default: '/'
-    envs:
-      type: array
-      items:
-        type: object
-        properties:
-          name:
-            type: string
-          value:
-            type: string
-<md if not .Connections md>
-connections:
-  properties: {}
-<md end -md>
 
-<md if .Connections md>
 connections:
   required:
+    - kubernetes_cluster
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
+  oneOf:
+    - required: ["aws_authentication"]
+    - required: ["gcp_authentication"]
+    - required: ["azure_authentication"]
   properties:
+    kubernetes_cluster:
+      $ref: massdriver/kubernetes-cluster
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    azure_authentication:
+      $ref: massdriver/azure-service-principal
   <md- range $key, $art:= .Connections md>
     <md $key md>:
       $ref: <md $art md>
   <md- end md>
-<md- end md>
 
 ui:
+  ## If you need to allow an end user to select the container repository at deploy time, our smart widget can be used.
+  ## Additional documentation here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+  # image:
+  #   repository:
+  #     ui:field: "containerRepositoriesDropdown"
+  #     cloud: "aws"
   ui:order:
-    - name
     - namespace
     - image
     - resource_requests
     - autoscaling
-    - envs
     - port
     - ingress
   autoscaling:
