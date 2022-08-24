@@ -1,0 +1,63 @@
+schema: draft-07
+name: <md .Name md>
+description: <md .Description md>
+ref: github.com/YOUR_ORG/<md .Ref md>
+access: private
+type: application
+
+params:
+  required:
+  - location
+  - port
+  - log_level
+  properties:
+    location:
+      title: Location
+      # Massdriver defines many reusable types: https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/types
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/azure-region.json
+      $md.immutable: true      
+    port:
+      title: Port
+      description: "The port number to run on. This is an example value, this could be anything!"
+      type: string
+    log_level:
+      type: string
+      title: Log Level
+      description: "The log level to log at. This is an example value, this could be anything!"
+      enum:
+        - error
+        - warning
+        - info
+
+connections:
+  required:
+    - azure_authentication
+  <md- range $key, $art:= .Connections md>
+    - <md $key md>
+  <md- end md>
+  properties:
+    azure_authentication:
+      $ref: massdriver/azure-service-principal
+  <md- range $key, $art:= .Connections md>
+    <md $key md>:
+      $ref: <md $art md>
+  <md- end md>
+
+ui:
+  ui:order:
+  - location
+  - port
+  - log_level
+  location:
+    # Massdriver supports many rich widgets and fields: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+    ui:field: supportedCloudLocationsDropdown
+    cloudService: azure
+
+app:
+  # Environment variables can be pulled from params or connections using jq
+  envs:  
+    LOG_LEVEL: .params.log_level
+    PORT: .params.port
+  # IAM permissions can be assigned to this workload using jq to pull iam from connections
+  policies: []
+    # - .connections.k8s_auth.data.security.iam.subscribe
