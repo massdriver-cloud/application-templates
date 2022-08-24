@@ -1,3 +1,5 @@
+# TODO: generate a JSON Schema for this, set as params in md yaml, pull fields and add desc.
+# TODO: get a simple nginx app working with this.
 image:
   repository:
   tag:

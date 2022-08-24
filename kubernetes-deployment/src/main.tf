@@ -1,13 +1,7 @@
-# TODO: make sure the 'host' field is actually just the subdomain, k8s will be handling the zone. Make this clear in the description
-# TODO: I dont see any external-dns in the chart...
-
-module "application" {
-  source  = "github.com/massdriver-cloud/terraform-modules//massdriver-application"
-  name    = var.md_metadata.name_prefix
-  service = "kubernetes"
-
-  kubernetes = {
-    namespace        = var.namespace
-    cluster_artifact = var.kubernetes_cluster
-  }
+module "helm" {
+  source             = "github.com/massdriver-cloud/terraform-modules//massdriver-application-helm"
+  name               = var.md_metadata.name_prefix
+  namespace          = var.namespace
+  chart              = "${path.module}/chart"
+  kubernetes_cluster = var.kubernetes_cluster
 }
