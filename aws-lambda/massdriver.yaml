@@ -31,7 +31,7 @@ params:
 
 connections:
   required:
-    - azure_authentication
+    - aws_authentication
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
