@@ -10,6 +10,9 @@ args: []
 envs: []
 port:
 
+deployment:
+  annotations: {}
+
 serviceAccount:
   annotations: {}
   name:
