@@ -18,7 +18,7 @@ Common labels
 */}}
 {{- define "application.labels" -}}
 {{ include "application.selectorLabels" . }}
-{{- with .Values.labels }}
+{{- with .Values.commonLabels }}
 {{ toYaml . }}
 {{- end }}
 app.kubernetes.io/name: {{ include "application.fullname" . }}
