@@ -10,9 +10,6 @@ args: []
 envs: []
 port:
 
-deployment:
-  annotations: {}
-
 serviceAccount:
   annotations: {}
   name:
@@ -35,3 +32,6 @@ ingress:
   path:
 
 commonLabels: {}
+
+pod:
+  annotations: {}

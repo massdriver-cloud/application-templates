@@ -4,10 +4,6 @@ metadata:
   name: {{ include "application.fullname" . }}
   labels:
     {{- include "application.labels" . | nindent 4 }}
-  {{- with .Values.deployment.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
 spec:
   {{- if not .Values.replicas.autoscalingEnabled }}
   replicas: {{ .Values.replicas.replicaCount }}
@@ -17,6 +13,10 @@ spec:
       {{- include "application.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.pod.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "application.labels" . | nindent 8 }}
     spec:
