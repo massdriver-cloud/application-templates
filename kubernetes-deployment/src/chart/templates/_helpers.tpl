@@ -22,7 +22,7 @@ Common labels
 {{ toYaml . }}
 {{- end }}
 app.kubernetes.io/chart: {{ include "application.chart" . }}
-app.kubernetes.io/managed-by: massdriver.cloud
+app.kubernetes.io/deployed-with: massdriver.cloud
 {{- end }}
 
 {{/*
