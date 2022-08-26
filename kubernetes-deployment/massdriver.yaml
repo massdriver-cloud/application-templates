@@ -181,11 +181,11 @@ ui:
   ui:order:
     - namespace
     - image
-    - resource_requests
+    - resourceRequests
     - replicas
     - port
     - ingress
-  resource_requests:
+  resourceRequests:
     memory:
       ui:field: conversionFieldData
       default: Gibibytes
