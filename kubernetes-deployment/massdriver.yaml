@@ -60,13 +60,13 @@ params:
       - memory
       properties:
         cpu:
-          title: CPU
-          description: The minimum CPU resources required for this application.
+          title: CPU Cores
+          description: The expected CPU cores required for this application. Fractional numbers are allowed (0.5 is one half of a CPU core).
           type: number
           minimum: 0.001
         memory:
           title: Memory
-          description: The minimum Memory resources required for this application.
+          description: The expected Memory resources required for this application.
           type: number
           minimum: .001
     port:
