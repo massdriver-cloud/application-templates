@@ -17,9 +17,9 @@ serviceAccount:
 resourceRequests: {}
 resourceLimits: {}
 
-replicaCount:
-autoscaling:
-  enabled: false
+replicas:
+  autoscalingEnabled: false
+  replicaCount:
   minReplicas:
   maxReplicas:
   targetCPUUtilizationPercentage:
@@ -31,9 +31,7 @@ ingress:
   host:
   path:
 
-labels: {}
-# nodeSelector: {}
+commonLabels: {}
 
-# tolerations: []
-
-# affinity: {}
+pod:
+  annotations: {}

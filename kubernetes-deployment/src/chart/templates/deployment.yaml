@@ -5,16 +5,20 @@ metadata:
   labels:
     {{- include "application.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  {{- if not .Values.replicas.autoscalingEnabled }}
+  replicas: {{ .Values.replicas.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "application.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.pod.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        {{- include "application.selectorLabels" . | nindent 8 }}
+        {{- include "application.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
