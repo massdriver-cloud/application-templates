@@ -41,6 +41,18 @@ params:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
           default: latest
+    command:
+      title: Command
+      description: Command to execute as the entrypoint of the container. If left unspecified, the container default will be used (referred to as 'entrypoint' in some container runtimes, such as Docker). Formatted as an array of strings so that 'exec' form is used.
+      type: array
+      items:
+        type: string
+    args:
+      title: Arguments
+      description: Arguments to pass to the entrypoint command of the container. If left unspecified, the container default will be used (referred to as 'command' in some container runtimes, such as Docker). Formatted as an array of strings so that 'exec' form is used.
+      type: array
+      items:
+        type: string
     resourceRequests:
       type: object
       required:
@@ -181,6 +193,8 @@ ui:
   ui:order:
     - namespace
     - image
+    - command
+    - args
     - resourceRequests
     - replicas
     - port
