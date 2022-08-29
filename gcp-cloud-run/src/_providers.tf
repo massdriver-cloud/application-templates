@@ -3,7 +3,7 @@ terraform {
   required_providers {
     mdxc = {
       source  = "massdriver-cloud/mdxc"
-      version = "0.0.4"
+#      version = "0.0.5"
     }
     massdriver = {
       source  = "massdriver-cloud/massdriver"
