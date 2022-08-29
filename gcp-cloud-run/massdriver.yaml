@@ -1,0 +1,93 @@
+schema: draft-07
+name: gcp-cloud-run
+description: gcp-cloud-run
+ref: github.com/YOUR_ORG/gcp-cloud-run
+access: private
+type: application
+
+params:
+  examples:
+    - __name: "API"
+      endpoint:
+        enabled: true
+        subdomain: api
+  properties:
+    location:
+      title: Region
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-region.json
+      $md.immutable: true
+    container:
+      type: object
+      title: Container
+      properties:
+        repository:
+          type: string
+          title: Repository
+        image:
+          type: string
+          title: Image
+        tag:
+          type: string
+          title: Tag
+    endpoint:
+      type: object
+      title: Endpoint
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+      dependencies:
+        enabled:
+          oneOf:
+            - properties:
+                enabled:
+                  const: true
+                zone:
+                  $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-dns-managed-zone.json
+                  title: ""
+                subdomain:
+                  type: string
+                  title: Subdomain
+                  default: api
+            - properties:
+                enabled:
+                  const: false
+
+connections:
+  required:
+    - gcp_authentication
+  properties:
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+
+app:
+  envs:
+    ENDPOINT_ZONE:  .params.endpoint.zone
+
+ui:
+  ui:order:
+    - location
+    - container
+    - endpoint
+    - "*"
+  location:
+    ui:field: regionsDropdown
+    cloud: gcp
+  container:
+    ui:order:
+      - repository
+      - image
+      - tag
+    repository:
+      ui:field: containerRepositoriesDropdown
+      cloud: gcp
+  endpoint:
+    ui:order:
+      - enabled
+      - zone
+      - subdomain
+    zone:
+      name:
+        ui:field: dnsZonesDropdown
+        cloud: gcp
+
