@@ -1,9 +1,18 @@
 schema: draft-07
-name: gcp-cloud-run
-description: gcp-cloud-run
-ref: github.com/YOUR_ORG/gcp-cloud-run
+name: <md .Name md>
+description: <md .Description md>
+ref: github.com/YOUR_ORG/<md .Name md>
 access: private
 type: application
+
+app:
+  envs:
+    # Use jq expressions to build environment variables from input params or connections
+    LOG_LEVEL: .params.log_level
+    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+  policies: []
+    # Use jq expressions to select policies from artifact security blocks
+    # - .connections.sqs.data.security.iam.subscribe
 
 params:
   examples:
@@ -16,6 +25,14 @@ params:
       title: Region
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-region.json
       $md.immutable: true
+    log_level:
+      type: string
+      title: Log Level
+      description: "The log level to log at. This is an example value, this could be anything!"
+      enum:
+        - error
+        - warning
+        - info
     container:
       type: object
       title: Container
@@ -32,6 +49,7 @@ params:
     endpoint:
       type: object
       title: Endpoint
+      description: Configure a public endpoint with DNS and a SSL certificate.
       properties:
         enabled:
           type: boolean
@@ -56,15 +74,24 @@ params:
 connections:
   required:
     - gcp_authentication
+  <md- range $key, $art:= .Connections md>
+    - <md $key md>
+  <md- end md>
   properties:
     gcp_authentication:
       $ref: massdriver/gcp-service-account
-
-app:
-  envs:
-    ENDPOINT_ZONE:  .params.endpoint.zone
+  <md- range $key, $art:= .Connections md>
+    <md $key md>:
+      $ref: <md $art md>
+  <md- end md>
 
 ui:
+  ## If you need to allow an end user to select the container repository at deploy time, our smart widget can be used.
+  ## Additional documentation here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+  # image:
+  #   repository:
+  #     ui:field: "containerRepositoriesDropdown"
+  #     cloud: "gcp"
   ui:order:
     - location
     - container
