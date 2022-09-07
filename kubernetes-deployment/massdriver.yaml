@@ -85,7 +85,7 @@ params:
           default: false
       dependencies:
         autoscalingEnabled:
-          oneOf: 
+          oneOf:
           - properties:
               autoscalingEnabled:
                 const: false
@@ -132,7 +132,7 @@ params:
           type: boolean
       dependencies:
         enabled:
-          oneOf: 
+          oneOf:
           - properties:
               enabled:
                 const: false
@@ -157,7 +157,7 @@ params:
             required:
             - host
             - path
-          
+
 
 connections:
   required:
@@ -165,10 +165,6 @@ connections:
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
-  oneOf:
-    - required: ["aws_authentication"]
-    - required: ["gcp_authentication"]
-    - required: ["azure_authentication"]
   properties:
     kubernetes_cluster:
       $ref: massdriver/kubernetes-cluster
