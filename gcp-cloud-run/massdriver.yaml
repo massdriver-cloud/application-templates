@@ -25,6 +25,10 @@ params:
       title: Region
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-region.json
       $md.immutable: true
+    private_service_cidr:
+      type: string
+      title: Private Service CIDR
+      description: The CIDR range that defines the private service network. It is optional and the default value is
     log_level:
       type: string
       title: Log Level
@@ -74,12 +78,15 @@ params:
 connections:
   required:
     - gcp_authentication
+    - gcp_global_network
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
   properties:
     gcp_authentication:
       $ref: massdriver/gcp-service-account
+    gcp_global_network:
+      $ref: massdriver/gcp-global-network
   <md- range $key, $art:= .Connections md>
     <md $key md>:
       $ref: <md $art md>
