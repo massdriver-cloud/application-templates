@@ -15,7 +15,7 @@ params:
       title: Region
       # Massdriver defines many reusable types: https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/types
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
-      $md.immutable: true      
+      $md.immutable: true
     port:
       title: Port
       description: "The port number to run on. This is an example value, this could be anything!"
@@ -55,7 +55,7 @@ ui:
 
 app:
   # Environment variables can be pulled from params or connections using jq
-  envs:  
+  envs:
     LOG_LEVEL: .params.log_level
     PORT: .params.port
   # IAM permissions can be assigned to this workload using jq to pull iam from connections
