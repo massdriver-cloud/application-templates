@@ -56,8 +56,8 @@ params:
     resourceRequests:
       type: object
       required:
-      - cpu
-      - memory
+        - cpu
+        - memory
       properties:
         cpu:
           title: CPU Cores
@@ -67,8 +67,7 @@ params:
         memory:
           title: Memory
           description: The expected Memory resources required for this application.
-          type: number
-          minimum: .001
+          type: integer
     port:
       title: Port
       description: The container port the application will listen on.
@@ -198,7 +197,7 @@ ui:
   resourceRequests:
     memory:
       ui:field: conversionFieldData
-      default: Gibibytes
+      unit: Bytes
   replicas:
     items:
       ui:order:
