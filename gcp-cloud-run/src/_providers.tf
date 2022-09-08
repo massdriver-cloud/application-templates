@@ -24,22 +24,23 @@ terraform {
 }
 
 locals {
-  gcp_project_id = var.gcp_authentication.data.project_id
+  gcp_project_id  = var.gcp_authentication.data.project_id
+  gcp_credentials = jsonencode(var.gcp_authentication.data)
 }
 
 provider "google" {
   project     = local.gcp_project_id
-  credentials = jsonencode(var.gcp_authentication.data)
+  credentials = local.gcp_credentials
 }
 
 provider "google-beta" {
   project     = local.gcp_project_id
-  credentials = jsonencode(var.gcp_authentication.data)
+  credentials = local.gcp_credentials
 }
 
 provider "mdxc" {
   gcp = {
     project     = local.gcp_project_id
-    credentials = jsonencode(var.gcp_authentication.data)
+    credentials = local.gcp_credentials
   }
 }
