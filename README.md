@@ -9,3 +9,9 @@ The [`mass`](https://github.com/massdriver-cloud/massdriver-cli/) CLI has a deve
 ```shell
 MD_DEV_TEMPLATES_PATH="~/work/application-templates" mass app new
 ```
+
+To use alpha or beta templates during development:
+
+```shell
+MD_DEV_TEMPLATES_PATH="~/work/application-templates/alpha" mass app new
+```
