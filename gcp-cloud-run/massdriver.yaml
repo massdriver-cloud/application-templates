@@ -143,9 +143,6 @@ ui:
       - repository
       - image
       - tag
-    repository:
-      ui:field: containerRepositoriesDropdown
-      cloud: gcp
   endpoint:
     ui:order:
       - enabled
