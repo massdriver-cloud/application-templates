@@ -24,6 +24,7 @@ params:
     - location
     - private_service_cidr
     - container
+    - max_instances
   properties:
     location:
       title: Region
@@ -65,6 +66,11 @@ params:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
           default: latest
+    max_instances:
+      type: integer
+      title: Max Instances
+      description: The maximum number of instances to run at once.
+      default: 1
     endpoint:
       type: object
       title: Endpoint

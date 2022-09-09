@@ -12,8 +12,9 @@ module "application_cloud_run" {
   source             = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-cloud-run?ref=2b0f322"
   location           = var.location
   container_image    = "${var.container.repository}/${var.container.image}:${var.container.tag}"
-  zone               = var.endpoint.enabled ? var.endpoint.zone : null
-  subdomain          = var.endpoint.enabled ? var.endpoint.subdomain : null
+  max_instances      = var.max_instances
+  zone               = var.endpoint.enabled ? var.endpoint.zone.name : ""
+  subdomain          = var.endpoint.enabled ? var.endpoint.subdomain : ""
   network            = var.gcp_global_network.data.grn
   vpc_connector_cidr = var.private_service_cidr
 >>>>>>> 65274e2 (adding vars)
