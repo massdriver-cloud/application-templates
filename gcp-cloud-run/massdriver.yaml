@@ -54,7 +54,7 @@ params:
         repository:
           type: string
           title: Repository
-          # You'll generally want to hard code your container repository in your bundle code, 
+          # You'll generally want to hard code your container repository in your bundle code,
           # but it can be helpful to show it in your schema as well.
           description: Container repository to use for this application.
         image:
@@ -68,7 +68,7 @@ params:
       type: integer
       title: Max Instances
       description: The maximum number of instances to run at once.
-      default: 1
+      default: 5
     endpoint:
       type: object
       title: Endpoint
