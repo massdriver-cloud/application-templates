@@ -7,9 +7,9 @@ type: application
 
 params:
   required:
-    - aws_region
+    - region
   properties:
-    aws_region:
+    region:
       title: AWS Region 
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
     runtime:
@@ -98,12 +98,12 @@ connections:
 
 ui:
   ui:order:
-    - aws_region
+    - region
     - runtime
     - observability
-  aws_region:
+  region:
     ui:field: supportedCloudLocationsDropdown
-    cloudService: aws
+    cloudService: AWS
   runtime:
     ui:order:
       - image
@@ -113,6 +113,12 @@ ui:
       ui:order:
         - uri
         - tag
+    memory_size:
+      ui:field: conversionFieldData
+      unit: MB
+    execution_timeout:
+      ui:field: conversionFieldTime
+      unit: Seconds
   observability:
     ui:order:
       - retention_days
