@@ -7,27 +7,80 @@ type: application
 
 params:
   required:
-  - region
-  - port
-  - log_level
+    - aws_region
   properties:
-    location:
-      title: Region
-      # Massdriver defines many reusable types: https://github.com/massdriver-cloud/artifact-definitions/tree/main/definitions/types
+    aws_region:
+      title: AWS Region 
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
-      $md.immutable: true
-    port:
-      title: Port
-      description: "The port number to run on. This is an example value, this could be anything!"
-      type: string
-    log_level:
-      type: string
-      title: Log Level
-      description: "The log level to log at. This is an example value, this could be anything!"
-      enum:
-        - error
-        - warning
-        - info
+    runtime:
+      type: object
+      title: Runtime Settings
+      required:
+        - image
+        - memory_size
+        - execution_timeout
+      properties:
+        image:
+          type: object
+          title: "Container Image"
+          required:
+            - uri
+            - tag
+          properties:
+            uri:
+              title: ECR URI
+              description: Container which will provide the runtime for each execution of the function.
+              type: string
+            tag:
+              title: ECR image tag
+              description: Specific version of the container to pull on each deployment of the lambda function.
+              type: string
+              default: latest
+        memory_size:
+          type: integer
+          title: Runtime Memory Limit (MB)
+          description: "Memory allotted for a single execution run. This will determine the price per millisecond."
+          default: 128
+          minimum: 128
+          maximum: 10240
+        execution_timeout:
+          type: integer
+          title: Execution Timeout (Seconds)
+          description: "Maximum execution time. After the allotted time, the lambda will halt execution."
+          default: 3
+          minimum: 3
+          maximum: 900
+    observability:
+      type: object
+      title: "Observability Settings"
+      required:
+        - retention_days
+      properties:
+        x-ray:
+          type: object
+          title: X-Ray
+          description: "Enable distributed tracing with Amazon X-Ray"
+          properties:
+            enabled:
+              type: boolean
+              default: false
+        retention_days:
+          type: integer
+          title: Log retention days
+          description: "Rotation interval for AWS Cloudwatch logs."
+          oneOf:
+            - title: 7 days
+              const: 7
+            - title: 30 days
+              const: 30
+            - title: 90 days
+              const: 60
+            - title: 180 days
+              const: 180
+            - title: 1 year
+              const: 365
+            - title: Never expire
+              const: 0
 
 connections:
   required:
@@ -45,19 +98,30 @@ connections:
 
 ui:
   ui:order:
-  - region
-  - port
-  - log_level
-  region:
-    # Massdriver supports many rich widgets and fields: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+    - aws_region
+    - runtime
+    - observability
+  aws_region:
     ui:field: supportedCloudLocationsDropdown
     cloudService: aws
+  runtime:
+    ui:order:
+      - image
+      - memory_size
+      - execution_timeout
+    image:
+      ui:order:
+        - uri
+        - tag
+  observability:
+    ui:order:
+      - retention_days
+      - x-ray
 
 app:
   # Environment variables can be pulled from params or connections using jq
   envs:
-    LOG_LEVEL: .params.log_level
-    PORT: .params.port
+    # LOG_RETENTION: .params.observability.retention_days
   # IAM permissions can be assigned to this workload using jq to pull iam from connections
   policies: []
     # - .connections.k8s_auth.data.security.iam.subscribe
