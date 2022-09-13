@@ -1,0 +1,195 @@
+schema: draft-07
+name: <md .Name md>
+description: <md .Description md>
+source_url: github.com/YOUR_ORG/<md .Name md>
+access: private
+type: application
+
+app:
+  envs:
+    # Use jq expressions to build environment variables from input params or connections
+    # LOG_LEVEL: .params.log_level
+    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+  policies: []
+    # Use jq expressions to select policies from artifact security blocks
+    # - .connections.sqs.data.security.iam.subscribe
+
+params:
+  examples:
+    - __name: Development
+      application:
+        sku_name: S1
+        minimum_worker_count: 1
+        maximum_worker_count: 3
+    - __name: Production
+      application:
+        sku_name: P3v3
+        minimum_worker_count: 1
+        maximum_worker_count: 10
+  required:
+    - application
+    - repo
+    - dns
+  properties:
+    application: 
+      title: Application
+      description: Application configuration
+      type: object
+      required:
+        - location
+        - sku_name
+        - minimum_worker_count
+        - maximum_worker_count
+      properties:
+        location:
+          title: Location
+          description: Azure location
+          type: string
+          $md.immutable: true
+          oneOf:
+            - title: West US
+              const: westus
+            - title: West US 2
+              const: westus2
+            - title: West US 3
+              const: westus3
+            - title: East US
+              const: eastus
+            - title: East US 2
+              const: eastus2
+            - title: North Central US
+              const: northcentralus
+            - title: South Central US
+              const: southcentralus
+            - title: Central US
+              const: centralus
+        sku_name:
+          title: Size
+          description: Azure App Service Plan size
+          type: string
+          oneOf:
+            - title: 1 vCPU, 1.75GB RAM
+              const: S1
+            - title: 2 vCPU 8GB RAM
+              const: P1v3
+            - title: 4 vCPU 16GB RAM
+              const: P2v3
+            - title: 8 vCPU 32GB RAM
+              const: P3v3
+        minimum_worker_count:
+          title: Minimum instances
+          description: Minimum number of instances for autoscale.
+          type: integer
+          minimum: 1
+          maximum: 30
+        maximum_worker_count:
+          title: Maximum instances
+          description: Maximum number of instances for autoscale.
+          type: integer
+          minimum: 1
+          maximum: 30
+        notification_email:
+          title: Notification email
+          description: Receive alerts regarding autoscale events.
+          type: string
+          format: email
+          example: user@example.com
+    repo:
+      title: Repository
+      description: Repository configuration
+      type: object
+      required:
+        - docker_image
+        - docker_image_tag
+      properties:
+        docker_image:
+          title: Docker image
+          description: "Docker image source. Example: docker.io/library/nginx"
+          type: string
+        docker_image_tag:
+          title: Docker image tag
+          description: Docker image tag name
+          type: string
+    dns:
+      title: DNS
+      description: DNS configuration
+      type: object
+      required:
+        - enable_dns
+      properties:
+        enable_dns:
+          title: Enable DNS
+          description: Enable DNS configuration for the application.
+          type: boolean
+      dependencies:
+        enable_dns:
+          oneOf:
+            - properties:
+                enable_dns:
+                  const: true
+                zone_name:
+                  title: Azure DNS Zone
+                  description: Azure DNS zone name
+                  type: string
+                  pattern: ^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$
+                  message:
+                    pattern: Must be a valid DNS zone name.
+                zone_resource_group:
+                  title: Azure DNS Zone Resource Group
+                  description: Azure DNS zone resource group
+                  type: string
+                txt_record:
+                  title: TXT record
+                  description: TXT record for DNS validation
+                  type: string
+                cname_record:
+                  title: CNAME record
+                  description: CNAME record for DNS validation
+                  type: string
+              required:
+                - zone_name
+                - zone_resource_group
+                - txt_record
+                - cname_record
+            - properties:
+                enable_dns:
+                  const: false
+
+connections:
+  required:
+    - azure_service_principal
+  <md- range $key, $art:= .Connections md>
+    - <md $key md>
+  <md- end md>
+  properties:
+    azure_service_principal:
+      $ref: massdriver/azure-service-principal
+  <md- range $key, $art:= .Connections md>
+    <md $key md>:
+      $ref: <md $art md>
+  <md- end md>
+
+
+ui:
+  ui:order:
+    - application
+    - repo
+    - dns
+  application:
+    ui:order:
+      - location
+      - sku_name
+      - minimum_worker_count
+      - maximum_worker_count
+      - notification_email
+  repo:
+    ui:order:
+      - docker_image
+      - docker_image_tag
+  dns:
+    ui:order:
+      - enable_dns
+      - zone_name
+      - zone_resource_group
+      - txt_record
+      - cname_record
