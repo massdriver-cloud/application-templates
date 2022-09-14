@@ -6,7 +6,7 @@ access: private
 type: application
 
 app:
-  envs:
+  envs: {}
     # Use jq expressions to build environment variables from input params or connections
     # LOG_LEVEL: .params.log_level
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
@@ -127,20 +127,16 @@ params:
                   title: DNS Zone name
                   description: Azure DNS zone name
                   type: string
-                  pattern: ^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$
+                subdomain:
+                  title: Subdomain
+                  description: "DNS zone subdomain. Examples: www.yourdomain.com, app.yourdomain.net"
+                  type: string
+                  pattern: ^[-a-zA-Z0-9*._-]{1,63}$
                   message:
-                    pattern: Must be a valid DNS zone name.
-                zone_resource_group:
-                  title: DNS Zone Resource Group
-                  description: Azure DNS zone resource group
-                  type: string
-                alias:
-                  title: Alias
-                  description: "DNS zone alias. Examples: www.yourdomain.com, app.yourdomain.net, yourdomain.io"
-                  type: string
+                    pattern: Must be a valid subdomain. Must contain only letters, numbers, dashes, underscores, periods, and asterisks.
               required:
                 - zone_name
-                - zone_resource_group
+                - subdomain
             - properties:
                 enable_dns:
                   const: false
@@ -179,5 +175,7 @@ ui:
     ui:order:
       - enable_dns
       - zone_name
-      - zone_resource_group
-      - alias
+      - sub_domain
+    zone_name:
+      ui:field: dnsZonesDropdown
+      cloud: azure
