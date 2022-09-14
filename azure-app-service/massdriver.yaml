@@ -25,7 +25,7 @@ params:
       application:
         sku_name: P3v3
         minimum_worker_count: 2
-        maximum_worker_count: 10
+        maximum_worker_count: 30
   required:
     - application
     - image
