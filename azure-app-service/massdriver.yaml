@@ -24,7 +24,7 @@ params:
     - __name: Production
       application:
         sku_name: P3v3
-        minimum_worker_count: 1
+        minimum_worker_count: 2
         maximum_worker_count: 10
   required:
     - application
