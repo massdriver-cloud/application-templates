@@ -28,7 +28,7 @@ params:
         maximum_worker_count: 10
   required:
     - application
-    - repo
+    - image
     - dns
   properties:
     application: 
@@ -88,28 +88,24 @@ params:
           type: integer
           minimum: 1
           maximum: 30
-        notification_email:
-          title: Notification email
-          description: Receive alerts regarding autoscale events.
-          type: string
-          format: email
-          example: user@example.com
-    repo:
-      title: Repository
-      description: Repository configuration
+    image:
+      title: Container Image
       type: object
       required:
-        - docker_image
-        - docker_image_tag
+      - repository
+      - tag
       properties:
-        docker_image:
-          title: Docker image
-          description: "Docker image source. Example: docker.io/library/nginx"
+        repository:
+          $md.immutable: true
+          title: Repository
+          # Massdriver automatically configures your Kubernetes clusters to have access to your cloud container repositories.
+          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
+          description: Container repository to use for this application.
           type: string
-        docker_image_tag:
-          title: Docker image tag
-          description: Docker image tag name
-          type: string
+        tag:
+          title: Image Tag
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+          default: latest
     dns:
       title: DNS
       description: DNS configuration
@@ -128,29 +124,23 @@ params:
                 enable_dns:
                   const: true
                 zone_name:
-                  title: Azure DNS Zone
+                  title: DNS Zone name
                   description: Azure DNS zone name
                   type: string
                   pattern: ^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$
                   message:
                     pattern: Must be a valid DNS zone name.
                 zone_resource_group:
-                  title: Azure DNS Zone Resource Group
+                  title: DNS Zone Resource Group
                   description: Azure DNS zone resource group
                   type: string
-                txt_record:
-                  title: TXT record
-                  description: TXT record for DNS validation
-                  type: string
-                cname_record:
-                  title: CNAME record
-                  description: CNAME record for DNS validation
+                alias:
+                  title: Alias
+                  description: "DNS zone alias. Examples: www.yourdomain.com, app.yourdomain.net, yourdomain.io"
                   type: string
               required:
                 - zone_name
                 - zone_resource_group
-                - txt_record
-                - cname_record
             - properties:
                 enable_dns:
                   const: false
@@ -173,7 +163,7 @@ connections:
 ui:
   ui:order:
     - application
-    - repo
+    - image
     - dns
   application:
     ui:order:
@@ -181,15 +171,13 @@ ui:
       - sku_name
       - minimum_worker_count
       - maximum_worker_count
-      - notification_email
-  repo:
+  image:
     ui:order:
-      - docker_image
-      - docker_image_tag
+      - repository
+      - tag
   dns:
     ui:order:
       - enable_dns
       - zone_name
       - zone_resource_group
-      - txt_record
-      - cname_record
+      - alias
