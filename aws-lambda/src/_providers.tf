@@ -9,21 +9,22 @@ terraform {
     }
 
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
     }
   }
 }
 
 provider "mdxc" {
   aws = {
-    region      = var.region
+    region      = var.aws_region
     role_arn    = var.aws_authentication.data.arn
     external_id = var.aws_authentication.data.external_id
   }
 }
 
 provider "aws" {
-  region = var.region
+  region = var.aws_region
   assume_role {
     role_arn    = var.aws_authentication.data.arn
     external_id = var.aws_authentication.data.external_id
