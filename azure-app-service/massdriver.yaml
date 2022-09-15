@@ -110,8 +110,6 @@ params:
       title: DNS
       description: DNS configuration
       type: object
-      required:
-        - enable_dns
       properties:
         enable_dns:
           title: Enable DNS
