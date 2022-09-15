@@ -127,7 +127,7 @@ params:
                   type: string
                 subdomain:
                   title: Subdomain
-                  description: "DNS zone subdomain. Examples: www.yourdomain.com, app.yourdomain.net"
+                  description: "Subdomain for DNS zone. Examples: 'www', 'api', 'app'"
                   type: string
                   pattern: ^[-a-zA-Z0-9*._-]{1,63}$
                   message:
