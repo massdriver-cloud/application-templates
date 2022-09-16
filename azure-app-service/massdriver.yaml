@@ -173,7 +173,7 @@ ui:
     ui:order:
       - enable_dns
       - zone_name
-      - sub_domain
+      - subdomain
     zone_name:
       ui:field: dnsZonesDropdown
       cloud: azure
