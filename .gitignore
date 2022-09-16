@@ -114,3 +114,6 @@ schema-*.json
 *_variables.tf.json
 
 .vscode/
+
+# Infracost
+*.infracost
