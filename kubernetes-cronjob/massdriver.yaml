@@ -86,8 +86,7 @@ params:
         memory:
           title: Memory
           description: The expected Memory resources required for this application.
-          type: number
-          minimum: .001
+          type: integer
     job:
       type: object
       title: Job Settings
@@ -177,7 +176,7 @@ ui:
   resourceRequests:
     memory:
       ui:field: conversionFieldData
-      default: Gibibytes
+      unit: Bytes
   envs:
     items:
       ui:order:
