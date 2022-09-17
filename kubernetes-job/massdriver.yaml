@@ -5,71 +5,160 @@ source_url: github.com/YOUR_ORG/<md .Name md>
 access: private
 type: application
 
+app:
+  envs:
+    # Use jq expressions to build environment variables from input params or connections
+    LOG_LEVEL: .params.log_level
+    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+  policies: []
+    # Use jq expressions to select policies from artifact security blocks
+    # - .connections.sqs.data.security.iam.subscribe
+
 params:
+  required:
+    - namespace
+    - image
+    - resourceRequests
+    - job
   properties:
-    name:
-      type: string
     namespace:
-      type: string
+      title: Kubernetes Namespace
+      description: Application will be deployed into this namespace. If the namespace doesn't exist, it will be created.
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/k8s-resource-name.json
       default: default
     image:
+      title: Container Image
       type: object
+      required:
+        - repository
+        - tag
       properties:
         repository:
-          type: string
-        sha:
+          $md.immutable: true
+          title: Repository
+          # Container repositories can be created or imported into massdriver at: https://app.massdriver.cloud/container-repositories
+          # You'll generally want to hard code your container repository in your bundle code, but it can be helpful to show it
+          # in your schema as well.
+          # If you need to allow an end-user developer to select the container repo, you can use our drop down widget documented here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+          description: Container repository to use for this application.
           type: string
         tag:
-          type: string
-    resource_requests:
-      type: object
-      properties:
-        cpu:
-          type: string
-        memory:
-          type: string
-    autoscaling:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          default: false
-        minReplicas:
-          type: integer
-          default: 1
-        maxReplicas:
-          type: integer
-          default: 2
-        targetCPUUtilizationPercentage:
-          type: integer
-          default: 90
+          title: Image Tag
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+          default: latest
+    command:
+      title: Command
+      description: Command to execute as the entrypoint of the container. If left unspecified, the container default will be used (referred to as 'entrypoint' in some container runtimes, such as Docker). Formatted as an array of strings so that 'exec' form is used.
+      type: array
+      items:
+        type: string
+    args:
+      title: Arguments
+      description: Arguments to pass to the entrypoint command of the container. If left unspecified, the container default will be used (referred to as 'command' in some container runtimes, such as Docker). Formatted as an array of strings so that 'exec' form is used.
+      type: array
+      items:
+        type: string
     envs:
+      title: Environment Variables
+      description: "List of environment variables to set in the application runtime. Note: Environment variables from connections should be programmatically set in the application configuration file. See https://docs.massdriver.cloud/applications/getting-started#environment-variable-examples"
       type: array
       items:
         type: object
         properties:
           name:
+            title: Name
             type: string
           value:
+            title: Value
             type: string
-<md if not .Connections md>
-connections:
-  properties: {}
-<md end -md>
+    resourceRequests:
+      type: object
+      title: Resources
+      required:
+        - cpu
+        - memory
+      properties:
+        cpu:
+          title: CPU Cores
+          description: The expected CPU cores required for this application. Fractional numbers are allowed (0.5 is one half of a CPU core).
+          type: number
+          minimum: 0.001
+        memory:
+          title: Memory
+          description: The expected Memory resources required for this application.
+          type: number
+          minimum: .001
+    job:
+      type: object
+      title: Job Settings
+      required:
+        - completions
+        - parallelism
+      properties:
+        completions:
+          title: Completions
+          description: Specifies the number of successfully finished pods the job requires in order to be considered complete.
+          type: integer
+          default: 1
+          minimum: 1
+        parallelism:
+          title: Parallelism
+          description: Specifies the maximum number of pods the job should run in parallel at any given time. Must be less than or equal to Completions.
+          type: integer
+          default: 1
+          minimum: 1
 
-<md if .Connections md>
 connections:
   required:
+    - kubernetes_cluster
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
+  oneOf:
+    - required: ["aws_authentication"]
+    - required: ["gcp_authentication"]
+    - required: ["azure_authentication"]
   properties:
+    kubernetes_cluster:
+      $ref: massdriver/kubernetes-cluster
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    azure_authentication:
+      $ref: massdriver/azure-service-principal
   <md- range $key, $art:= .Connections md>
     <md $key md>:
       $ref: <md $art md>
   <md- end md>
-<md- end md>
 
 ui:
+  ## If you need to allow an end user to select the container repository at deploy time, our smart widget can be used.
+  ## Additional documentation here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+  # image:
+  #   repository:
+  #     ui:field: "containerRepositoriesDropdown"
+  #     cloud: "aws"
   ui:order:
+    - namespace
+    - image
+    - command
+    - args
+    - envs
+    - resourceRequests
+    - job
     - "*"
+  job:
+    ui:order:
+      - completions
+      - parallelism
+      - "*"
+  resourceRequests:
+    memory:
+      ui:field: conversionFieldData
+      default: Gibibytes
+  envs:
+    items:
+      ui:order:
+        - name
+        - value

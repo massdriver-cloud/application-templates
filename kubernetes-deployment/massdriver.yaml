@@ -15,6 +15,12 @@ app:
     # - .connections.sqs.data.security.iam.subscribe
 
 params:
+  required:
+    - namespace
+    - image
+    - resourceRequests
+    - replicas
+    - ingress
   properties:
     namespace:
       title: Kubernetes Namespace
@@ -51,7 +57,21 @@ params:
       type: array
       items:
         type: string
+    envs:
+      title: Environment Variables
+      description: "List of environment variables to set in the application runtime. Note: Environment variables from connections should be programmatically set in the application configuration file. See https://docs.massdriver.cloud/applications/getting-started#environment-variable-examples"
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            title: Name
+            type: string
+          value:
+            title: Value
+            type: string
     resourceRequests:
+      title: Resources
       type: object
       required:
         - cpu
@@ -127,6 +147,7 @@ params:
         enabled:
           title: Enable Public Internet Access
           type: boolean
+          default: false
       dependencies:
         enabled:
           oneOf:
@@ -186,21 +207,22 @@ ui:
     - replicas
     - port
     - ingress
+    - "*"
   resourceRequests:
     memory:
       ui:field: conversionFieldData
       unit: Bytes
   replicas:
-    items:
-      ui:order:
-        - autoscalingEnabled
-        - replicaCount
-        - minReplicas
-        - maxReplicas
-        - targetCPUUtilizationPercentage
+    ui:order:
+      - autoscalingEnabled
+      - replicaCount
+      - minReplicas
+      - maxReplicas
+      - targetCPUUtilizationPercentage
+      - "*"
   ingress:
-    items:
-      ui:order:
-        - enabled
-        - host
-        - path
+    ui:order:
+      - enabled
+      - host
+      - path
+      - "*"
