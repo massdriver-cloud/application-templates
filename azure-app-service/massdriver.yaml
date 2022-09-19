@@ -6,9 +6,9 @@ access: private
 type: application
 
 app:
-  envs: {}
+  envs:
     # Use jq expressions to build environment variables from input params or connections
-    # LOG_LEVEL: .params.log_level
+    LOG_LEVEL: .params.log_level
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
@@ -110,6 +110,8 @@ params:
       title: DNS
       description: DNS configuration
       type: object
+      required:
+        - enable_dns
       properties:
         enable_dns:
           title: Enable DNS
@@ -121,7 +123,7 @@ params:
             - properties:
                 enable_dns:
                   const: true
-                zone_name:
+                zone_id:
                   title: DNS Zone name
                   description: Azure DNS zone name
                   type: string
@@ -133,7 +135,7 @@ params:
                   message:
                     pattern: Must be a valid subdomain. Must contain only letters, numbers, dashes, underscores, periods, and asterisks.
               required:
-                - zone_name
+                - zone_id
                 - subdomain
             - properties:
                 enable_dns:
@@ -172,8 +174,8 @@ ui:
   dns:
     ui:order:
       - enable_dns
-      - zone_name
+      - zone_id
       - subdomain
-    zone_name:
+    zone_id:
       ui:field: dnsZonesDropdown
       cloud: azure
