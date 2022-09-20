@@ -1,20 +1,20 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "adhoc-job.timestamped-name" . }}
+  name: {{ include "application.timestamped-name" . }}
   labels:
-    {{- include "adhoc-job.labels" . | nindent 4 }}
+    {{- include "application.labels" . | nindent 4 }}
 spec:
-  completions: {{ .Values.completions }}
-  parallelism: {{ .Values.parallelism }}
-  ttlSecondsAfterFinished: 300
+  completions: {{ .Values.job.completions }}
+  parallelism: {{ .Values.job.parallelism }}
+  ttlSecondsAfterFinished: 600
   template:
     metadata:
       labels:
-        {{- include "adhoc-job.selectorLabels" . | nindent 8 }}
+        {{- include "application.labels" . | nindent 8 }}
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: {{ include "adhoc-job.fullname" . }}
+      serviceAccountName: {{ include "application.fullname" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}

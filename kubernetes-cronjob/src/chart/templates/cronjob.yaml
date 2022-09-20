@@ -1,25 +1,25 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "scheduled-job.fullname" . }}
+  name: {{ include "application.fullname" . }}
   labels:
-    {{- include "scheduled-job.labels" . | nindent 4 }}
+    {{- include "application.labels" . | nindent 4 }}
 spec:
-  concurrencyPolicy: {{ .Values.concurrencyPolicy }}
+  concurrencyPolicy: {{ .Values.job.concurrencyPolicy }}
   failedJobsHistoryLimit: 1
-  schedule: {{ .Values.schedule | quote }}
+  schedule: {{ .Values.job.schedule | quote }}
   successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
-      completions: {{ .Values.completions }}
-      parallelism: {{ .Values.parallelism }}
+      completions: {{ .Values.job.completions }}
+      parallelism: {{ .Values.job.parallelism }}
       template:
         metadata:
           labels:
-            {{- include "scheduled-job.selectorLabels" . | nindent 12 }}
+            {{- include "application.labels" . | nindent 12 }}
         spec:
           restartPolicy: OnFailure
-          serviceAccountName: {{ include "scheduled-job.fullname" . }}
+          serviceAccountName: {{ include "application.fullname" . }}
           {{- with .Values.podSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}

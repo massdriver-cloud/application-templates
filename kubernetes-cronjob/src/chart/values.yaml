@@ -1,0 +1,23 @@
+image:
+  repository:
+  tag:
+
+command: []
+args: []
+
+envs: []
+
+serviceAccount:
+  annotations: {}
+  name:
+
+resourceRequests: {}
+resourceLimits: {}
+
+job:
+  schedule:
+  concurrencyPolicy:
+  completions:
+  parallelism:
+
+commonLabels: {}
