@@ -8,7 +8,7 @@ type: application
 app:
   envs:
     # Use jq expressions to build environment variables from input params or connections
-    LOG_LEVEL: .params.log_level
+    LOG_LEVEL: .params.configuration.log_level
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
@@ -58,10 +58,11 @@ params:
       type: array
       items:
         type: string
-    envs:
+    additionalEnvs:
       title: Environment Variables
       description: "List of environment variables to set in the application runtime. Note: Environment variables from connections should be programmatically set in the application configuration file. See https://docs.massdriver.cloud/applications/getting-started#environment-variable-examples"
       type: array
+      default: []
       items:
         type: object
         properties:
@@ -125,6 +126,16 @@ params:
           type: integer
           default: 1
           minimum: 1
+    # Uncomment the section below to begin adding any application-specific configuration that is appropriate. See the app.envs section above for how to set environment values from these settings.
+    # configuration:
+    #   title: Configuration
+    #   description: Application specific configuration settings
+    #   type: object
+    #   properties:
+    #     log_level:
+    #       title: Log Level
+    #       type: string
+
 
 connections:
   required:
@@ -162,7 +173,7 @@ ui:
     - image
     - command
     - args
-    - envs
+    - additionalEnvs
     - resourceRequests
     - job
     - "*"
@@ -177,7 +188,7 @@ ui:
     memory:
       ui:field: conversionFieldData
       unit: Bytes
-  envs:
+  additionalEnvs:
     items:
       ui:order:
         - name
