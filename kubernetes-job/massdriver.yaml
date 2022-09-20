@@ -36,10 +36,8 @@ params:
         repository:
           $md.immutable: true
           title: Repository
-          # Container repositories can be created or imported into massdriver at: https://app.massdriver.cloud/container-repositories
-          # You'll generally want to hard code your container repository in your bundle code, but it can be helpful to show it
-          # in your schema as well.
-          # If you need to allow an end-user developer to select the container repo, you can use our drop down widget documented here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+          # Massdriver automatically configures your Kubernetes clusters to have access to your cloud container repositories.
+          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
           description: Container repository to use for this application.
           type: string
         tag:
@@ -123,10 +121,6 @@ connections:
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
-  oneOf:
-    - required: ["aws_authentication"]
-    - required: ["gcp_authentication"]
-    - required: ["azure_authentication"]
   properties:
     kubernetes_cluster:
       $ref: massdriver/kubernetes-cluster
