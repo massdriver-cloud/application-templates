@@ -1,0 +1,142 @@
+schema: draft-07
+name: pyramid-redis
+description: app to test redis with pyramid framework
+source_url: github.com/YOUR_ORG/pyramid-redis
+access: private
+type: application
+
+app:
+  envs:
+    # Use jq expressions to build environment variables from input params or connections
+    LOG_LEVEL: .params.log_level
+    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+    DB_HOST: .connections.cache.data.authentication.hostname
+    DB_PASS: .connections.cache.data.authentication.password
+    DB_PORT: .connections.cache.data.authentication.port
+  policies: []
+    # Use jq expressions to select policies from artifact security blocks
+    # - .connections.sqs.data.security.iam.subscribe
+
+params:
+  examples:
+    - __name: "API"
+      endpoint:
+        enabled: true
+        subdomain: api
+  required:
+    - location
+    - container
+    - max_instances
+  properties:
+    location:
+      title: Region
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-region.json
+      $md.immutable: true
+    log_level:
+      type: string
+      title: Log Level
+      description: "The log level to log at. This is an example value, this could be anything!"
+      enum:
+        - error
+        - warning
+        - info
+    container:
+      type: object
+      title: Container
+      required:
+      - repository
+      - image
+      - tag
+      properties:
+        repository:
+          type: string
+          title: Repository
+          # You'll generally want to hard code your container repository in your bundle code,
+          # but it can be helpful to show it in your schema as well.
+          description: Container repository to use for this application.
+        image:
+          type: string
+          title: Image
+        tag:
+          title: Image Tag
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+          default: latest
+    max_instances:
+      type: integer
+      title: Max Instances
+      description: The maximum number of instances to run at once.
+      default: 5
+    machine_type:
+      type: string
+      title: Machine Type
+    endpoint:
+      type: object
+      title: Endpoint
+      description: Configure a public endpoint with DNS and a SSL certificate.
+      required:
+        - enabled
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          default: false
+      dependencies:
+        enabled:
+          oneOf:
+            - required:
+                - zone
+                - subdomain
+              properties:
+                enabled:
+                  const: true
+                  title: Enabled
+                zone:
+                  $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-dns-managed-zone.json
+                  title: DNS Zone
+                subdomain:
+                  type: string
+                  title: Subdomain
+                  description: The subdomain will be prefixed to the DNS zone, creating a public endpoint for your application.
+            - properties:
+                enabled:
+                  const: false
+                  title: Enabled
+
+connections:
+  required:
+    - gcp_authentication
+    - subnetwork
+    - cache
+  properties:
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    subnetwork:
+      $ref: massdriver/gcp-subnetwork
+    cache:
+      $ref: massdriver/redis-authentication
+
+ui:
+  ui:order:
+    - location
+    - container
+    - endpoint
+    - "*"
+  location:
+    ui:field: regionsDropdown
+    cloud: gcp
+  container:
+    ui:order:
+      - repository
+      - image
+      - tag
+  endpoint:
+    ui:order:
+      - enabled
+      - zone
+      - subdomain
+    zone:
+      name:
+        ui:field: dnsZonesDropdown
+        cloud: gcp
+
+
