@@ -117,6 +117,7 @@ params:
           title: Enable DNS
           description: Enable DNS configuration for the application.
           type: boolean
+          default: false
       dependencies:
         enable_dns:
           oneOf:
