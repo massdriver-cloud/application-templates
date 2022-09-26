@@ -1,7 +1,7 @@
 schema: draft-07
-name: pyramid-redis
-description: app to test redis with pyramid framework
-source_url: github.com/YOUR_ORG/pyramid-redis
+name: <md .Name md>
+description: <md .Description md>
+source_url: github.com/YOUR_ORG/<md .Name md>
 access: private
 type: application
 
@@ -106,14 +106,18 @@ connections:
   required:
     - gcp_authentication
     - subnetwork
-    - cache
+  <md- range $key, $art:= .Connections md>
+    - <md $key md>
+  <md- end md>
   properties:
     gcp_authentication:
       $ref: massdriver/gcp-service-account
     subnetwork:
       $ref: massdriver/gcp-subnetwork
-    cache:
-      $ref: massdriver/redis-authentication
+  <md- range $key, $art:= .Connections md>
+    <md $key md>:
+      $ref: <md $art md>
+  <md- end md>
 
 ui:
   ui:order:
