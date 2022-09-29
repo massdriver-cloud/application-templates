@@ -7,5 +7,9 @@ module "application" {
   machine_type    = var.machine_type
   port            = 80
   subnetwork      = var.subnetwork
+  health_check = {
+    port = 80
+    path = "/"
+  }
 }
 
