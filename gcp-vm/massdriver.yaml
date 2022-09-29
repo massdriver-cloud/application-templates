@@ -11,7 +11,7 @@ app:
     LOG_LEVEL: .params.log_level
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
     DB_HOST: .connections.cache.data.authentication.hostname
-    DB_PASS: .connections.cache.data.authentication.password
+    DB_PASSWORD: .connections.cache.data.authentication.password
     DB_PORT: .connections.cache.data.authentication.port
   policies: []
     # Use jq expressions to select policies from artifact security blocks
