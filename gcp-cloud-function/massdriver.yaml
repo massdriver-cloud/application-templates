@@ -1,0 +1,152 @@
+schema: draft-07
+# name: <md .Name md>
+name: gcp-cloud-function
+# description: <md .Description md>
+description: description
+# source_url: github.com/YOUR_ORG/<md .Name md>
+source_url: "URL"
+access: private
+type: application
+
+app:
+  envs:
+    # Use jq expressions to build environment variables from input params or connections
+    LOG_LEVEL: .params.log_level
+    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+  policies: []
+    # Use jq expressions to select policies from artifact security blocks
+    # - .connections.sqs.data.security.iam.subscribe
+
+params:
+  examples:
+    - __name: "API"
+      endpoint:
+        enabled: true
+        subdomain: api
+  required:
+    - cloud_function_configuration
+    - endpoint
+  properties:
+    location:
+      type: string
+      title: Location
+    # https://cloud.google.com/functions/docs/concepts/execution-environment
+    runtime:
+      type: string
+      title: Runtime
+      oneOf:
+      - title: Node.js 16
+        const: nodejs16
+      - title: Node.js 14
+        const: nodejs14
+      - title: Python 3.10
+        const: python310
+      - title: Python 3.9
+        const: python39
+      - title: Python 3.8
+        const: python38
+      - title: Go 1.16
+        const: go116
+      - title: Go 1.13
+        const: go113
+      - title: Java 17
+        const: java17
+      - title: Java 11
+        const: java11
+      - title: .NET Core 6.0
+        const: dotnet6
+      - title: .NET Core 3.1
+        const: dotnet3
+      - title: Ruby 3.0
+        const: ruby30
+      - title: Ruby 2.7
+        const: ruby27
+      - title: PHP 8.1
+        const: php81
+      - title: PHP 7.4
+        const: php74
+    cloud_function_configuration:
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-function-configuration.json
+    source_archive:
+      type: object
+      title: Source Archive
+      properties:
+        bucket:
+          type: string
+          title: Bucket
+        object:
+          type: string
+    endpoint:
+      type: object
+      title: Endpoint
+      description: Configure a public endpoint with DNS and a SSL certificate.
+      required:
+        - enabled
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+          default: false
+      dependencies:
+        enabled:
+          oneOf:
+            - required:
+                - zone
+                - subdomain
+              properties:
+                enabled:
+                  const: true
+                  title: Enabled
+                zone:
+                  $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-dns-managed-zone.json
+                  title: DNS Zone
+                subdomain:
+                  type: string
+                  title: Subdomain
+                  description: The subdomain will be prefixed to the DNS zone, creating a public endpoint for your application.
+            - properties:
+                enabled:
+                  const: false
+                  title: Enabled
+
+connections:
+  required:
+    - gcp_authentication
+    - subnetwork
+  # <md- range $key, $art:= .Connections md>
+  #   - <md $key md>
+  # <md- end md>
+  properties:
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    subnetwork:
+      $ref: massdriver/gcp-subnetwork
+  # <md- range $key, $art:= .Connections md>
+  #   <md $key md>:
+  #     $ref: <md $art md>
+  # <md- end md>
+
+ui:
+  ui:order:
+    - location
+    - container
+    - endpoint
+    - "*"
+  location:
+    ui:field: regionsDropdown
+    cloud: gcp
+  container:
+    ui:order:
+      - repository
+      - image
+      - tag
+  endpoint:
+    ui:order:
+      - enabled
+      - zone
+      - subdomain
+    zone:
+      name:
+        ui:field: dnsZonesDropdown
+        cloud: gcp
+
