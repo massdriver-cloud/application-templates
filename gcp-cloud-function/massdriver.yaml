@@ -15,7 +15,7 @@ app:
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
-    # - .connections.sqs.data.security.iam.subscribe
+    - .connections.source_bucket.data.security.iam.read
 
 params:
   examples:
@@ -67,15 +67,9 @@ params:
         const: php74
     cloud_function_configuration:
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-function-configuration.json
-    source_archive:
-      type: object
-      title: Source Archive
-      properties:
-        bucket:
-          type: string
-          title: Bucket
-        object:
-          type: string
+    source_archive_path:
+      type: string
+      title: Source Archive Path
     endpoint:
       type: object
       title: Endpoint
@@ -113,6 +107,7 @@ connections:
   required:
     - gcp_authentication
     - subnetwork
+    # - source_bucket
   # <md- range $key, $art:= .Connections md>
   #   - <md $key md>
   # <md- end md>
@@ -121,6 +116,8 @@ connections:
       $ref: massdriver/gcp-service-account
     subnetwork:
       $ref: massdriver/gcp-subnetwork
+    # source_bucket:
+    #   $ref: massdriver/gcp-gcs-bucket
   # <md- range $key, $art:= .Connections md>
   #   <md $key md>:
   #     $ref: <md $art md>
