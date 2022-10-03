@@ -2,6 +2,8 @@
 
 <md .Description md>
 
+An example application using this template can be found [here](https://github.com/massdriver-cloud/application-examples/tree/main/k8s/phoenix-chat-example).
+
 ## Massdriver `kubernetes-deployment` Template
 
 The `kubernetes-deployment` template will run your application on AWS, GCP, or Azure Kubernetes.
