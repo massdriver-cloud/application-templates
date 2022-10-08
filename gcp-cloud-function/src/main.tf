@@ -37,10 +37,10 @@
 module "app" {
   source              = "../../../terraform-modules/massdriver-application-gcp-cloud-function"
   md_metadata         = var.md_metadata
-  location            = local.gcp_region
+  location            = var.gcp_subnetwork.specs.gcp.region
   source_archive_path = var.source_archive_path
   cloud_function_configuration = merge(var.cloud_function_configuration, {
-    runtime = "php81"
+    runtime = "python310"
   })
   endpoint      = var.endpoint
   vpc_connector = var.gcp_subnetwork.data.infrastructure.vpc_access_connector

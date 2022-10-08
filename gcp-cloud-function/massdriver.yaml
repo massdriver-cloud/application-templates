@@ -80,13 +80,9 @@ connections:
 
 ui:
   ui:order:
-    - location
     - container
     - endpoint
     - "*"
-  location:
-    ui:field: regionsDropdown
-    cloud: gcp
   container:
     ui:order:
       - repository
