@@ -21,20 +21,9 @@ params:
         enabled: true
         subdomain: api
   required:
-    - location
-    - private_service_cidr
     - container
     - max_instances
   properties:
-    location:
-      title: Region
-      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-region.json
-      $md.immutable: true
-    private_service_cidr:
-      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/cidr.json
-      title: Private Service CIDR
-      description: The CIDR range Cloud Run will use to access things in your VPC like databases and caches.
-      default: "10.100.0.0/28"
     log_level:
       type: string
       title: Log Level
@@ -105,17 +94,16 @@ params:
 connections:
   required:
     - gcp_authentication
-    # The global network is required so we can create a private service connection.
-    # This allows your application to access things in your VPC like databases and caches.
-    - gcp_global_network
+    #
+    - gcp_subnetwork
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
   properties:
     gcp_authentication:
       $ref: massdriver/gcp-service-account
-    gcp_global_network:
-      $ref: massdriver/gcp-global-network
+    gcp_subnetwork:
+      $ref: massdriver/gcp-subnetwork
   <md- range $key, $art:= .Connections md>
     <md $key md>:
       $ref: <md $art md>
@@ -123,13 +111,9 @@ connections:
 
 ui:
   ui:order:
-    - location
     - container
     - endpoint
     - "*"
-  location:
-    ui:field: regionsDropdown
-    cloud: gcp
   container:
     ui:order:
       - repository
@@ -144,4 +128,3 @@ ui:
       name:
         ui:field: dnsZonesDropdown
         cloud: gcp
-

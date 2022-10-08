@@ -1,10 +1,7 @@
 schema: draft-07
-# name: <md .Name md>
-name: gcp-cloud-function
-# description: <md .Description md>
-description: description
-# source_url: github.com/YOUR_ORG/<md .Name md>
-source_url: "URL"
+name: <md .Name md>
+description: <md .Description md>
+source_url: github.com/YOUR_ORG/<md .Name md>
 access: private
 type: application
 
@@ -15,7 +12,6 @@ app:
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
-    - .connections.source_bucket.data.security.iam.read
 
 params:
   examples:
@@ -27,44 +23,6 @@ params:
     - cloud_function_configuration
     - endpoint
   properties:
-    location:
-      type: string
-      title: Location
-    # https://cloud.google.com/functions/docs/concepts/execution-environment
-    runtime:
-      type: string
-      title: Runtime
-      oneOf:
-      - title: Node.js 16
-        const: nodejs16
-      - title: Node.js 14
-        const: nodejs14
-      - title: Python 3.10
-        const: python310
-      - title: Python 3.9
-        const: python39
-      - title: Python 3.8
-        const: python38
-      - title: Go 1.16
-        const: go116
-      - title: Go 1.13
-        const: go113
-      - title: Java 17
-        const: java17
-      - title: Java 11
-        const: java11
-      - title: .NET Core 6.0
-        const: dotnet6
-      - title: .NET Core 3.1
-        const: dotnet3
-      - title: Ruby 3.0
-        const: ruby30
-      - title: Ruby 2.7
-        const: ruby27
-      - title: PHP 8.1
-        const: php81
-      - title: PHP 7.4
-        const: php74
     cloud_function_configuration:
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-function-configuration.json
     source_archive_path:
@@ -106,22 +64,19 @@ params:
 connections:
   required:
     - gcp_authentication
-    - subnetwork
-    # - source_bucket
-  # <md- range $key, $art:= .Connections md>
-  #   - <md $key md>
-  # <md- end md>
+    - gcp_subnetwork
+  <md- range $key, $art:= .Connections md>
+    - <md $key md>
+  <md- end md>
   properties:
     gcp_authentication:
       $ref: massdriver/gcp-service-account
-    subnetwork:
+    gcp_subnetwork:
       $ref: massdriver/gcp-subnetwork
-    # source_bucket:
-    #   $ref: massdriver/gcp-gcs-bucket
-  # <md- range $key, $art:= .Connections md>
-  #   <md $key md>:
-  #     $ref: <md $art md>
-  # <md- end md>
+  <md- range $key, $art:= .Connections md>
+    <md $key md>:
+      $ref: <md $art md>
+  <md- end md>
 
 ui:
   ui:order:
@@ -146,4 +101,3 @@ ui:
       name:
         ui:field: dnsZonesDropdown
         cloud: gcp
-
