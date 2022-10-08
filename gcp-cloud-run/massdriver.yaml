@@ -23,6 +23,7 @@ params:
   required:
     - container
     - max_instances
+    - endpoint
   properties:
     log_level:
       type: string
@@ -94,7 +95,6 @@ params:
 connections:
   required:
     - gcp_authentication
-    #
     - gcp_subnetwork
   <md- range $key, $art:= .Connections md>
     - <md $key md>
