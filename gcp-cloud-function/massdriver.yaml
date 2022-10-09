@@ -80,14 +80,14 @@ connections:
 
 ui:
   ui:order:
-    - container
+    - cloud_function_configuration
     - endpoint
     - "*"
-  container:
+  cloud_function_configuration:
     ui:order:
-      - repository
-      - image
-      - tag
+      - "*"
+    runtime:
+      ui:widget: hidden
   endpoint:
     ui:order:
       - enabled
