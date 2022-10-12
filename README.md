@@ -1,6 +1,6 @@
 # application-templates
 
-Application templates for quickly rendering applications to run on massdriver provisioned cloud infrastructure.
+Application templates for running applications [Massdriver](https://massdriver.cloud) provisioned cloud infrastructure.
 
 ## Development
 
