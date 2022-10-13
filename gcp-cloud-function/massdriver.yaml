@@ -28,6 +28,8 @@ params:
     source_archive_path:
       type: string
       title: Source Archive Path
+      description: "The path to the source archive to upload to GCP."
+      default: placeholder-app.zip
     endpoint:
       type: object
       title: Endpoint
@@ -81,10 +83,15 @@ connections:
 ui:
   ui:order:
     - cloud_function_configuration
+    - source_archive_path
     - endpoint
     - "*"
   cloud_function_configuration:
     ui:order:
+      - entrypoint
+      - memory_mb
+      - minimum_instances
+      - maximum_instances
       - "*"
     runtime:
       ui:widget: hidden
