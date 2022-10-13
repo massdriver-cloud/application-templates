@@ -36,7 +36,7 @@
 #     const: php74
 
 module "app" {
-  source              = "../../../terraform-modules/massdriver-application-gcp-cloud-function"
+  source              = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-cloud-function?ref=3ee9d5f"
   md_metadata         = var.md_metadata
   location            = var.gcp_subnetwork.specs.gcp.region
   source_archive_path = var.source_archive_path

@@ -14,11 +14,7 @@ app:
     # Use jq expressions to select policies from artifact security blocks
 
 params:
-  examples:
-    - __name: "API"
-      endpoint:
-        enabled: true
-        subdomain: api
+  examples: []
   required:
     - cloud_function_configuration
     - endpoint
