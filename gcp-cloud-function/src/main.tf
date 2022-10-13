@@ -1,3 +1,4 @@
+# TODO: prompt for these in the CLI
 # https://cloud.google.com/functions/docs/concepts/execution-environment
 # runtime:
 #   type: string
