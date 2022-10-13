@@ -15,11 +15,7 @@ app:
     # - .connections.sqs.data.security.iam.subscribe
 
 params:
-  examples:
-    - __name: "API"
-      endpoint:
-        enabled: true
-        subdomain: api
+  examples: []
   required:
     - container
     - max_instances
