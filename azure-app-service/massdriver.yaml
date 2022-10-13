@@ -78,16 +78,40 @@ params:
               const: P3v3
         minimum_worker_count:
           title: Minimum instances
-          description: Minimum number of instances for autoscale.
+          description: Minimum number of instances for autoscale. (Enabling zone balancing multiplies this value by 3)
           type: integer
           minimum: 1
           maximum: 30
         maximum_worker_count:
           title: Maximum instances
-          description: Maximum number of instances for autoscale.
+          description: Maximum number of instances for autoscale.(Enabling zone balancing multiplies this value by 3)
           type: integer
           minimum: 1
           maximum: 30
+      dependencies:
+        location:
+          oneOf:
+            - properties:
+                location:
+                  enum:
+                    - westus2
+                    - westus3
+                    - eastus
+                    - eastus2
+                    - southcentralus
+                    - centralus
+                zone_balancing:
+                  title: Zone balancing
+                  description: Enable zone balancing for the App Service Plan.
+                  type: boolean
+                  default: false
+              required:
+                - zone_balancing
+            - properties:
+                location:
+                  enum:
+                    - westus
+                    - northcentralus
     image:
       title: Container Image
       type: object
@@ -162,21 +186,26 @@ ui:
     - application
     - image
     - dns
+    - "*"
   application:
     ui:order:
       - location
       - sku_name
       - minimum_worker_count
       - maximum_worker_count
+      - zone_balancing
+      - "*"
   image:
     ui:order:
       - repository
       - tag
+      - "*"
   dns:
     ui:order:
       - enable_dns
       - zone_id
       - subdomain
+      - "*"
     zone_id:
       ui:field: dnsZonesDropdown
       cloud: azure
