@@ -31,7 +31,10 @@ params:
     - image
     - dns
   properties:
-    application: 
+    command:
+      title: Command
+      type: string
+    application:
       title: Application
       description: Application configuration
       type: object
@@ -41,6 +44,11 @@ params:
         - minimum_worker_count
         - maximum_worker_count
       properties:
+        subnet_cidr:
+          title: CIDR
+          description: A /24 to a /28 to assign IPs to the App Service instances.
+          type: string
+          default: 10.0.140.0/24
         location:
           title: Location
           description: Azure location
@@ -164,6 +172,8 @@ ui:
     - dns
   application:
     ui:order:
+      - command
+      - subnet_cidr
       - location
       - sku_name
       - minimum_worker_count
