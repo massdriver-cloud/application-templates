@@ -40,15 +40,11 @@ params:
       type: object
       required:
         - location
+        - cidr
         - sku_name
         - minimum_worker_count
         - maximum_worker_count
       properties:
-        subnet_cidr:
-          title: CIDR
-          description: A /24 to a /28 to assign IPs to the App Service instances.
-          type: string
-          default: 10.0.140.0/24
         location:
           title: Location
           description: Azure location
@@ -71,6 +67,14 @@ params:
               const: southcentralus
             - title: Central US
               const: centralus
+        cidr:
+          title: Subnet CIDR
+          type: string
+          description: Specify a /24 CIDR range within your vnet to create subnet for the App Service. The subnet CIDR cannot be changed after creation.
+          $md.immutable: true
+          pattern: ^(?:10\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])|172\.(?:1[6-9]|2[0-9]|3[0-1])|192\.168)(?:\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){2}\/24$
+          message:
+            pattern: "Must be a /24 range from within the VNet CIDR"
         sku_name:
           title: Size
           description: Azure App Service Plan size
@@ -153,12 +157,15 @@ params:
 connections:
   required:
     - azure_service_principal
+    - azure_virtual_network
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
   properties:
     azure_service_principal:
       $ref: massdriver/azure-service-principal
+    azure_virtual_network:
+      $ref: massdriver/azure-virtual-network
   <md- range $key, $art:= .Connections md>
     <md $key md>:
       $ref: <md $art md>
@@ -168,25 +175,29 @@ connections:
 ui:
   ui:order:
     - application
+    - command
     - image
     - dns
+    - "*"
   application:
     ui:order:
-      - command
-      - subnet_cidr
       - location
+      - cidr
       - sku_name
       - minimum_worker_count
       - maximum_worker_count
+      - "*"
   image:
     ui:order:
       - repository
       - tag
+      - "*"
   dns:
     ui:order:
       - enable_dns
       - zone_id
       - subdomain
+      - "*"
     zone_id:
       ui:field: dnsZonesDropdown
       cloud: azure
