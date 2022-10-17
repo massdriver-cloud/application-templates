@@ -32,7 +32,7 @@ params:
     - dns
   properties:
     command:
-      title: Command
+      title: Startup Command
       type: string
     application:
       title: Application
