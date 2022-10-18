@@ -12,49 +12,20 @@ app:
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
-    # - .connections.sqs.data.security.iam.subscribe
 
 params:
   examples: []
   required:
-    - container
-    - max_instances
+    - cloud_function_configuration
     - endpoint
   properties:
-    log_level:
+    cloud_function_configuration:
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-function-configuration.json
+    source_archive_path:
       type: string
-      title: Log Level
-      description: "The log level to log at. This is an example value, this could be anything!"
-      enum:
-        - error
-        - warning
-        - info
-    container:
-      type: object
-      title: Container
-      required:
-      - repository
-      - image
-      - tag
-      properties:
-        repository:
-          type: string
-          title: Repository
-          # You'll generally want to hard code your container repository in your bundle code,
-          # but it can be helpful to show it in your schema as well.
-          description: Container repository to use for this application.
-        image:
-          type: string
-          title: Image
-        tag:
-          title: Image Tag
-          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
-          default: latest
-    max_instances:
-      type: integer
-      title: Max Instances
-      description: The maximum number of instances to run at once.
-      default: 5
+      title: Source Archive Path
+      description: "The path to the source archive to upload to GCP."
+      default: placeholder-app.zip
     endpoint:
       type: object
       title: Endpoint
@@ -107,14 +78,19 @@ connections:
 
 ui:
   ui:order:
-    - container
+    - cloud_function_configuration
+    - source_archive_path
     - endpoint
     - "*"
-  container:
+  cloud_function_configuration:
     ui:order:
-      - repository
-      - image
-      - tag
+      - entrypoint
+      - memory_mb
+      - minimum_instances
+      - maximum_instances
+      - "*"
+    runtime:
+      ui:widget: hidden
   endpoint:
     ui:order:
       - enabled
