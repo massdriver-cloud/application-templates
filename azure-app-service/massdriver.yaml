@@ -39,34 +39,11 @@ params:
       description: Application configuration
       type: object
       required:
-        - location
         - cidr
         - sku_name
         - minimum_worker_count
         - maximum_worker_count
       properties:
-        location:
-          title: Location
-          description: Azure location
-          type: string
-          $md.immutable: true
-          oneOf:
-            - title: West US
-              const: westus
-            - title: West US 2
-              const: westus2
-            - title: West US 3
-              const: westus3
-            - title: East US
-              const: eastus
-            - title: East US 2
-              const: eastus2
-            - title: North Central US
-              const: northcentralus
-            - title: South Central US
-              const: southcentralus
-            - title: Central US
-              const: centralus
         cidr:
           title: Subnet CIDR
           type: string
@@ -181,7 +158,6 @@ ui:
     - "*"
   application:
     ui:order:
-      - location
       - cidr
       - sku_name
       - minimum_worker_count
