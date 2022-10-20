@@ -88,30 +88,12 @@ params:
           type: integer
           minimum: 1
           maximum: 30
-      dependencies:
-        location:
-          oneOf:
-            - properties:
-                location:
-                  enum:
-                    - westus2
-                    - westus3
-                    - eastus
-                    - eastus2
-                    - southcentralus
-                    - centralus
-                zone_balancing:
-                  title: Zone balancing
-                  description: Enable zone balancing for the App Service Plan.
-                  type: boolean
-                  default: false
-              required:
-                - zone_balancing
-            - properties:
-                location:
-                  enum:
-                    - westus
-                    - northcentralus
+        zone_balancing:
+          title: Zone balancing
+          description: Enable zone balancing for the App Service Plan. Cannot be changed after deployment. Only supported in East US.
+          $md.immutable: true
+          type: boolean
+          default: false
     image:
       title: Container Image
       type: object
