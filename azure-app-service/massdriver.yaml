@@ -36,33 +36,10 @@ params:
       description: Application configuration
       type: object
       required:
-        - location
         - sku_name
         - minimum_worker_count
         - maximum_worker_count
       properties:
-        location:
-          title: Location
-          description: Azure location
-          type: string
-          $md.immutable: true
-          oneOf:
-            - title: West US
-              const: westus
-            - title: West US 2
-              const: westus2
-            - title: West US 3
-              const: westus3
-            - title: East US
-              const: eastus
-            - title: East US 2
-              const: eastus2
-            - title: North Central US
-              const: northcentralus
-            - title: South Central US
-              const: southcentralus
-            - title: Central US
-              const: centralus
         sku_name:
           title: Size
           description: Azure App Service Plan size
@@ -151,12 +128,15 @@ params:
 connections:
   required:
     - azure_service_principal
+    - azure_virtual_network
   <md- range $key, $art:= .Connections md>
     - <md $key md>
   <md- end md>
   properties:
     azure_service_principal:
       $ref: massdriver/azure-service-principal
+    azure_virtual_network:
+      $ref: massdriver/azure-virtual-network
   <md- range $key, $art:= .Connections md>
     <md $key md>:
       $ref: <md $art md>
@@ -171,7 +151,6 @@ ui:
     - "*"
   application:
     ui:order:
-      - location
       - sku_name
       - minimum_worker_count
       - maximum_worker_count
