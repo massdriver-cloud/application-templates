@@ -31,6 +31,14 @@ params:
     - docker
     - dns
   properties:
+    # As an example, uncomment the section below to add a parameter for the logging level of your application. See the app.envs section above for how to set environment values from application parameters.
+    # log_level:
+    #   type: string
+    #   title: Log Level
+    #   enum: 
+    #   - info 
+    #   - warn 
+    #   - error
     application: 
       title: Application
       description: Application configuration
