@@ -9,10 +9,112 @@ app:
   envs:
     # Use jq expressions to build environment variables from input params or connections
     LOG_LEVEL: .params.log_level
+      # type: string
+      # enum:
+      #   - info
+      #   - warn
+      #   - error
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
     # - .connections.sqs.data.security.iam.subscribe
+
+MonitorAlarmMetric: &monitor_alarm_metric
+  required:
+    - severity
+    - frequency
+    - window_size
+    - aggregation
+    - operator
+    - threshold
+  properties:
+    severity:
+      title: Severity
+      description: The severity of the alarm.
+      type: integer
+      default: 1
+      oneOf:
+        - title: Critical
+          const: 0
+        - title: Error
+          const: 1
+        - title: Warning
+          const: 2
+        - title: Information
+          const: 3
+        - title: Verbose
+          const: 4
+    frequency:
+      title: Frequency
+      description: The evaluation frequency of the alarms.
+      type: string
+      default: PT1M
+      oneOf:
+        - title: Every 1 minute
+          const: PT1M
+        - title: Every 5 minutes
+          const: PT5M
+        - title: Every 15 minutes
+          const: PT15M
+        - title: Every 30 minutes
+          const: PT30M
+        - title: Every 1 hour
+          const: PT1H
+    window_size:
+      title: Alarm window
+      description: The time range over which the alarm is evaluated.
+      type: string
+      default: PT5M
+      oneOf:
+        - title: Every 1 minute
+          const: PT1M
+        - title: Every 5 minutes
+          const: PT5M
+        - title: Every 15 minutes
+          const: PT15M
+        - title: Every 30 minutes
+          const: PT30M
+        - title: Every 1 hour
+          const: PT1H
+        - title: Every 6 hours
+          const: PT6H
+        - title: Every 12 hours
+          const: PT12H
+        - title: Every 24 hours
+          const: PT1D
+    aggregation:
+      title: Aggregation
+      description: The aggregation type of the alarm.
+      type: string
+      default: Average
+      enum:
+        - Average
+        - Count
+        - Minimum
+        - Maximum
+        - Total
+    operator:
+      title: Operator
+      description: The operator used to compare the metric value to the threshold.
+      type: string
+      default: GreaterThanOrEqual
+      oneOf:
+        - title: Greater than or equal to
+          const: GreaterThanOrEqual
+        - title: Greater than
+          const: GreaterThan
+        - title: Less than or equal to
+          const: LessThanOrEqual
+        - title: Less than
+          const: LessThan
+        - title: Equals
+          const: Equals
+        - title: Not equal to
+          const: NotEquals
+    threshold:
+      title: Threshold
+      description: The threshold value set to trigger the alarm. For a latency alarm, the threshold is the number of milliseconds. For a failure alarm, the threshold is the number of failures. For a performance alarm, the threshold is the percentage.
+      type: integer
 
 params:
   examples:
@@ -30,7 +132,16 @@ params:
     - application
     - docker
     - dns
+    - monitoring
   properties:
+    # As an example, uncomment the section below to add a parameter for the logging level of your application. See the app.envs section above for how to set environment values from application parameters.
+    # log_level:
+    #   type: string
+    #   title: Log Level
+    #   enum:
+    #     - info
+    #     - warn
+    #     - error
     application: 
       title: Application
       description: Application configuration
@@ -40,6 +151,7 @@ params:
         - sku_name
         - minimum_worker_count
         - maximum_worker_count
+        - health_check_path
       properties:
         cidr:
           title: Subnet CIDR
@@ -80,6 +192,36 @@ params:
           $md.immutable: true
           type: boolean
           default: false
+        health_check_path:
+          title: Health check path
+          description: The path to use for health checks. If not specified, the root path is used.
+          type: string
+          default: /health
+          pattern: ^\/.*$
+          message:
+            pattern: "Must start with /"
+        logs:
+          title: App logs
+          description: Configure logging for the function app.
+          type: object
+          required:
+            - retention_period_days
+            - disk_quota_mb
+          properties:
+            retention_period_days:
+              title: Retention period
+              description: The number of days to retain app logs. 0 means never delete.
+              type: integer
+              default: 7
+              minimum: 0
+              maximum: 9999
+            disk_quota_mb:
+              title: Storage space
+              description: The amount of disk space to use for logs in MB.
+              type: integer
+              default: 50
+              minimum: 25
+              maximum: 100
     docker:
       title: Docker Configuration
       type: object
@@ -138,6 +280,43 @@ params:
             - properties:
                 enable_dns:
                   const: false
+    monitoring:
+      type: object
+      title: Monitoring
+      properties:
+        mode:
+          title: Alarm Mode
+          description: Enable and customize Function App metric alarms.
+          type: string
+          default: AUTOMATED
+          oneOf:
+            - const: AUTOMATED
+              title: Automated
+            - const: CUSTOM
+              title: Custom
+            - const: DISABLED
+              title: Disabled
+      dependencies:
+        mode:
+          oneOf:
+            - properties:
+                mode:
+                  const: AUTOMATED
+            - properties:
+                mode:
+                  const: DISABLED
+            - properties:
+                mode:
+                  const: CUSTOM
+                alarms:
+                  type: object
+                  title: Alarms
+                  properties:
+                    latency_metric_alert:
+                      title: Latency
+                      description: Time between receiving an HTTP request and finishing sending the response.
+                      type: object
+                      <<: *monitor_alarm_metric
 
 connections:
   required:
@@ -162,6 +341,7 @@ ui:
     - application
     - docker
     - dns
+    - monitoring
     - "*"
   application:
     ui:order:
@@ -186,3 +366,19 @@ ui:
     zone_id:
       ui:field: dnsZonesDropdown
       cloud: azure
+  monitoring:
+    ui:order:
+      - mode
+      - alarms
+      - "*"
+    alarms:
+      ui:order:
+        - latency_metric_alert
+      latency_metric_alert:
+        ui:order:
+          - severity
+          - operator
+          - aggregation
+          - frequency
+          - window_size
+          - threshold
