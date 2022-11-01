@@ -9,11 +9,6 @@ app:
   envs:
     # Use jq expressions to build environment variables from input params or connections
     LOG_LEVEL: .params.log_level
-      # type: string
-      # enum:
-      #   - info
-      #   - warn
-      #   - error
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
