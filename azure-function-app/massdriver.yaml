@@ -194,7 +194,7 @@ params:
           default: false
         health_check_path:
           title: Health check path
-          description: The path to use for health checks. If not specified, the root path is used.
+          description: The path to use for app health checks.
           type: string
           default: /health
           pattern: ^\/.*$
