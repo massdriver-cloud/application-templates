@@ -1,5 +1,5 @@
 module "application_app_service" {
-  source             = "github.com/massdriver-cloud/terraform-modules//massdriver-application-azure-function-app?ref=c3e684d"
+  source             = "github.com/massdriver-cloud/terraform-modules//massdriver-application-azure-function-app?ref=c45bf63"
   name               = var.md_metadata.name_prefix
   application        = var.application
   docker             = var.docker
