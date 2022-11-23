@@ -7,3 +7,5 @@ node_modules/
 *.d.ts
 # cdk8s imported libraries
 **/imports/**
+# cdk8s generated files
+**/dist/*
