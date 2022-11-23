@@ -2,4 +2,8 @@ _params.auto.json
 _connections.auto.json
 _md_metadata.auto.json
 schema-*.json
-
+node_modules/
+# generated ts files
+*.d.ts
+# cdk8s imported libraries
+**/imports/**
