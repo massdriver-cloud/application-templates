@@ -2,13 +2,14 @@ import { getDeployment } from "./deployment";
 import { getIngress } from "./ingress";
 import { getService } from "./service";
 import { getServiceAccount } from "./service_account";
-import { getParams } from "./utils";
+import { getMetadata, getParams } from "./utils";
 
 const getApplicationStack = function(thisChart: any) {
   const params =  getParams();
+  const metadata  = getMetadata();
   const label = { app: params['name'] };
   const options = {
-    name: params['name'],
+    name: metadata.name_prefix,
     image: params['image'],
     label,
   }
