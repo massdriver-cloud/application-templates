@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import YAML from 'yaml';
 import {
@@ -7,8 +7,12 @@ import {
 
 function syncReadFile(filename: string) {
   const stepDir = process.cwd();
-  const result = readFileSync(join(stepDir, filename), 'utf-8');
-  return result;
+  return readFileSync(join(stepDir, filename), 'utf-8');
+}
+
+function syncWriteFile(filename: string, data: any) {
+  const stepDir = process.cwd();
+  return writeFileSync(join(stepDir, filename), data);
 }
 
 function getParams() {
@@ -26,10 +30,16 @@ function getMetadata() {
 function getMassdriverYAML() {
   return YAML.parse(syncReadFile(MASSDRIVER_FILE));
 }
+// TODO: make artifact type
+// TODO: generate from json schema?
+function writeArtifact(data: any) {
+  return syncWriteFile('artifact.json', data);
+}
 
 export {
   getMassdriverYAML,
   getParams,
   getConnections,
   getMetadata,
+  writeArtifact,
 };
