@@ -18,7 +18,9 @@
   "dependencies": {
     "cdk8s": "^2.5.49",
     "cdk8s-plus-25": "^2.0.31",
-    "constructs": "^10.1.164"
+    "constructs": "^10.1.164",
+    "node-jq": "^1.0.0",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",

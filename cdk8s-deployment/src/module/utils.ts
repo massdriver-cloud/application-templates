@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-
-const PARAMS_FILE = '_params.auto.json';
-const CONNECTIONS_FILE = '_connections.auto.json';
-const METADATA_FILE = '_md_metadata.auto.json';
+import YAML from 'yaml';
+import {
+  CONNECTIONS_FILE, MASSDRIVER_FILE, METADATA_FILE, PARAMS_FILE
+} from './contants';
 
 function syncReadFile(filename: string) {
   const stepDir = process.cwd();
@@ -23,7 +23,12 @@ function getMetadata() {
   return JSON.parse(syncReadFile(METADATA_FILE));
 }
 
+function getMassdriverYAML() {
+  return YAML.parse(syncReadFile(MASSDRIVER_FILE));
+}
+
 export {
+  getMassdriverYAML,
   getParams,
   getConnections,
   getMetadata,

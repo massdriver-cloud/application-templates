@@ -1,6 +1,9 @@
 import { KubeDeployment } from '../imports/k8s';
+import { getEnvs } from './envs';
 
 const getDeployment = function(thisChart: any, opts: any) {
+  const envs = getEnvs();
+
   return new KubeDeployment(thisChart, 'deployment', {
     metadata: {
       name: opts['name'] || 'no-name',
@@ -22,6 +25,7 @@ const getDeployment = function(thisChart: any, opts: any) {
           {
             image: opts['image'] || 'nginx',
             name: opts['name'] || 'deployment',
+            environment: envs,
           }
         ]
       }
