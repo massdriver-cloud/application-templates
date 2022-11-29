@@ -324,6 +324,7 @@ ui:
     - image
     - network
     - dns
+    - monitoring
     - "*"
   application:
     ui:order:
