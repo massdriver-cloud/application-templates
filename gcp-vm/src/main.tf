@@ -12,4 +12,3 @@ module "application" {
     path = "/"
   }
 }
-
