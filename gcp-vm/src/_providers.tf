@@ -44,4 +44,3 @@ provider "mdxc" {
     credentials = local.gcp_credentials
   }
 }
-

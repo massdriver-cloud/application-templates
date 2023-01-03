@@ -138,7 +138,7 @@ params:
     #     - info
     #     - warn
     #     - error
-    application: 
+    application:
       title: Application
       description: Application configuration
       type: object

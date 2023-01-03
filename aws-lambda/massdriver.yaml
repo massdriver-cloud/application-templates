@@ -10,7 +10,7 @@ params:
     - region
   properties:
     region:
-      title: AWS Region 
+      title: AWS Region
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
     runtime:
       type: object
