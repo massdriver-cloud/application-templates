@@ -130,7 +130,7 @@ params:
     - dns
     - monitoring
   properties:
-    application: 
+    application:
       title: Application
       description: Application configuration
       type: object
