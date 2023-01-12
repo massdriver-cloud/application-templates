@@ -153,13 +153,29 @@ params:
           description: Azure App Service Plan size
           type: string
           oneOf:
-            - title: 1 vCPU, 1.75GB RAM
+            - title: 1 vCPU, 1.75GB RAM, scales up to 3 instances
+              const: B1
+            - title: 2 vCPU, 3.5GB RAM, scales up to 3 instances
+              const: B2
+            - title: 4 vCPU, 7GB RAM, scales up to 3 instances
+              const: B3
+            - title: 1 vCPU, 1.75GB RAM, scales up to 10 instances
               const: S1
-            - title: 2 vCPU 8GB RAM
+            - title: 2 vCPU, 3.5GB RAM, scales up to 10 instances
+              const: S2
+            - title: 4 vCPU, 7GB RAM, scales up to 10 instances
+              const: S3
+            - title: 1 vCPU, 3.5GB RAM, scales up to 20 instances
+              const: P1v2
+            - title: 2 vCPU, 7GB RAM, scales up to 20 instances
+              const: P2v2
+            - title: 4 vCPU, 14GB RAM, scales up to 20 instances
+              const: P3v2
+            - title: 2 vCPU 8GB RAM, scales up to 30 instances
               const: P1v3
-            - title: 4 vCPU 16GB RAM
+            - title: 4 vCPU 16GB RAM, scales up to 30 instances
               const: P2v3
-            - title: 8 vCPU 32GB RAM
+            - title: 8 vCPU 32GB RAM, scales up to 30 instances
               const: P3v3
         minimum_worker_count:
           title: Minimum instances
