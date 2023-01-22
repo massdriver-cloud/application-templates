@@ -2,24 +2,35 @@
 
 <md .Description md>
 
-An example application using this template can be found [here](https://github.com/massdriver-cloud/application-examples/tree/main/k8s/rails-spree).
-
 ## Massdriver `rails-kubernetes` Template
 
-The `rails-kubernetes` template will run your Rails application on Kubernets. Supports AWS EKS, GCP GKE, or Azure AKS, bare metal Kubernetes or managed Kubernetes.
+This application bundle was generated from [rails-kubernetes](https://github.com/massdriver-cloud/application-templates/tree/main/rails-kubernetes). An example application using this template can be found [here](https://github.com/massdriver-cloud/application-examples/tree/main/k8s/rails-spree).
 
-**Files**:
+The `rails-kubernetes` template will run your Rails application on Kubernetes. This template supports AWS EKS, GCP GKE, Azure AKS, bare metal Kubernetes and managed Kubernetes.
 
-* [`massdriver.yaml`](./massdriver.yaml) controls the UI to expose for configuring your application and its dependencies. By default there are a lot of fields in your [`params`](https://docs.massdriver.cloud/bundles/configuration#bundle-params) section, feel free to remove fields that you do not want exposed in your configuration form in Massdriver Cloud. Values that you do not want to change (e.g.: your image repository) can be hard coded in the [values.yaml](./src/chart/values.yaml) file.
+### Files
 
+**`massdriver.yaml`](./massdriver.yaml)**
 
-* [helm chart](./src/chart) has been created to run a kubernetes deployment. This Helm chart is a great getting started point for deploying to Kubernetes. Feel free to modify the chart to customize your application deployment.
+This file controls the UI to expose for configuring your application and its dependencies. By default there are a lot of fields in your [`params`](https://docs.massdriver.cloud/bundles/configuration#bundle-params) section, feel free to remove fields that you do not want exposed in your configuration form in Massdriver Cloud. Values that you do not want to change (e.g.: your image repository) can be hard coded in the [values.yaml](./src/chart/values.yaml) file.
 
-  * great place to set constants that you dont want to expose through `params`.
+**[helm chart](./src/chart)**
 
-* [terraform module](./src) handles integrations with Massdriver Cloud. Parses `massdriver.yaml`. Create IAM application identity through your clouds k8s implementation, binds IAM policies...
+This Helm chart is a great getting started point for deploying to Kubernetes. We recommend modifying the chart to customize your application deployment as needed.
 
-## Notes:
+**[helm chart](./src/chart/values.yaml)**
 
-* image ... would recommend hard coding or using the drop down
-* migrations as helm hooks, backwards compat migrations
+This file contains hard coded defaults for your chart. We recommend moving values from your `params` section here if you _do not_ plan to expose those values in the Massdriver UI
+
+**[terraform module](./src)**
+
+`src` contains a terraform module that handles integration with Massdriver Cloud.
+
+This parses `massdriver.yaml` to determine IAM policies to bind, environment variables to set, and secrets to fetch from our secret store. This module also creates a _"role"_ for your application in your cloud to bind any IAM policies to.
+
+We **do not** recommend modifying this file.
+
+## Notes
+
+* `image` is included in the `massdriver.yaml` for convenience. We recommend hard coding this in `values.yaml` if your container image doesn't change from deployment to deployment.
+* Rails migrations are implemented as helm hooks and run on each apply. Since the old and new version of your application is running, backwards compatible migrations are recommended
