@@ -1,0 +1,50 @@
+image:
+  repository:
+  tag:
+
+command: ["./entrypoint.sh"]
+args: ["bundle", "exec", "rails", "server"]
+
+envs: []
+port:
+
+serviceAccount:
+  annotations: {}
+  name:
+
+resourceRequests: {}
+resourceLimits: {}
+
+replicas:
+  autoscalingEnabled: false
+  replicaCount:
+  minReplicas:
+  maxReplicas:
+  targetCPUUtilizationPercentage:
+
+ingress:
+  annotations: {}
+  enabled: true
+  className:
+  host:
+  path:
+
+commonLabels: {}
+
+pod:
+  annotations: {}
+
+migration:
+  command: ["bash", "-c"]
+  args:
+    [
+      "bundle",
+      "exec",
+      "rails",
+      "db:create",
+      "&&",
+      "bundle",
+      "exec",
+      "rails",
+      "db:migrate",
+    ]
