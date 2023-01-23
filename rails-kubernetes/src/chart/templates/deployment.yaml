@@ -20,23 +20,22 @@ spec:
       labels:
         {{- include "application.labels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "application.fullname" . }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "application.fullname" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ include "application.fullname" . }}
-          {{- with .Values.securityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: {{ include "application.fullname" . }}
           {{- with .Values.command }}
           command:
             {{- toYaml . | nindent 12 }}
@@ -45,14 +44,14 @@ spec:
           args:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.envs }}
-          env:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           {{- if .Values.port }}
           ports:
             - containerPort: {{ .Values.port }}
               protocol: TCP
+          {{- end }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:

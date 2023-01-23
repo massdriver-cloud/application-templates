@@ -6,19 +6,21 @@ access: private
 type: application
 
 app:
+  ### Use jq expressions to build environment variables from input params or connections
   envs:
-    ### Use jq expressions to build environment variables from input params or connections
+    ### Redis Connection String
+    # REDIS_URL: '@test "rediss://" + .connections.redis.data.authentication.password + "@" + .connections.redis.data.authentication.hostname + ":" + (.connections.redis.data.authentication.port|tostring)'
+    #
+    ### Postgres Connection String
+    # DATABASE_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+    #
+    ### MySQL Connection String
+    # DATABASE_URL: '@text "mysql2://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+    #
     LOG_LEVEL: .params.log_level
     PORT: .params.port | tostring
     RAILS_ENV: .params.rails_env
-    # RAILS_CACHE_ID: .params.md_metadata.package.deployment_enqueued_at
-    # RAILS_APP_VERSION: .params.md_metadata.package.deployment_enqueued_at
-    ### Redis Connection String
-    # REDIS_URL: '@test "rediss://" + .connections.redis.data.authentication.password + "@" + .connections.redis.data.authentication.hostname + ":" + (.connections.redis.data.authentication.port|tostring)'
-    ### Postgres Connection String
-    # DATABASE_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
-    ### MySQL Connection String
-    # DATABASE_URL: '@text "mysql2://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+  ### Secrets will present a UI form and API endpoint for configuring 3rd party secrets.
   secrets:
     SECRET_KEY_BASE:
       title: Secret Key Base
@@ -26,9 +28,10 @@ app:
     RAILS_MASTER_KEY:
       title: Rails Master Key
       required: false
+  ### Use jq expressions to select policies from artifact security blocks
+  # Example: - .connections.sqs.data.security.iam.subscribe
   policies: []
-    ### Use jq expressions to select policies from artifact security blocks
-    # - .connections.sqs.data.security.iam.subscribe
+
 
 params:
   examples:
