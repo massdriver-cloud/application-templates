@@ -111,7 +111,6 @@ MonitorAlarmMetric: &monitor_alarm_metric
       description: The threshold value set to trigger the alarm. For a latency alarm, the threshold is the number of milliseconds. For a failure alarm, the threshold is the number of failures. For a performance alarm, the threshold is the percentage.
       type: integer
 
-
 params:
   examples:
     - __name: Development
@@ -204,11 +203,24 @@ params:
               maximum: 100
     docker:
       title: Container Configuration
-      description: "Set the tag for the `karthequian/helloworld` image"
+      description: "Set the tag for the image"
       type: object
       required:
+      - registry
+      - image
       - tag
       properties:
+        registry:
+          $md.immutable: true
+          title: Docker registry
+          # Massdriver automatically configures your app service to have access to your cloud container repositories.
+          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
+          description: Docker registry to use for this application.
+          type: string
+        image:
+          title: Docker image
+          description: Docker image to use for this application.
+          type: string
         tag:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
@@ -248,6 +260,43 @@ params:
             - properties:
                 enable_dns:
                   const: false
+    monitoring:
+      type: object
+      title: Monitoring
+      properties:
+        mode:
+          title: Alarm Mode
+          description: Enable and customize Function App metric alarms.
+          type: string
+          default: AUTOMATED
+          oneOf:
+            - const: AUTOMATED
+              title: Automated
+            - const: CUSTOM
+              title: Custom
+            - const: DISABLED
+              title: Disabled
+      dependencies:
+        mode:
+          oneOf:
+            - properties:
+                mode:
+                  const: AUTOMATED
+            - properties:
+                mode:
+                  const: DISABLED
+            - properties:
+                mode:
+                  const: CUSTOM
+                alarms:
+                  type: object
+                  title: Alarms
+                  properties:
+                    latency_metric_alert:
+                      title: Latency
+                      description: Time between receiving an HTTP request and finishing sending the response.
+                      type: object
+                      <<: *monitor_alarm_metric
 
 connections:
   required:
@@ -283,6 +332,7 @@ ui:
     - application
     - docker
     - dns
+    - monitoring
     - "*"
   application:
     ui:order:
@@ -304,3 +354,19 @@ ui:
     zone_id:
       ui:field: dnsZonesDropdown
       cloud: azure
+    monitoring:
+    ui:order:
+      - mode
+      - alarms
+      - "*"
+  alarms:
+    ui:order:
+      - latency_metric_alert
+    latency_metric_alert:
+      ui:order:
+        - severity
+        - operator
+        - aggregation
+        - frequency
+        - window_size
+        - threshold
