@@ -348,19 +348,25 @@ ui:
     zone_id:
       ui:field: dnsZonesDropdown
       cloud: azure
-    monitoring:
+  monitoring:
     ui:order:
       - mode
       - alarms
       - "*"
-  alarms:
-    ui:order:
-      - latency_metric_alert
-    latency_metric_alert:
+    alarms:
       ui:order:
-        - severity
-        - operator
-        - aggregation
-        - frequency
-        - window_size
-        - threshold
+        - response_metric_alert
+        - http_4xx_metric_alert
+        - http_5xx_metric_alert
+      response_metric_alert: &monitor_alarm_metric_ui
+        ui:order:
+          - severity
+          - operator
+          - aggregation
+          - frequency
+          - window_size
+          - threshold
+      http_4xx_metric_alert:
+        <<: *monitor_alarm_metric_ui
+      http_5xx_metric_alert:
+        <<: *monitor_alarm_metric_ui
