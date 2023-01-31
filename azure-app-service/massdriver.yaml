@@ -295,12 +295,6 @@ artifacts:
       $ref: massdriver/api
 
 ui:
-  ## If you need to allow an end user to select the container repository at deploy time, our smart widget can be used.
-  ## Additional documentation here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
-  # image:
-  #   repository:
-  #     ui:field: "containerRepositoriesDropdown"
-  #     cloud: "aws"
   ui:order:
     - application
     - image
