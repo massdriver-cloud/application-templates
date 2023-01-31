@@ -171,7 +171,14 @@ params:
     #     log_level:
     #       title: Log Level
     #       type: string
-
+    location:
+      type: string
+      title: Location
+      description: Azure-only, the location to create an identity in.
+    resource_group_name:
+      type: string
+      title: Resource Group Name
+      description: Azure-only, the Resource Group to create an identity in.
 
 connections:
   required:
