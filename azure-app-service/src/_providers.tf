@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     mdxc = {
-      source = "massdriver-cloud/mdxc"
+      source  = "massdriver-cloud/mdxc"
       version = ">= 0.10.3"
     }
 
@@ -30,7 +30,7 @@ provider "mdxc" {
 
 provider "azurerm" {
   features {
-     resource_group {
+    resource_group {
       prevent_deletion_if_contains_resources = false
     }
   }
