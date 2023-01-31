@@ -14,103 +14,6 @@ app:
     # Use jq expressions to select policies from artifact security blocks
     # - .connections.sqs.data.security.iam.subscribe
 
-MonitorAlarmMetric: &monitor_alarm_metric
-  required:
-    - severity
-    - frequency
-    - window_size
-    - aggregation
-    - operator
-    - threshold
-  properties:
-    severity:
-      title: Severity
-      description: The severity of the alarm.
-      type: integer
-      default: 1
-      oneOf:
-        - title: Critical
-          const: 0
-        - title: Error
-          const: 1
-        - title: Warning
-          const: 2
-        - title: Information
-          const: 3
-        - title: Verbose
-          const: 4
-    frequency:
-      title: Frequency
-      description: The evaluation frequency of the alarms.
-      type: string
-      default: PT1M
-      oneOf:
-        - title: Every 1 minute
-          const: PT1M
-        - title: Every 5 minutes
-          const: PT5M
-        - title: Every 15 minutes
-          const: PT15M
-        - title: Every 30 minutes
-          const: PT30M
-        - title: Every 1 hour
-          const: PT1H
-    window_size:
-      title: Alarm window
-      description: The time range over which the alarm is evaluated.
-      type: string
-      default: PT5M
-      oneOf:
-        - title: Every 1 minute
-          const: PT1M
-        - title: Every 5 minutes
-          const: PT5M
-        - title: Every 15 minutes
-          const: PT15M
-        - title: Every 30 minutes
-          const: PT30M
-        - title: Every 1 hour
-          const: PT1H
-        - title: Every 6 hours
-          const: PT6H
-        - title: Every 12 hours
-          const: PT12H
-        - title: Every 24 hours
-          const: PT1D
-    aggregation:
-      title: Aggregation
-      description: The aggregation type of the alarm.
-      type: string
-      default: Average
-      enum:
-        - Average
-        - Count
-        - Minimum
-        - Maximum
-        - Total
-    operator:
-      title: Operator
-      description: The operator used to compare the metric value to the threshold.
-      type: string
-      default: GreaterThanOrEqual
-      oneOf:
-        - title: Greater than or equal to
-          const: GreaterThanOrEqual
-        - title: Greater than
-          const: GreaterThan
-        - title: Less than or equal to
-          const: LessThanOrEqual
-        - title: Less than
-          const: LessThan
-        - title: Equals
-          const: Equals
-        - title: Not equal to
-          const: NotEquals
-    threshold:
-      title: Threshold
-      description: The threshold value set to trigger the alarm. For a response alarm, the threshold is the number of seconds. For the HTTP error alarms, the threshold is the number of HTTP errors.
-      type: integer
-
 params:
   examples:
     - __name: Development
@@ -126,9 +29,7 @@ params:
   required:
     - application
     - image
-    - network
     - dns
-    - monitoring
   properties:
     application:
       title: Application
@@ -144,29 +45,13 @@ params:
           description: Azure App Service Plan size
           type: string
           oneOf:
-            - title: 1 vCPU, 1.75GB RAM, scales up to 3 instances
-              const: B1
-            - title: 2 vCPU, 3.5GB RAM, scales up to 3 instances
-              const: B2
-            - title: 4 vCPU, 7GB RAM, scales up to 3 instances
-              const: B3
-            - title: 1 vCPU, 1.75GB RAM, scales up to 10 instances
+            - title: 1 vCPU, 1.75GB RAM
               const: S1
-            - title: 2 vCPU, 3.5GB RAM, scales up to 10 instances
-              const: S2
-            - title: 4 vCPU, 7GB RAM, scales up to 10 instances
-              const: S3
-            - title: 1 vCPU, 3.5GB RAM, scales up to 20 instances
-              const: P1v2
-            - title: 2 vCPU, 7GB RAM, scales up to 20 instances
-              const: P2v2
-            - title: 4 vCPU, 14GB RAM, scales up to 20 instances
-              const: P3v2
-            - title: 2 vCPU 8GB RAM, scales up to 30 instances
+            - title: 2 vCPU 8GB RAM
               const: P1v3
-            - title: 4 vCPU 16GB RAM, scales up to 30 instances
+            - title: 4 vCPU 16GB RAM
               const: P2v3
-            - title: 8 vCPU 32GB RAM, scales up to 30 instances
+            - title: 8 vCPU 32GB RAM
               const: P3v3
         minimum_worker_count:
           title: Minimum instances
@@ -190,49 +75,12 @@ params:
       title: Container Image
       type: object
       required:
-      - repository
       - tag
       properties:
-        repository:
-          $md.immutable: true
-          title: Repository
-          # Massdriver automatically configures your app service to have access to your cloud container repositories.
-          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
-          description: Container repository to use for this application.
-          type: string
         tag:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
           default: latest
-    network:
-      type: object
-      title: Networking
-      properties:
-        auto:
-          title: Automatic CIDR Selection
-          type: boolean
-          description: Enabling this will automatically select an available CIDR range for your database. Unchecking will require you to specify the CIDR.
-          default: true
-          $md.immutable: true
-      dependencies:
-        auto:
-          oneOf:
-          - properties:
-              auto:
-                const: true
-          - properties:
-              auto:
-                const: false
-              cidr:
-                title: Subnet CIDR
-                type: string
-                description: Specify a /24 CIDR range within your vnet to create subnet for the database. The subnet CIDR cannot be changed after creation.
-                $md.immutable: true
-                pattern: ^(?:10\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])|172\.(?:1[6-9]|2[0-9]|3[0-1])|192\.168)(?:\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){2}\/24$
-                message:
-                  pattern: "Must be a /24 range from within the VNet CIDR"
-            required:
-            - cidr
     dns:
       title: DNS
       description: DNS configuration
@@ -268,53 +116,6 @@ params:
             - properties:
                 enable_dns:
                   const: false
-    monitoring:
-      type: object
-      title: Monitoring
-      properties:
-        mode:
-          title: Alarm Mode
-          description: Enable and customize Function App metric alarms.
-          type: string
-          default: AUTOMATED
-          oneOf:
-            - const: AUTOMATED
-              title: Automated
-            - const: CUSTOM
-              title: Custom
-            - const: DISABLED
-              title: Disabled
-      dependencies:
-        mode:
-          oneOf:
-            - properties:
-                mode:
-                  const: AUTOMATED
-            - properties:
-                mode:
-                  const: DISABLED
-            - properties:
-                mode:
-                  const: CUSTOM
-                alarms:
-                  type: object
-                  title: Alarms
-                  properties:
-                    response_metric_alert:
-                      title: Response time
-                      description: Time between receiving an HTTP request and finishing sending the response.
-                      type: object
-                      <<: *monitor_alarm_metric
-                    http_4xx_metric_alert:
-                      title: HTTP 4xx errors
-                      description: Number of HTTP 4xx errors.
-                      type: object
-                      <<: *monitor_alarm_metric
-                    http_5xx_metric_alert:
-                      title: HTTP 5xx errors
-                      description: Number of HTTP 5xx errors.
-                      type: object
-                      <<: *monitor_alarm_metric
 
 connections:
   required:
@@ -333,13 +134,24 @@ connections:
       $ref: <md $art md>
   <md- end md>
 
+
+artifacts:
+  required: []
+  properties:
+    endpoint:
+      $ref: massdriver/api
+
 ui:
+  ## If you need to allow an end user to select the container repository at deploy time, our smart widget can be used.
+  ## Additional documentation here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+  # image:
+  #   repository:
+  #     ui:field: "containerRepositoriesDropdown"
+  #     cloud: "aws"
   ui:order:
     - application
     - image
-    - network
     - dns
-    - monitoring
     - "*"
   application:
     ui:order:
@@ -354,11 +166,7 @@ ui:
       - repository
       - tag
       - "*"
-  network:
-    ui:order:
-      - auto
-      - cidr
-      - "*"
+
   dns:
     ui:order:
       - enable_dns
@@ -368,25 +176,3 @@ ui:
     zone_id:
       ui:field: dnsZonesDropdown
       cloud: azure
-  monitoring:
-    ui:order:
-      - mode
-      - alarms
-      - "*"
-    alarms:
-      ui:order:
-        - response_metric_alert
-        - http_4xx_metric_alert
-        - http_5xx_metric_alert
-      response_metric_alert: &monitor_alarm_metric_ui
-        ui:order:
-          - severity
-          - operator
-          - aggregation
-          - frequency
-          - window_size
-          - threshold
-      http_4xx_metric_alert:
-        <<: *monitor_alarm_metric_ui
-      http_5xx_metric_alert:
-        <<: *monitor_alarm_metric_ui

@@ -111,6 +111,7 @@ MonitorAlarmMetric: &monitor_alarm_metric
       description: The threshold value set to trigger the alarm. For a latency alarm, the threshold is the number of milliseconds. For a failure alarm, the threshold is the number of failures. For a performance alarm, the threshold is the percentage.
       type: integer
 
+
 params:
   examples:
     - __name: Development
@@ -126,18 +127,8 @@ params:
   required:
     - application
     - docker
-    - network
     - dns
-    - monitoring
   properties:
-    # As an example, uncomment the section below to add a parameter for the logging level of your application. See the app.envs section above for how to set environment values from application parameters.
-    # log_level:
-    #   type: string
-    #   title: Log Level
-    #   enum:
-    #     - info
-    #     - warn
-    #     - error
     application:
       title: Application
       description: Application configuration
@@ -146,7 +137,9 @@ params:
         - sku_name
         - minimum_worker_count
         - maximum_worker_count
+        - zone_balancing
         - health_check_path
+        - logs
       properties:
         sku_name:
           title: Size
@@ -210,57 +203,16 @@ params:
               minimum: 25
               maximum: 100
     docker:
-      title: Docker Configuration
+      title: Container Configuration
+      description: "Set the tag for the `karthequian/helloworld` image"
       type: object
       required:
-      - registry
-      - image
       - tag
       properties:
-        registry:
-          $md.immutable: true
-          title: Docker registry
-          # Massdriver automatically configures your app service to have access to your cloud container repositories.
-          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
-          description: Docker registry to use for this application.
-          type: string
-        image:
-          title: Docker image
-          description: Docker image to use for this application.
-          type: string
         tag:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
           default: latest
-    network:
-      type: object
-      title: Networking
-      properties:
-        auto:
-          title: Automatic CIDR Selection
-          type: boolean
-          description: Enabling this will automatically select an available CIDR range for your database. Unchecking will require you to specify the CIDR.
-          default: true
-          $md.immutable: true
-      dependencies:
-        auto:
-          oneOf:
-          - properties:
-              auto:
-                const: true
-          - properties:
-              auto:
-                const: false
-              cidr:
-                title: Subnet CIDR
-                type: string
-                description: Specify a /24 CIDR range within your vnet to create subnet for the database. The subnet CIDR cannot be changed after creation.
-                $md.immutable: true
-                pattern: ^(?:10\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])|172\.(?:1[6-9]|2[0-9]|3[0-1])|192\.168)(?:\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){2}\/24$
-                message:
-                  pattern: "Must be a /24 range from within the VNet CIDR"
-            required:
-            - cidr
     dns:
       title: DNS
       description: DNS configuration
@@ -296,43 +248,6 @@ params:
             - properties:
                 enable_dns:
                   const: false
-    monitoring:
-      type: object
-      title: Monitoring
-      properties:
-        mode:
-          title: Alarm Mode
-          description: Enable and customize Function App metric alarms.
-          type: string
-          default: AUTOMATED
-          oneOf:
-            - const: AUTOMATED
-              title: Automated
-            - const: CUSTOM
-              title: Custom
-            - const: DISABLED
-              title: Disabled
-      dependencies:
-        mode:
-          oneOf:
-            - properties:
-                mode:
-                  const: AUTOMATED
-            - properties:
-                mode:
-                  const: DISABLED
-            - properties:
-                mode:
-                  const: CUSTOM
-                alarms:
-                  type: object
-                  title: Alarms
-                  properties:
-                    latency_metric_alert:
-                      title: Latency
-                      description: Time between receiving an HTTP request and finishing sending the response.
-                      type: object
-                      <<: *monitor_alarm_metric
 
 connections:
   required:
@@ -351,13 +266,23 @@ connections:
       $ref: <md $art md>
   <md- end md>
 
+artifacts:
+  required: []
+  properties:
+    endpoint:
+      $ref: massdriver/api
+
 ui:
+  ## If you need to allow an end user to select the container repository at deploy time, our smart widget can be used.
+  ## Additional documentation here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+  # image:
+  #   repository:
+  #     ui:field: "containerRepositoriesDropdown"
+  #     cloud: "aws"
   ui:order:
     - application
     - docker
-    - network
     - dns
-    - monitoring
     - "*"
   application:
     ui:order:
@@ -368,14 +293,7 @@ ui:
       - "*"
   docker:
     ui:order:
-      - registry
-      - image
       - tag
-      - "*"
-  network:
-    ui:order:
-      - auto
-      - cidr
       - "*"
   dns:
     ui:order:
@@ -386,19 +304,3 @@ ui:
     zone_id:
       ui:field: dnsZonesDropdown
       cloud: azure
-  monitoring:
-    ui:order:
-      - mode
-      - alarms
-      - "*"
-    alarms:
-      ui:order:
-        - latency_metric_alert
-      latency_metric_alert:
-        ui:order:
-          - severity
-          - operator
-          - aggregation
-          - frequency
-          - window_size
-          - threshold
