@@ -1,12 +1,9 @@
 module "application" {
-  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-azure-function-app?ref=4ad6aaf"
+  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-azure-function-app?ref=b4401ac"
   name        = var.md_metadata.name_prefix
   tags        = var.md_metadata.default_tags
   application = var.application
-  docker = merge(var.docker, {
-    registry = "massdrivercentralus.azurecr.io"
-    image    = "storage/bloby"
-  })
+  docker = var.docker
   network = {
     auto = true
   }
