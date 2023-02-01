@@ -30,7 +30,8 @@ This parses `massdriver.yaml` to determine IAM policies to bind, environment var
 
 We **do not** recommend modifying this file.
 
+
 ## Notes
 
 * `image` is included in the `massdriver.yaml` for convenience. We recommend hard coding this in `values.yaml` if your container image doesn't change from deployment to deployment.
-* Rails migrations are implemented as helm hooks and run on each apply. Since the old and new version of your application is running, backwards compatible migrations are recommended
+* Rails migrations are implemented as kubernetes jobs using the _Helm Release_ as a suffix and run on each apply. Since the old and new version of your application is running, backwards compatible migrations are recommendedl
