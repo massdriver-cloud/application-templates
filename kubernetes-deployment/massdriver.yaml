@@ -57,20 +57,6 @@ params:
       type: array
       items:
         type: string
-    additionalEnvs:
-      title: Environment Variables
-      description: "List of environment variables to set in the application runtime. Note: Environment variables from connections should be programmatically set in the application configuration file. See https://docs.massdriver.cloud/applications/getting-started#environment-variable-examples"
-      type: array
-      default: []
-      items:
-        type: object
-        properties:
-          name:
-            title: Name
-            type: string
-          value:
-            title: Value
-            type: string
     resourceRequests:
       title: Resources
       type: object
@@ -213,7 +199,6 @@ ui:
     - image
     - command
     - args
-    - additionalEnvs
     - resourceRequests
     - replicas
     - port
@@ -223,10 +208,6 @@ ui:
     memory:
       ui:field: conversionFieldData
       unit: Bytes
-  additionalEnvs:
-    ui:order:
-      - name
-      - value
   replicas:
     ui:order:
       - autoscalingEnabled

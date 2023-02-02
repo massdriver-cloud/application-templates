@@ -126,7 +126,6 @@ params:
   required:
     - application
     - image
-    - network
     - dns
     - monitoring
   properties:
@@ -188,35 +187,6 @@ params:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
           default: latest
-    network:
-      type: object
-      title: Networking
-      properties:
-        auto:
-          title: Automatic CIDR Selection
-          type: boolean
-          description: Enabling this will automatically select an available CIDR range for your database. Unchecking will require you to specify the CIDR.
-          default: true
-          $md.immutable: true
-      dependencies:
-        auto:
-          oneOf:
-          - properties:
-              auto:
-                const: true
-          - properties:
-              auto:
-                const: false
-              cidr:
-                title: Subnet CIDR
-                type: string
-                description: Specify a /24 CIDR range within your vnet to create subnet for the database. The subnet CIDR cannot be changed after creation.
-                $md.immutable: true
-                pattern: ^(?:10\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])|172\.(?:1[6-9]|2[0-9]|3[0-1])|192\.168)(?:\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){2}\/24$
-                message:
-                  pattern: "Must be a /24 range from within the VNet CIDR"
-            required:
-            - cidr
     dns:
       title: DNS
       description: DNS configuration
@@ -317,11 +287,17 @@ connections:
       $ref: <md $art md>
   <md- end md>
 
+
+artifacts:
+  required: []
+  properties:
+    endpoint:
+      $ref: massdriver/api
+
 ui:
   ui:order:
     - application
     - image
-    - network
     - dns
     - monitoring
     - "*"
@@ -337,11 +313,6 @@ ui:
     ui:order:
       - repository
       - tag
-      - "*"
-  network:
-    ui:order:
-      - auto
-      - cidr
       - "*"
   dns:
     ui:order:

@@ -126,18 +126,8 @@ params:
   required:
     - application
     - docker
-    - network
     - dns
-    - monitoring
   properties:
-    # As an example, uncomment the section below to add a parameter for the logging level of your application. See the app.envs section above for how to set environment values from application parameters.
-    # log_level:
-    #   type: string
-    #   title: Log Level
-    #   enum:
-    #     - info
-    #     - warn
-    #     - error
     application:
       title: Application
       description: Application configuration
@@ -146,7 +136,9 @@ params:
         - sku_name
         - minimum_worker_count
         - maximum_worker_count
+        - zone_balancing
         - health_check_path
+        - logs
       properties:
         sku_name:
           title: Size
@@ -210,7 +202,8 @@ params:
               minimum: 25
               maximum: 100
     docker:
-      title: Docker Configuration
+      title: Container Configuration
+      description: "Set the tag for the image"
       type: object
       required:
       - registry
@@ -232,35 +225,6 @@ params:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
           default: latest
-    network:
-      type: object
-      title: Networking
-      properties:
-        auto:
-          title: Automatic CIDR Selection
-          type: boolean
-          description: Enabling this will automatically select an available CIDR range for your database. Unchecking will require you to specify the CIDR.
-          default: true
-          $md.immutable: true
-      dependencies:
-        auto:
-          oneOf:
-          - properties:
-              auto:
-                const: true
-          - properties:
-              auto:
-                const: false
-              cidr:
-                title: Subnet CIDR
-                type: string
-                description: Specify a /24 CIDR range within your vnet to create subnet for the database. The subnet CIDR cannot be changed after creation.
-                $md.immutable: true
-                pattern: ^(?:10\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])|172\.(?:1[6-9]|2[0-9]|3[0-1])|192\.168)(?:\.(?:[0-9]|[0-9]{2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){2}\/24$
-                message:
-                  pattern: "Must be a /24 range from within the VNet CIDR"
-            required:
-            - cidr
     dns:
       title: DNS
       description: DNS configuration
@@ -351,11 +315,16 @@ connections:
       $ref: <md $art md>
   <md- end md>
 
+artifacts:
+  required: []
+  properties:
+    endpoint:
+      $ref: massdriver/api
+
 ui:
   ui:order:
     - application
     - docker
-    - network
     - dns
     - monitoring
     - "*"
@@ -368,14 +337,7 @@ ui:
       - "*"
   docker:
     ui:order:
-      - registry
-      - image
       - tag
-      - "*"
-  network:
-    ui:order:
-      - auto
-      - cidr
       - "*"
   dns:
     ui:order:
@@ -393,8 +355,10 @@ ui:
       - "*"
     alarms:
       ui:order:
-        - latency_metric_alert
-      latency_metric_alert:
+        - response_metric_alert
+        - http_4xx_metric_alert
+        - http_5xx_metric_alert
+      response_metric_alert: &monitor_alarm_metric_ui
         ui:order:
           - severity
           - operator
@@ -402,3 +366,7 @@ ui:
           - frequency
           - window_size
           - threshold
+      http_4xx_metric_alert:
+        <<: *monitor_alarm_metric_ui
+      http_5xx_metric_alert:
+        <<: *monitor_alarm_metric_ui
