@@ -4,7 +4,7 @@ module "helm" {
   namespace          = var.namespace
   chart              = "ruby-on-rails"
   helm_repository    = "https://massdriver-cloud.github.io/helm-charts/"
-  helm_version       = "0.0.6"
+  helm_version       = "0.1.0"
   kubernetes_cluster = var.kubernetes_cluster
   additional_envs    = []
 }
