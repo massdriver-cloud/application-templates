@@ -3,7 +3,7 @@ module "application" {
   name        = var.md_metadata.name_prefix
   tags = var.md_metadata.default_tags
   virtual_network_id = var.azure_virtual_network.data.infrastructure.id
-  location           = var.location
+  location           = var.azure_virtual_network.specs.azure.region
   dns = var.dns
   container = var.container
   # auto_scaling = {

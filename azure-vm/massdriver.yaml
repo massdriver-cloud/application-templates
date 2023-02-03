@@ -21,15 +21,10 @@ params:
         enabled: true
         subdomain: api
   required:
-    - location
     - container
     - max_instances
     - dns
   properties:
-    location:
-      title: Region
-      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/azure-region.json
-      $md.immutable: true
     log_level:
       type: string
       title: Log Level
