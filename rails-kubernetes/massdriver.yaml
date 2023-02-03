@@ -32,7 +32,6 @@ app:
   # Example: - .connections.sqs.data.security.iam.subscribe
   policies: []
 
-
 params:
   examples:
   - __name: Development
@@ -210,6 +209,7 @@ params:
       description: Application will be deployed into this namespace. If the namespace doesn't exist, it will be created.
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/k8s-resource-name.json
       default: default
+
 connections:
   required:
     - kubernetes_cluster
@@ -229,6 +229,19 @@ connections:
     <md $key md>:
       $ref: <md $art md>
   <md- end md>
+
+#########
+### Uncomment below to enable producing artifacts for your web service.
+### You only need to uncomment the following if you intend to connect your internal services in Massdriver.
+### You will also need to uncomment the contents of `src/_artifacts.tf`.
+#########
+#
+# artifacts:
+#   required:
+#     - api
+#   properties:
+#     api:
+#       $ref: massdriver/api
 
 ui:
   ui:order: [image, rails_env, database_name, port, log_level, ingress, resourceRequests, replicas, namespace]
