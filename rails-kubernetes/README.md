@@ -12,7 +12,7 @@ The `rails-kubernetes` template will run your Rails application on Kubernetes. T
 
 ### Files
 
-**`massdriver.yaml`](./massdriver.yaml)**
+**[`massdriver.yaml`](./massdriver.yaml)**
 
 This file controls the UI to expose for configuring your application and its dependencies. By default there are a lot of fields in your [`params`](https://docs.massdriver.cloud/bundles/configuration#bundle-params) section, feel free to remove fields that you do not want exposed in your configuration form in Massdriver Cloud. Values that you do not want to change (e.g.: your image repository) can be hard coded in the [values.yaml](./src/chart/values.yaml) file.
 
