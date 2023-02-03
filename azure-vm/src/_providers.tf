@@ -15,6 +15,12 @@ terraform {
     azurerm = {
       source = "hashicorp/azurerm"
     }
+
+    acme = {
+      source = "vancluever/acme"
+      version = "2.12.0"
+    }
+
   }
 }
 
@@ -38,4 +44,8 @@ provider "azurerm" {
   tenant_id       = var.azure_service_principal.data.tenant_id
   client_secret   = var.azure_service_principal.data.client_secret
   subscription_id = var.azure_service_principal.data.subscription_id
+}
+
+provider "acme" {
+  server_url = "https://acme-v02.api.letsencrypt.org/directory"
 }

@@ -24,6 +24,7 @@ params:
     - location
     - container
     - max_instances
+    - dns
   properties:
     location:
       title: Region
@@ -66,38 +67,41 @@ params:
     machine_type:
       type: string
       title: Machine Type
-    endpoint:
+    dns:
+      title: DNS
+      description: DNS configuration
       type: object
-      title: Endpoint
-      description: Configure a public endpoint with DNS and a SSL certificate.
       required:
-        - enabled
+        - enable_dns
       properties:
-        enabled:
+        enable_dns:
+          title: Enable DNS
+          description: Enable DNS configuration for the application.
           type: boolean
-          title: Enabled
           default: false
       dependencies:
-        enabled:
+        enable_dns:
           oneOf:
-            - required:
-                - zone
-                - subdomain
-              properties:
-                enabled:
-                  const: true
-                  title: Enabled
-                zone:
-                  $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-dns-managed-zone.json
-                  title: DNS Zone
-                subdomain:
-                  type: string
-                  title: Subdomain
-                  description: The subdomain will be prefixed to the DNS zone, creating a public endpoint for your application.
             - properties:
-                enabled:
+                enable_dns:
+                  const: true
+                zone_id:
+                  title: DNS Zone name
+                  description: Azure DNS zone name
+                  type: string
+                subdomain:
+                  title: Subdomain
+                  description: "Subdomain for DNS zone. Examples: 'www', 'api', 'app'"
+                  type: string
+                  pattern: ^[-a-zA-Z0-9*._-]{1,63}$
+                  message:
+                    pattern: Must be a valid subdomain. Must contain only letters, numbers, dashes, underscores, periods, and asterisks.
+              required:
+                - zone_id
+                - subdomain
+            - properties:
+                enable_dns:
                   const: false
-                  title: Enabled
 
 connections:
   required:
@@ -118,7 +122,8 @@ connections:
 
 ui:
   ui:order:
+    - location
+    - container
+    - max_instances
+    - dns
     - "*"
-
-
-
