@@ -1,5 +1,5 @@
 module "application" {
-  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-azure-app-service?ref=b4401ac"
+  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-azure-app-service?ref=86dc2b1"
   name        = var.md_metadata.name_prefix
   tags        = var.md_metadata.default_tags
   application = var.application
