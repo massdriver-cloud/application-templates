@@ -1,0 +1,260 @@
+schema: draft-07
+name: <md .Name md>
+description: <md .Description md>
+source_url: github.com/YOUR_ORG/<md .Name md>
+access: private
+type: application
+
+app:
+  ### Use jq expressions to build environment variables from input params or connections
+  envs:
+    ### Redis Connection String
+    # REDIS_URL: '@test "rediss://" + .connections.redis.data.authentication.password + "@" + .connections.redis.data.authentication.hostname + ":" + (.connections.redis.data.authentication.port|tostring)'
+    #
+    ### Postgres Connection String
+    # DATABASE_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+    #
+    ### MySQL Connection String
+    # DATABASE_URL: '@text "mysql2://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+    #
+    LOG_LEVEL: .params.log_level
+    PORT: .params.port | tostring
+    RAILS_ENV: .params.rails_env
+  ### Secrets will present a UI form and API endpoint for configuring 3rd party secrets.
+  secrets:
+    SECRET_KEY_BASE:
+      title: Secret Key Base
+      required: false
+    RAILS_MASTER_KEY:
+      title: Rails Master Key
+      required: false
+  ### Use jq expressions to select policies from artifact security blocks
+  # Example: - .connections.sqs.data.security.iam.subscribe
+  policies: []
+
+params:
+  examples:
+  - __name: Development
+    rails_env: development
+    port: 3000
+    log_level: info
+    image:
+      tag: latest
+    resourceRequests:
+      cpu: 0.25
+    namespace: development
+  - __name: Production
+    rails_env: production
+    port: 3000
+    log_level: error
+    image:
+      tag: latest
+    resourceRequests:
+      cpu: 0.50
+    namespace: production
+    replicas:
+      autoscalingEnabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 80
+  required:
+  - log_level
+  - port
+  - database_name
+  - rails_env
+  - image
+  - resourceRequests
+  - namespace
+  properties:
+    log_level:
+      title: Log Level
+      type: string
+      default: info
+      enum: [debug, info, warn, error, fatal]
+    port:
+      title: Port
+      default: 3000
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/port.json
+    database_name:
+      title: Database Name
+      type: string
+    rails_env:
+      title: Rails Environment
+      type: string
+      default: development
+      enum: [test, development, staging, production]
+    image:
+      title: Container Image
+      type: object
+      required:
+      - repository
+      - tag
+      properties:
+        repository:
+          $md.immutable: true
+          title: Repository
+          description: Full container repository URI. Kubernetes clusters are configured with access to your cloud's container repositories in the same account. Optionally this value can be hard coded in `values.yaml`.
+          type: string
+        tag:
+          title: Tag
+          description: Container repository tag.
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+          default: latest
+    ingress:
+      title: Ingress
+      description: Configure the application for public internet accessibility
+      type: object
+      properties:
+        enabled:
+          title: Enable Public Internet Access
+          type: boolean
+          default: false
+      dependencies:
+        enabled:
+          oneOf:
+          - properties:
+              enabled:
+                const: false
+          - properties:
+              enabled:
+                const: true
+              host:
+                title: HTTP Hostname
+                description: The hostname which this application should be accessable on, such as www.example.com. You must own this domain and have it associated with this kubernetes cluster if you would like automatic DNS record and SSL certificate management. Learn more about DNS Zones [here](https://docs.massdriver.cloud/platform/dns-zones).
+                type: string
+                pattern: ^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+                message:
+                  pattern: Hostname should consist of letters, numbers, periods and hyphens, such as www.example.com
+              path:
+                title: HTTP Path
+                description: The HTTP path which, when appended to the host above, this application will serve traffic on
+                type: string
+                default: "/"
+                pattern: ^\/.*$
+                message:
+                  pattern: Must begin with a '/' and be a valid HTTP endpoint
+            required:
+            - host
+            - path
+    resourceRequests:
+      title: Resources
+      description: The minimum amount of compute resources required.
+      type: object
+      required:
+        - cpu
+        - memory
+      properties:
+        cpu:
+          title: CPU Cores
+          description: The expected CPU cores required for this application. Fractional numbers are allowed (0.5 is one half of a CPU core).
+          type: number
+          default: 0.5
+          minimum: 0.001
+        memory:
+          title: Memory
+          description: The expected Memory resources required for this application.
+          type: integer
+          default: 524288000
+    replicas:
+      title: Replicas
+      description: Manage the number of concurrent replicas of your application
+      type: object
+      properties:
+        autoscalingEnabled:
+          title: Enable Horizontal Pod Autoscaling
+          description: A Horizontal Pod Autoscaler will enable your application to automatically add or remove replicas based on resource utilization.
+          type: boolean
+          default: false
+      dependencies:
+        autoscalingEnabled:
+          oneOf:
+          - properties:
+              autoscalingEnabled:
+                const: false
+              replicaCount:
+                title: Number of Replicas
+                description: Fixed number of replicas to constantly maintain
+                type: integer
+                minimum: 1
+                default: 1
+            required:
+            - replicaCount
+          - properties:
+              autoscalingEnabled:
+                const: true
+              minReplicas:
+                title: Minimum Replicas
+                description: Minimum number of replicas the autoscaler will maintain, based on target resource utilization
+                type: integer
+                minimum: 1
+                default: 1
+              maxReplicas:
+                title: Maximum Replicas
+                description: Maximum number of replicas the autoscaler will provision, based on target resource utilization
+                type: integer
+                minimum: 1
+                default: 10
+              targetCPUUtilizationPercentage:
+                title: Target CPU Utilization Percentage
+                description: The percentage of allocated CPU resources the autoscaler should target, based on the values specified in the 'Resources' section. If utilization rises sufficiently above this percentage, replicas will be added. If utilization drops sufficiently below this percentage, replicas will be removed.
+                type: integer
+                minimum: 1
+                default: 80
+            required:
+            - minReplicas
+            - maxReplicas
+            - targetCPUUtilizationPercentage
+    namespace:
+      title: Kubernetes Namespace
+      description: Application will be deployed into this namespace. If the namespace doesn't exist, it will be created.
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/k8s-resource-name.json
+      default: default
+
+connections:
+  required:
+    - kubernetes_cluster
+  <md- range $key, $art:= .Connections md>
+    - <md $key md>
+  <md- end md>
+  properties:
+    kubernetes_cluster:
+      $ref: massdriver/kubernetes-cluster
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    azure_authentication:
+      $ref: massdriver/azure-service-principal
+  <md- range $key, $art:= .Connections md>
+    <md $key md>:
+      $ref: <md $art md>
+  <md- end md>
+
+#########
+### Uncomment below to enable producing artifacts for your web service.
+### You only need to uncomment the following if you intend to connect your internal services in Massdriver.
+### You will also need to uncomment the contents of `src/_artifacts.tf`.
+#########
+#
+# artifacts:
+#   required:
+#     - api
+#   properties:
+#     api:
+#       $ref: massdriver/api
+
+ui:
+  ui:order: [image, rails_env, database_name, port, log_level, ingress, resourceRequests, replicas, namespace]
+  image:
+    ui:order: [repository, tag]
+    ui:options:
+      label: false
+  replicas:
+    ui:order: [autoscalingEnabled,replicaCount,minReplicas,maxReplicas,targetCPUUtilizationPercentage,"*"]
+  resourceRequests:
+    ui:order: [cpu, memory]
+    memory:
+      ui:field: conversionFieldData
+      unit: Bytes
+  ingress:
+    ui:order: [enabled, host, path, "*"]
