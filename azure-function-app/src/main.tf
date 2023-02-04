@@ -3,7 +3,7 @@ module "application" {
   name        = var.md_metadata.name_prefix
   tags        = var.md_metadata.default_tags
   application = var.application
-  docker = var.docker
+  docker      = var.docker
   network = {
     auto = true
   }

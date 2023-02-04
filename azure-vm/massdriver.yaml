@@ -23,6 +23,7 @@ params:
   required:
     - container
     - max_instances
+    - machine_type
     - dns
   properties:
     log_level:
@@ -60,8 +61,19 @@ params:
       description: The maximum number of instances to run at once.
       default: 5
     machine_type:
+      # https://azure.microsoft.com/en-us/blog/f-series-vm-size/
       type: string
       title: Machine Type
+      default: Standard_F2
+      oneOf:
+        - title: Standard F2 - 2 cores, 4GB Memory
+          const: Standard_F2
+        - title: Standard F4 - 4 cores, 8GB Memory
+          const: Standard_F4
+        - title: Standard F8 - 8 cores, 16GB Memory
+          const: Standard_F8
+        - title: Standard F16 - 16 cores, 32GB Memory
+          const: Standard_F16
     dns:
       title: DNS
       description: DNS configuration
@@ -118,6 +130,7 @@ connections:
 ui:
   ui:order:
     - location
+    - machine_type
     - container
     - max_instances
     - dns

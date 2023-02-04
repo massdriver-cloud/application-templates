@@ -17,7 +17,7 @@ terraform {
     }
 
     acme = {
-      source = "vancluever/acme"
+      source  = "vancluever/acme"
       version = "2.12.0"
     }
 
@@ -44,6 +44,12 @@ provider "azurerm" {
   tenant_id       = var.azure_service_principal.data.tenant_id
   client_secret   = var.azure_service_principal.data.client_secret
   subscription_id = var.azure_service_principal.data.subscription_id
+}
+
+provider "azuread" {
+  client_id     = var.azure_service_principal.data.client_id
+  tenant_id     = var.azure_service_principal.data.tenant_id
+  client_secret = var.azure_service_principal.data.client_secret
 }
 
 provider "acme" {
