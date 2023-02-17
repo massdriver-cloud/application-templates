@@ -55,6 +55,12 @@ params:
       title: Max Instances
       description: The maximum number of instances to run at once.
       default: 5
+    container_concurrency:
+      type: integer
+      title: Container Concurrency
+      description: The maximum allowed in-flight (concurrent) requests per container.
+      default: 0
+      minimum: 0
     endpoint:
       type: object
       title: Endpoint
