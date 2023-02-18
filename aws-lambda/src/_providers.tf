@@ -17,14 +17,14 @@ terraform {
 
 provider "mdxc" {
   aws = {
-    region      = var.aws_region
+    region      = var.region
     role_arn    = var.aws_authentication.data.arn
     external_id = var.aws_authentication.data.external_id
   }
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = var.region
   assume_role {
     role_arn    = var.aws_authentication.data.arn
     external_id = var.aws_authentication.data.external_id
