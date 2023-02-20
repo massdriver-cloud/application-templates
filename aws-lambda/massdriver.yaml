@@ -5,6 +5,14 @@ source_url: github.com/YOUR_ORG/<md .Name md>
 access: private
 type: application
 
+app:
+  # Environment variables can be pulled from params or connections using jq
+  envs: {}
+    # LOG_RETENTION: .params.observability.retention_days
+  # IAM permissions can be assigned to this workload using jq to pull iam from connections
+  policies: []
+    # - .connections.k8s_auth.data.security.iam.subscribe
+
 params:
   required:
     - region
@@ -123,11 +131,3 @@ ui:
     ui:order:
       - retention_days
       - x-ray
-
-app:
-  # Environment variables can be pulled from params or connections using jq
-  envs:
-    # LOG_RETENTION: .params.observability.retention_days
-  # IAM permissions can be assigned to this workload using jq to pull iam from connections
-  policies: []
-    # - .connections.k8s_auth.data.security.iam.subscribe
