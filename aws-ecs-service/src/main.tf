@@ -17,7 +17,7 @@ module "application" {
       image_tag = var.image.tag
       ports = [ for port in var.ports : {
         container_port = port.port
-        ingresses = [ for ingress in port.ingresses : {
+        ingresses = [ for ingress in lookup(port, "ingresses", []) : {
           hostname   = ingress.hostname
           path       = ingress.path
           create_dns = ingress.create_dns
