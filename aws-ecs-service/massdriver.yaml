@@ -20,6 +20,7 @@ params:
     - resources
     - autoscaling
     - ports
+    - monitoring
   properties:
     image:
       title: Container Image
@@ -139,6 +140,45 @@ params:
                     - create_dns
               required:
                 - ingresses
+    monitoring:
+      title: Monitoring
+      type: object
+      required:
+      - logging
+      properties:
+        logging:
+          title: Logging Configuration
+          type: object
+          required:
+          - destination
+          properties:
+            destination:
+              title: Destination
+              type: string
+              description: Configure the destination for where application logs should be sent.
+              default: disabled
+              oneOf:
+              - title: Disabled
+                const: disabled
+              - title: AWS Cloudwatch
+                const: awslogs
+          dependencies:
+            destination:
+              oneOf:
+              - properties:
+                  destination:
+                    const: disabled
+              - properties:
+                  destination:
+                    const: awslogs
+                  retention:
+                    title: Retention
+                    description: Configure the duration (in days) you'd like logs to be retained before automatic deletion.
+                    type: integer
+                    default: 7
+                    enum: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1096, 1827, 2192, 2557, 2922, 3288, 3653]
+                required:
+                - retention
     # Uncomment the section below to begin adding any application-specific configuration that is appropriate. See the app.envs section above for how to set environment values from these settings.
     # configuration:
     #   title: Configuration
@@ -174,6 +214,7 @@ ui:
     - resources
     - autoscaling
     - ports
+    - monitoring
     - "*"
   resources:
     memory:
@@ -198,3 +239,11 @@ ui:
             - path
             - create_dns
             - "*"
+  monitoring:
+    ui:order:
+      - logging
+      - "*"
+    logging:
+      ui:order:
+        - destination
+        - "*"

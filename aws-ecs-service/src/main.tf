@@ -6,8 +6,8 @@ module "application" {
   task_cpu    = var.resources.cpu
   task_memory = ceil(var.resources.memory)
   logging     = {
-    driver = "awslogs"
-    retention = 1
+    driver = var.monitoring.logging.destination
+    retention = lookup(var.monitoring.logging, "retention", null)
   }
   autoscaling = var.autoscaling
   containers = [
