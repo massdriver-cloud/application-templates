@@ -3,8 +3,8 @@ module "application" {
   name        = var.md_metadata.name_prefix
   tags        = var.md_metadata.default_tags
   application = var.application
-  image = var.image
-  dns = var.dns
+  image       = var.image
+  dns         = var.dns
   network = {
     auto = true
   }

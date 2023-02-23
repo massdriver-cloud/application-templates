@@ -23,6 +23,8 @@ params:
   required:
     - location
     - container
+    - compute_image_family
+    - machine_type
     - max_instances
   properties:
     location:
@@ -63,6 +65,15 @@ params:
       title: Max Instances
       description: The maximum number of instances to run at once.
       default: 5
+    compute_image_family:
+      type: string
+      title: Compute Image Family
+      default: cos-101-lts
+      oneOf:
+        - title: CoreOS 101 - LTS
+          const: cos-101-lts
+        - title: Deep Learing Common 110 - Cuda and Nvidia Drivers Pre-Installed
+          const: common-cu110
     machine_type:
       type: string
       title: Machine Type
@@ -120,6 +131,8 @@ ui:
   ui:order:
     - location
     - container
+    - compute_image_family
+    - machine_type
     - endpoint
     - "*"
   location:
