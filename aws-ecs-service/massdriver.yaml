@@ -47,9 +47,11 @@ params:
           description: ECS launch type. EC2 and Fargate are supported. EC2 requires that the ECS cluster has EC2 container instances provisioned.
           type: string
           default: EC2
-          enum:
-          - EC2
-          - Fargate
+          oneOf:
+          - title: EC2
+            const: EC2
+          - title: Fargate
+            const: FARGATE
         cpu:
           title: CPU Units
           description: CPU units to allocate for the task. 1024 is equivalent to one full CPU.
@@ -70,7 +72,7 @@ params:
                 minimum: 1
           - properties:
               launch_type:
-                const: Fargate
+                const: FARGATE
               cpu:
                 enum: [256, 512, 1024, 2048, 4096, 8192, 16384]
             dependencies:
