@@ -17,7 +17,7 @@ app:
 params:
   required:
     - image
-    - resources
+    - runtime
     - autoscaling
     - ports
     - monitoring
@@ -38,22 +38,81 @@ params:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
           default: latest
-    resources:
-      title: Resources
+    runtime:
+      title: Runtime Configuration
       type: object
-      required:
-        - cpu
-        - memory
       properties:
+        launch_type:
+          title: Launch Type
+          description: ECS launch type. EC2 and Fargate are supported. EC2 requires that the ECS cluster has EC2 container instances provisioned.
+          type: string
+          default: EC2
+          oneOf:
+          - title: EC2
+            const: EC2
+          - title: Fargate
+            const: FARGATE
         cpu:
-          title: CPU Cores
-          description: The expected CPU cores required for this application. Fractional numbers are allowed (0.5 is one half of a CPU core).
-          type: number
-          minimum: 0.001
+          title: CPU Units
+          description: CPU units to allocate for the task. 1024 is equivalent to one full CPU.
+          type: integer
         memory:
           title: Memory
-          description: The expected Memory resources required for this application.
+          description: Memory to allocate for the task in MiB.
           type: integer
+      dependencies:
+        launch_type:
+          oneOf:
+          - properties:
+              launch_type:
+                const: EC2
+              cpu:
+                minimum: 1
+              memory:
+                minimum: 1
+          - properties:
+              launch_type:
+                const: FARGATE
+              cpu:
+                enum: [256, 512, 1024, 2048, 4096, 8192, 16384]
+            dependencies:
+              cpu:
+                oneOf:
+                - properties:
+                    cpu:
+                      const: 256
+                    memory:
+                      enum: [512, 1024, 2048]
+                - properties:
+                    cpu:
+                      const: 512
+                    memory:
+                      enum: [1024, 2048, 3072, 4096]
+                - properties:
+                    cpu:
+                      const: 1024
+                    memory:
+                      enum: [2048, 3072, 4096, 5120, 6144, 7168, 8192]
+                - properties:
+                    cpu:
+                      const: 2048
+                    memory:
+                      enum: [4096, 5120, 6144, 7168, 8192, 9216, 10240, 11264, 12288, 13312, 14336, 15360, 16384]
+                - properties:
+                    cpu:
+                      const: 4096
+                    memory:
+                      enum: [8192, 9216, 10240, 11264, 12288, 13312, 14336, 15360, 16384, 17408, 18432, 19456, 20480, 21504, 22528, 23552, 24576, 25600, 26624, 27648, 28672, 29696, 30720]
+                - properties:
+                    cpu:
+                      const: 8192
+                    memory:
+                      enum: [16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, 61440]
+                - properties:
+                    cpu:
+                      const: 16384
+                    memory:
+                      enum: [32768, 40960, 49152, 57344, 65536, 73728, 81920, 90112, 98304, 106496, 114688, 122880]
     autoscaling:
       title: Autoscaling
       description: Manage the number of concurrent replicas of your application
@@ -211,15 +270,17 @@ connections:
 ui:
   ui:order:
     - image
-    - resources
+    - runtime
     - autoscaling
     - ports
     - monitoring
     - "*"
-  resources:
-    memory:
-      ui:field: conversionFieldData
-      unit: MiB
+  runtime:
+    ui:order:
+      - launch_type
+      - cpu
+      - memory
+      - "*"
   autoscaling:
     ui:order:
       - min_replicas
