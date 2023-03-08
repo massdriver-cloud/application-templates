@@ -1,7 +1,7 @@
 schema: draft-07
-name: <md .Name md>
-description: <md .Description md>
-source_url: github.com/YOUR_ORG/<md .Name md>
+name: {{ name }}
+description: {{ description }}
+source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
 
@@ -274,18 +274,18 @@ connections:
   required:
     - azure_service_principal
     - azure_virtual_network
-  <md- range $key, $art:= .Connections md>
-    - <md $key md>
-  <md- end md>
+  {%- for conn in connections %}
+    - {{conn[0]}}
+  {% endfor %}
   properties:
     azure_service_principal:
       $ref: massdriver/azure-service-principal
     azure_virtual_network:
       $ref: massdriver/azure-virtual-network
-  <md- range $key, $art:= .Connections md>
-    <md $key md>:
-      $ref: <md $art md>
-  <md- end md>
+  {%- for conn in connections %}
+    {{conn[0]}}:
+      $ref: {{conn[1]}}
+  {% endfor %}
 
 
 artifacts:

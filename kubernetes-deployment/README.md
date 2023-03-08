@@ -1,6 +1,6 @@
-# <md .Name md>
+# {{ name }}
 
-<md .Description md>
+{{ description }}
 
 An example application using this template can be found [here](https://github.com/massdriver-cloud/application-examples/tree/main/k8s/phoenix-chat-example).
 

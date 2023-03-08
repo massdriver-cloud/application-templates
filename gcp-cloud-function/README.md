@@ -1,6 +1,6 @@
-# <md .Name md>
+# {{ name }}
 
-<md .Description md>
+{{ description }}
 
 ## Massdriver `gcp-cloud-function` Template
 

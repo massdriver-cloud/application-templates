@@ -1,10 +1,10 @@
-# <md .Name md> Guide
+# {{ name }} Guide
 
-<md .Description md>
+{{ description }}
 
 ---
 
-An example guide / runbook for running '<md .Name md>'.
+An example guide / runbook for running '{{ name }}'.
 
 This guide will appear under *Guides** on your Massdriver canvas.
 
