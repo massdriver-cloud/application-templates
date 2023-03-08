@@ -1,0 +1,81 @@
+---
+fail_fast: false
+repos:
+  - repo: local
+    hooks:
+      - id: mass-bundle-build
+        name: Build the bundle
+        entry: mass bundle build
+        language: system
+        pass_filenames: false
+      - id: valid-schema-params
+        name: Validate schema params
+        entry: mass schema validate -s https://json-schema.org/draft-07/schema -d ./schema-params.json
+        language: system
+        pass_filenames: false
+      - id: valid-schema-connections
+        name: Validate schema connections
+        entry: mass schema validate -s https://json-schema.org/draft-07/schema -d ./schema-connections.json
+        language: system
+        pass_filenames: false
+      - id: valid-schema-artifacts
+        name: Validate schema artifacts
+        entry: mass schema validate -s https://json-schema.org/draft-07/schema -d ./schema-artifacts.json
+        language: system
+        pass_filenames: false
+      - id: dev-params-validation
+        name: Validate development input params
+        entry: mass schema validate -s ./schema-params.json -d ./src/_params.auto.tfvars.json
+        language: system
+        pass_filenames: false
+      - id: conn-params-validation
+        name: Validate development connection params
+        entry: mass schema validate -s ./schema-connections.json -d ./src/_connections.auto.tfvars.json
+        language: system
+        pass_filenames: false
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.74.1
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: no-commit-to-branch
+        args:
+          - "-b"
+          - main
+  - repo: https://github.com/jaketf/jsonschema2md
+    rev: v0.9.0
+    hooks:
+      - id: jsonschema2md
+        name: jsonschema2md params
+        args:
+          - "./schema-params.json"
+          - "./README.md"
+          - "--token=PARAMS"
+          - "--omit-top-level-metadata"
+        pass_filenames: false
+      - id: jsonschema2md
+        name: jsonschema2md connections
+        args:
+          - "./schema-connections.json"
+          - "./README.md"
+          - "--token=CONNECTIONS"
+          - "--omit-top-level-metadata"
+        pass_filenames: false
+      - id: jsonschema2md
+        name: jsonschema2md artifacts
+        args:
+          - "./schema-artifacts.json"
+          - "./README.md"
+          - "--token=ARTIFACTS"
+          - "--omit-top-level-metadata"
+        pass_filenames: false
