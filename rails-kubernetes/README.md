@@ -1,6 +1,6 @@
-# <md .Name md> :: Rails on Kubernetes
+# {{ name }} :: Rails on Kubernetes
 
-<md .Description md>
+{{ description }}
 
 ## Massdriver `rails-kubernetes` Template
 
