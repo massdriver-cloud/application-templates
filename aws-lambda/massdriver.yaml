@@ -101,7 +101,7 @@ connections:
       $ref: massdriver/aws-iam-role
   {%- for conn in connections %}
     {{conn.name}}:
-      $ref: {{conn.artifact-definition}}
+      $ref: {{conn.artifact_definition}}
   {% endfor %}
 
 ui:

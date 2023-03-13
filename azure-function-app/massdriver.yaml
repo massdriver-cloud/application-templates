@@ -312,7 +312,7 @@ connections:
       $ref: massdriver/azure-virtual-network
   {%- for conn in connections %}
     {{conn.name}}:
-      $ref: {{conn.artifact-definition}}
+      $ref: {{conn.artifact_definition}}
   {% endfor %}
 
 artifacts:

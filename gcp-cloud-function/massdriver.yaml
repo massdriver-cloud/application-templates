@@ -73,7 +73,7 @@ connections:
       $ref: massdriver/gcp-subnetwork
   {%- for conn in connections %}
     {{conn.name}}:
-      $ref: {{conn.artifact-definition}}
+      $ref: {{conn.artifact_definition}}
   {% endfor %}
 
 ui:

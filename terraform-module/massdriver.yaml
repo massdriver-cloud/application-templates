@@ -39,7 +39,7 @@ connections:
   properties:
   {%- for conn in connections %}
     {{conn.name}}:
-      $ref: {{conn.artifact-definition-}}
+      $ref: {{conn.artifact_definition-}}
   {% endfor %}
 {% else %}
   properties: {}
