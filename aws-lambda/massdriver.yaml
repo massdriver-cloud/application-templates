@@ -94,14 +94,14 @@ connections:
   required:
     - aws_authentication
   {%- for conn in connections %}
-    - {{conn[0]}}
+    - {{conn.name}}
   {% endfor %}
   properties:
     aws_authentication:
       $ref: massdriver/aws-iam-role
   {%- for conn in connections %}
-    {{conn[0]}}:
-      $ref: {{conn[1]}}
+    {{conn.name}}:
+      $ref: {{conn.artifact_definition}}
   {% endfor %}
 
 ui:

@@ -254,7 +254,7 @@ connections:
     - aws_authentication
     - ecs_cluster
   {%- for conn in connections %}
-    - {{conn[0]}}
+    - {{conn.name}}
   {% endfor %}
   properties:
     aws_authentication:
@@ -262,8 +262,8 @@ connections:
     ecs_cluster:
       $ref: massdriver/aws-ecs-cluster
   {%- for conn in connections %}
-    {{conn[0]}}:
-      $ref: {{conn[1]}}
+    {{conn.name}}:
+      $ref: {{conn.artifact_definition}}
   {% endfor %}
 
 
