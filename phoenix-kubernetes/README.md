@@ -1,14 +1,14 @@
-# {{ name }} :: Rails on Kubernetes
+# {{ name }} :: Elixir/Phoenix Kubernetes
 
 {{ description }}
 
-## Massdriver `rails-kubernetes` Template
+## Massdriver `phoenix-kubernetes` Template
 
-This application template is built using the [Ruby on Rails Helm Chart](https://artifacthub.io/packages/helm/massdriver/ruby-on-rails).
+This application template is built using the [Elixir/Phoenix Helm Chart](https://artifacthub.io/packages/helm/massdriver/elixir-phoenix).
 
-An example application using this template can be found [here](https://github.com/massdriver-cloud/application-examples/tree/main/k8s/rails-spree).
+An example application using this template can be found [here](https://github.com/massdriver-cloud/application-examples/tree/main/k8s/phoenix-chat-example).
 
-The `rails-kubernetes` template will run your Rails application on Kubernetes. This template supports AWS EKS, GCP GKE, Azure AKS, bare metal Kubernetes and managed Kubernetes.
+The `phoenix-kubernetes` template will run your Phoenix application on Kubernetes. This template supports AWS EKS, GCP GKE, Azure AKS, bare metal Kubernetes and managed Kubernetes.
 
 ### Files
 
@@ -28,4 +28,4 @@ We **do not** recommend modifying this file.
 ## Notes
 
 * `image` is included in the `massdriver.yaml` for convenience. We recommend hard coding this in `values.yaml` if your container image doesn't change from deployment to deployment.
-* Rails migrations are implemented as kubernetes jobs using the _Helm Release_ as a suffix and run on each apply. Since the old and new version of your application is running, backwards compatible migrations are recommended.
+* Ecto migrations are implemented as kubernetes jobs using the _Helm Release_ as a suffix and run on each apply. Since the old and new version of your application is running, backwards compatible migrations are recommended.

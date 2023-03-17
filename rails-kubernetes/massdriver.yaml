@@ -1,6 +1,6 @@
 schema: draft-07
-name: {{ name }}
-description: {{ description }}
+name: "{{ name }}"
+description: "{{ description }}"
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -15,7 +15,7 @@ app:
     # DATABASE_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
     #
     ### MySQL Connection String
-    # DATABASE_URL: '@text "mysql2://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+    # DATABASE_URL: '@text "mysql2://" + .connections.mysql.data.authentication.username + ":" + .connections.mysql.data.authentication.password + "@" + .connections.mysql.data.authentication.hostname + ":" + (.connections.mysql.data.authentication.port|tostring) + "/" + .params.database_name'
     #
     LOG_LEVEL: .params.log_level
     PORT: .params.port | tostring

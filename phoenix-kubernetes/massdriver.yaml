@@ -1,0 +1,266 @@
+schema: draft-07
+name: "{{ name }}"
+description: "{{ description }}"
+source_url: github.com/YOUR_ORG/{{ name }}
+access: private
+type: application
+
+app:
+  ### Use jq expressions to build environment variables from input params or connections
+  envs:
+    ##########################################
+    ### Some common database URLs are provided below. If you included these in your dependencies
+    ### you can uncomment the line to inject a credential at runtime into your application.
+    ##########################################
+
+    ### Redis Connection String
+    # REDIS_URL: '@test "rediss://" + .connections.redis.data.authentication.password + "@" + .connections.redis.data.authentication.hostname + ":" + (.connections.redis.data.authentication.port|tostring)'
+    #
+    ### Postgres Connection String
+    # DATABASE_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+    #
+    ### MySQL Connection String
+    # DATABASE_URL: '@text "mysql://" + .connections.mysql.data.authentication.username + ":" + .connections.mysql.data.authentication.password + "@" + .connections.mysql.data.authentication.hostname + ":" + (.connections.mysql.data.authentication.port|tostring) + "/" + .params.database_name'
+    #
+    LOG_LEVEL: .params.log_level
+    PORT: .params.port | tostring
+    MIX_ENV: .params.mix_env
+    DATABASE_SSL: .params.enable_database_ssl
+    HOST: .params.ingress.host
+  ### Secrets will present a UI form and API endpoint for configuring 3rd party secrets.
+  secrets:
+    SECRET_KEY_BASE:
+      required: true
+      title: "Secret Key Base"
+      description: Learn more [here](https://hexdocs.pm/phoenix/deployment.html#handling-of-your-application-secrets).
+  ### Use jq expressions to select policies from artifact security blocks
+  # Example: - .connections.sqs.data.security.iam.subscribe
+  policies: []
+
+params:
+  required: [database_name, namespace, image]
+  properties:
+    mix_env:
+      title: Mix Environment
+      description: Mix environment. You can update the enum below to support additional environments in your app.
+      type: string
+      oneOf:
+      - title: Development
+        const: dev
+      - title: Production
+        const: prod
+    log_level:
+      title: Elixir Log Level
+      type: string
+      oneOf:
+        - title: emergency - when system is unusable, panics
+          const: emergency
+        - title: alert - for alerts, actions that must be taken immediately, ex. corrupted database
+          const: alert
+        - title: critical - for critical conditions
+          const: critical
+        - title: error - for errors
+          const: error
+        - title: warning - for warnings
+          const: warning
+        - title: notice - for normal, but significant, messages
+          const: notice
+        - title: info - for information of any kind
+          const: info
+        - title: debug - for debug-related messages
+          const: debug
+    enable_database_ssl:
+      type: boolean
+      title: Enable Database SSL
+      description: Enables SSL support in PostgreSQL.
+      default: true
+    database_name:
+      type: string
+      title: Database Schema Name
+    namespace:
+      title: Kubernetes Namespace
+      description: Application will be deployed into this namespace. If the namespace doesn't exist, it will be created.
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/k8s-resource-name.json
+      default: default
+    image:
+      title: Container Image
+      type: object
+      required:
+        - repository
+        - tag
+      properties:
+        repository:
+          $md.immutable: true
+          title: Repository
+          default: massdrivercloud/phoenix-chat-example
+          # Container repositories can be created or imported into massdriver at: https://app.massdriver.cloud/container-repositories
+          # You'll generally want to hard code your container repository in your bundle code, but it can be helpful to show it
+          # in your schema as well.
+          # If you need to allow an end-user developer to select the container repo, you can use our drop down widget documented here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+          description: Container repository to use for this application.
+          type: string
+        tag:
+          title: Image Tag
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+          default: latest
+    resourceRequests:
+      type: object
+      required:
+        - cpu
+        - memory
+      properties:
+        cpu:
+          title: CPU Cores
+          description: The expected CPU cores required for this application. Fractional numbers are allowed (0.5 is one half of a CPU core).
+          type: number
+          minimum: 0.001
+        memory:
+          title: Memory
+          description: The expected Memory resources required for this application.
+          type: number
+    port:
+      title: Port
+      description: The container port the application will listen on.
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/port.json
+      default: 4000
+    replicas:
+      title: Replicas
+      description: Manage the number of concurrent replicas of your application
+      type: object
+      properties:
+        autoscalingEnabled:
+          title: Enable Horizontal Pod Autoscaling
+          description: A Horizontal Pod Autoscaler will enable your application to automatically add or remove replicas based on resource utilization.
+          type: boolean
+          default: false
+      dependencies:
+        autoscalingEnabled:
+          oneOf:
+            - properties:
+                autoscalingEnabled:
+                  const: false
+                replicaCount:
+                  title: Number of Replicas
+                  description: Fixed number of replicas to constantly maintain
+                  type: integer
+                  minimum: 1
+                  default: 1
+              required:
+                - replicaCount
+            - properties:
+                autoscalingEnabled:
+                  const: true
+                minReplicas:
+                  title: Minimum Replicas
+                  description: Minimum number of replicas the autoscaler will maintain, based on target resource utilization
+                  type: integer
+                  minimum: 1
+                  default: 1
+                maxReplicas:
+                  title: Maximum Replicas
+                  description: Maximum number of replicas the autoscaler will provision, based on target resource utilization
+                  type: integer
+                  minimum: 1
+                  default: 10
+                targetCPUUtilizationPercentage:
+                  title: Target CPU Utilization Percentage
+                  description: The percentage of allocated CPU resources the autoscaler should target, based on the values specified in the 'Resources' section. If utilization rises sufficiently above this percentage, replicas will be added. If utilization drops sufficiently below this percentage, replicas will be removed.
+                  type: integer
+                  minimum: 1
+                  default: 80
+              required:
+                - minReplicas
+                - maxReplicas
+                - targetCPUUtilizationPercentage
+    ingress:
+      title: Ingress
+      description: Configure the application for public internet accessibility
+      type: object
+      properties:
+        enabled:
+          title: Enable Public Internet Access
+          type: boolean
+      dependencies:
+        enabled:
+          oneOf:
+            - properties:
+                enabled:
+                  const: false
+            - properties:
+                enabled:
+                  const: true
+                host:
+                  title: HTTP Hostname
+                  description: The hostname which this application should be accessable on, such as www.example.com. You must own this domain and have it associated with this kubernetes cluster if you would like automatic DNS record and SSL certificate management.
+                  type: string
+                  pattern: ^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+                  message:
+                    pattern: Hostname should consist of letters, numbers, periods and hyphens, such as www.example.com
+                path:
+                  title: HTTP Path
+                  description: The HTTP path which, when appended to the host above, this application will serve traffic on
+                  type: string
+                  default: "/"
+                  pattern: ^\/.*$
+                  message:
+                    pattern: Must begin with a '/' and be a valid HTTP endpoint
+              required:
+                - host
+                - path
+
+connections:
+  required:
+    - kubernetes_cluster
+  {%- for conn in connections %}
+    - {{conn.name}}
+  {% endfor %}
+  properties:
+    kubernetes_cluster:
+      $ref: massdriver/kubernetes-cluster
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    azure_authentication:
+      $ref: massdriver/azure-service-principal
+  {%- for conn in connections %}
+    {{conn.name}}:
+      $ref: {{conn.artifact_definition}}
+  {% endfor %}
+
+ui:
+  ## If you need to allow an end user to select the container repository at deploy time, our smart widget can be used.
+  ## Additional documentation here: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
+  # image:
+  #   repository:
+  #     ui:field: "containerRepositoriesDropdown"
+  #     cloud: "aws"
+  ui:order:
+    - log_level
+    - database_name
+    - enable_database_ssl
+    - namespace
+    - image
+    - resourceRequests
+    - replicas
+    - port
+    - ingress
+    - "*"
+  resourceRequests:
+    memory:
+      ui:field: conversionFieldData
+      unit: Bytes
+  replicas:
+    items:
+      ui:order:
+        - autoscalingEnabled
+        - replicaCount
+        - minReplicas
+        - maxReplicas
+        - targetCPUUtilizationPercentage
+  ingress:
+    items:
+      ui:order:
+        - enabled
+        - host
+        - path
