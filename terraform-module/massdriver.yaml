@@ -3,7 +3,7 @@ schema: draft-07
 name: "{{ name }}"
 description: "{{ description }}"
 source_url: github.com/YOUR_NAME_HERE/{{ name }}
-access: "{{ access }}"
+access: private
 type: "{{ type }}"
 
 # schema-params.json
