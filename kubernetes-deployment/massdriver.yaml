@@ -13,6 +13,11 @@ app:
   policies: []
     # Use jq expressions to select policies from artifact security blocks
     # - .connections.sqs.data.security.iam.subscribe
+  secrets: {}
+    # ENV_NAME:
+    #   required: # true or false - whether massdriver should enforce this value being set
+    #   title: # Set the title
+    #   description: # Set a description
 
 params:
   required:
@@ -192,6 +197,24 @@ connections:
     {{conn.name}}:
       $ref: {{conn.artifact_definition}}
   {% endfor %}
+
+
+#########
+### Uncomment below to enable producing artifacts for your web service.
+### You only need to uncomment the following if you intend to connect your internal services in Massdriver.
+### You will also need to uncomment the contents of `src/_artifacts.tf`.
+#########
+#
+# artifacts:
+#   required:
+#     - public
+#     - internal
+#   properties:
+#     public:
+#       $ref: massdriver/api
+#     internal:
+#       $ref: massdriver/api
+
 
 ui:
   ui:order:

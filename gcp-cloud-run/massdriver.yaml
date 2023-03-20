@@ -13,6 +13,11 @@ app:
   policies: []
     # Use jq expressions to select policies from artifact security blocks
     # - .connections.sqs.data.security.iam.subscribe
+  secrets: {}
+    # ENV_NAME:
+    #   required: # true or false - whether massdriver should enforce this value being set
+    #   title: # Set the title
+    #   description: # Set a description
 
 params:
   examples: []
