@@ -1,6 +1,6 @@
 
 module "application" {
-  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-ecs-service?ref=f0faeeb"
+  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-ecs-service?ref=b81fea7"
   md_metadata = var.md_metadata
   ecs_cluster = var.ecs_cluster
   launch_type = var.runtime.launch_type
