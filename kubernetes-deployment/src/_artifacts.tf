@@ -15,7 +15,7 @@
 #     etc = local.artifact_data_etc
 #     api = {
 #       # The publicly accessible ingress hostname and path
-#       hostname = "${var.ingress.host}${var.ingress.path}"
+#       hostname = var.ingress.enabled ? "${var.ingress.host}${var.ingress.path}" : ""
 #       # By default this all traffic is redirected to HTTPS on port 443
 #       port = 443
 #       protocol = "https"
