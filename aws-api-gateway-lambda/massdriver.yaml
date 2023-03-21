@@ -1,0 +1,165 @@
+schema: draft-07
+name: {{ name }}
+description: {{ description }}
+source_url: github.com/YOUR_ORG/{{ name }}
+access: private
+type: application
+
+app:
+  # Environment variables can be pulled from params or connections using jq
+  envs: {}
+    # LOG_RETENTION: .params.observability.retention_days
+  # IAM permissions can be assigned to this workload using jq to pull iam from connections
+  policies: []
+    # - .connections.k8s_auth.data.security.iam.subscribe
+
+steps:
+  - path: src
+    provisioner: terraform
+  - path: deployment
+    provisioner: terraform
+    skip_on_delete: true
+
+params:
+  properties:
+    api:
+      type: object
+      title: API Settings
+      required:
+        - path
+        - http_method
+      properties:
+        path:
+          type: string
+          title: Path
+          description: Last path segment of this API resource. Entering {proxy+} will respond to all paths.
+          pattern: "^[a-z0-9-_]+$"
+          message:
+            pattern: "Correct format of a path is lowercase letters, numbers, dashes and underscores."
+        http_method:
+          type: string
+          title: HTTP Method
+          description: The HTTP method(s) that this route should respond to.
+          enum:
+            - POST
+            - GET
+            - PUT
+            - DELETE
+            - HEAD
+            - OPTIONS
+            - ANY
+    runtime:
+      type: object
+      title: Runtime Settings
+      required:
+        - image
+        - memory_size
+        - execution_timeout
+      properties:
+        image:
+          type: object
+          title: "Container Image"
+          required:
+            - uri
+            - tag
+          properties:
+            uri:
+              title: ECR URI
+              description: Container which will provide the runtime for each execution of the function.
+              type: string
+            tag:
+              title: ECR image tag
+              description: Specific version of the container to pull on each deployment of the lambda function.
+              type: string
+              default: latest
+        memory_size:
+          type: integer
+          title: Runtime Memory Limit (MB)
+          description: "Memory allotted for a single execution run. This will determine the price per millisecond."
+          default: 128
+          minimum: 128
+          maximum: 10240
+        execution_timeout:
+          type: integer
+          title: Execution Timeout (Seconds)
+          description: "Maximum execution time. After the allotted time, the lambda will halt execution."
+          default: 3
+          minimum: 3
+          maximum: 900
+    observability:
+      type: object
+      title: "Observability Settings"
+      required:
+        - retention_days
+      properties:
+        x-ray:
+          type: object
+          title: X-Ray
+          description: "Enable distributed tracing with Amazon X-Ray"
+          properties:
+            enabled:
+              type: boolean
+              default: false
+        retention_days:
+          type: integer
+          title: Log retention days
+          description: "Rotation interval for AWS Cloudwatch logs."
+          oneOf:
+            - title: 7 days
+              const: 7
+            - title: 30 days
+              const: 30
+            - title: 90 days
+              const: 60
+            - title: 180 days
+              const: 180
+            - title: 1 year
+              const: 365
+            - title: Never expire
+              const: 0
+
+connections:
+  required:
+    - aws_authentication
+    - api_gateway
+  {%- for conn in connections %}
+    - {{conn[0]}}
+  {% endfor %}
+  properties:
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    api_gateway:
+      $ref: massdriver/aws-api-gateway-rest-api
+  {%- for conn in connections %}
+    {{conn[0]}}:
+      $ref: {{conn[1]}}
+  {% endfor %}
+
+ui:
+  ui:order:
+    - api
+    - runtime
+    - observability
+  api:
+    ui:order:
+      - path
+      - http_method
+  runtime:
+    ui:order:
+      - image
+      - memory_size
+      - execution_timeout
+    image:
+      ui:order:
+        - uri
+        - tag
+    memory_size:
+      ui:field: conversionFieldData
+      unit: MB
+    execution_timeout:
+      ui:field: conversionFieldTime
+      unit: Seconds
+  observability:
+    ui:order:
+      - retention_days
+      - x-ray
