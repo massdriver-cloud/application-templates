@@ -64,7 +64,7 @@ connections:
     - gcp_authentication
     - gcp_subnetwork
   {%- for conn in connections %}
-    - {{conn.name}}
+    - {{conn.name-}}
   {% endfor %}
   properties:
     gcp_authentication:
@@ -73,7 +73,7 @@ connections:
       $ref: massdriver/gcp-subnetwork
   {%- for conn in connections %}
     {{conn.name}}:
-      $ref: {{conn.artifact_definition}}
+      $ref: {{conn.artifact_definition-}}
   {% endfor %}
 
 ui:
