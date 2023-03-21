@@ -12,6 +12,11 @@ app:
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
+  secrets: {}
+    # ENV_NAME:
+    #   required: # true or false - whether massdriver should enforce this value being set
+    #   title: # Set the title
+    #   description: # Set a description
 
 params:
   examples: []

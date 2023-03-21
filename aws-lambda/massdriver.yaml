@@ -12,6 +12,11 @@ app:
   # IAM permissions can be assigned to this workload using jq to pull iam from connections
   policies: []
     # - .connections.k8s_auth.data.security.iam.subscribe
+  secrets: {}
+    # ENV_NAME:
+    #   required: # true or false - whether massdriver should enforce this value being set
+    #   title: # Set the title
+    #   description: # Set a description
 
 params:
   required:
