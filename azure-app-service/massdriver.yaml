@@ -280,7 +280,7 @@ connections:
     - azure_service_principal
     - azure_virtual_network
   {%- for conn in connections %}
-    - {{conn.name-}}
+    - {{ conn.name -}}
   {% endfor %}
   properties:
     azure_service_principal:
@@ -288,8 +288,8 @@ connections:
     azure_virtual_network:
       $ref: massdriver/azure-virtual-network
   {%- for conn in connections %}
-    {{conn.name}}:
-      $ref: {{conn.artifact_definition-}}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
   {% endfor %}
 
 

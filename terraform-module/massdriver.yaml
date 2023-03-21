@@ -34,12 +34,12 @@ connections:
 {%- if connections.size > 0 %}
   required:
   {%- for conn in connections %}
-  - {{conn.name-}}
+  - {{ conn.name -}}
   {% endfor %}
   properties:
   {%- for conn in connections %}
-    {{conn.name}}:
-      $ref: {{conn.artifact_definition-}}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
   {% endfor %}
 {% else %}
   properties: {}
