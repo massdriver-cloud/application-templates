@@ -123,7 +123,7 @@ connections:
     - aws_authentication
     - api_gateway
   {%- for conn in connections %}
-    - {{conn.name-}}
+    - {{ conn.name -}}
   {% endfor %}
   properties:
     aws_authentication:
@@ -131,8 +131,8 @@ connections:
     api_gateway:
       $ref: massdriver/aws-api-gateway-rest-api
   {%- for conn in connections %}
-    {{conn.name}}:
-      $ref: {{conn.artifact_definition-}}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
   {% endfor %}
 
 ui:
