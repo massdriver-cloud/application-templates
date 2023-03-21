@@ -1,3 +1,7 @@
+locals {
+  api_id = split("/", var.api_gateway.data.infrastructure.arn)[2]
+}
+
 module "lambda_application" {
   source            = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-lambda?ref=b81fea7"
   md_metadata       = var.md_metadata

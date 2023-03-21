@@ -21,6 +21,7 @@ steps:
     skip_on_delete: true
 
 params:
+  examples: []
   properties:
     api:
       type: object
