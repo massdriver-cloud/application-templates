@@ -110,7 +110,7 @@ connections:
   required:
     - kubernetes_cluster
   {%- for conn in connections %}
-    - {{conn.name-}}
+    - {{ conn.name -}}
   {% endfor %}
   properties:
     kubernetes_cluster:
@@ -122,8 +122,8 @@ connections:
     azure_authentication:
       $ref: massdriver/azure-service-principal
   {%- for conn in connections %}
-    {{conn.name}}:
-      $ref: {{conn.artifact_definition-}}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
   {% endfor %}
 
 ui:
