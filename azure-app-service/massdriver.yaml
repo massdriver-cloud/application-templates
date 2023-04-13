@@ -175,19 +175,23 @@ params:
           type: boolean
           default: false
     image:
-      title: Container Image
+      title: Container image configuration
       type: object
       required:
-      - repository
+      - registry
+      - name
       - tag
       properties:
-        repository:
-          $md.immutable: true
-          title: Repository
-          # Massdriver automatically configures your app service to have access to your cloud container repositories.
-          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
-          description: Container repository to use for this application.
+        registry:
+          title: Registry
+          description: "Container registry to use for this application. For example: demo.azurecr.io"
           type: string
+          $md.immutable: true
+        name:
+          title: Image Name
+          description: "Name of the container image to use for this application. Include namespace if applicable, for example: namespace/image-name"
+          type: string
+          $md.immutable: true
         tag:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
@@ -259,11 +263,6 @@ params:
                   type: object
                   title: Alarms
                   properties:
-                    response_metric_alert:
-                      title: Response time
-                      description: Time between receiving an HTTP request and finishing sending the response.
-                      type: object
-                      <<: *monitor_alarm_metric
                     http_4xx_metric_alert:
                       title: HTTP 4xx errors
                       description: Number of HTTP 4xx errors.
@@ -291,13 +290,6 @@ connections:
     {{ conn.name }}:
       $ref: {{ conn.artifact_definition -}}
   {% endfor %}
-
-
-artifacts:
-  required: []
-  properties:
-    endpoint:
-      $ref: massdriver/api
 
 ui:
   ui:order:
@@ -335,10 +327,9 @@ ui:
       - "*"
     alarms:
       ui:order:
-        - response_metric_alert
         - http_4xx_metric_alert
         - http_5xx_metric_alert
-      response_metric_alert: &monitor_alarm_metric_ui
+      http_4xx_metric_alert: &monitor_alarm_metric_ui
         ui:order:
           - severity
           - operator
@@ -346,7 +337,5 @@ ui:
           - frequency
           - window_size
           - threshold
-      http_4xx_metric_alert:
-        <<: *monitor_alarm_metric_ui
       http_5xx_metric_alert:
         <<: *monitor_alarm_metric_ui
