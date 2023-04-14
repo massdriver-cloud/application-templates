@@ -128,9 +128,27 @@ params:
         sku_name: P3v3
         minimum_worker_count: 2
         maximum_worker_count: 30
+    - __name: Wizard
+      application:
+        sku_name: S1
+        minimum_worker_count: 1
+        maximum_worker_count: 5
+        zone_balancing: false
+        health_check_path: /health
+        logs:
+          retention_period_days: 0
+          disk_quota_mb: 25
+      image:
+        registry: https://index.docker.io/v1
+        name: massdriver-cloud/fizzbuzz # placeholder
+        tag: latest
+      dns:
+        enable_dns: false
+      monitoring:
+        mode: AUTOMATED
   required:
     - application
-    - docker
+    - image
     - dns
   properties:
     application:
@@ -321,7 +339,7 @@ connections:
 ui:
   ui:order:
     - application
-    - docker
+    - image
     - dns
     - monitoring
     - "*"
@@ -332,8 +350,10 @@ ui:
       - maximum_worker_count
       - zone_balancing
       - "*"
-  docker:
+  image:
     ui:order:
+      - registry
+      - name
       - tag
       - "*"
   dns:
