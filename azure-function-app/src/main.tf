@@ -1,9 +1,16 @@
 module "application" {
-  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-azure-function-app?ref=86dc2b1"
-  name        = var.md_metadata.name_prefix
-  tags        = var.md_metadata.default_tags
-  application = var.application
-  docker      = var.docker
+  source             = "github.com/massdriver-cloud/terraform-modules//massdriver-application-azure-function-app?ref=7caf5a6"
+  name               = var.md_metadata.name_prefix
+  location           = var.azure_virtual_network.specs.azure.region
+  application        = var.application
+  image              = var.image
+  monitoring         = var.monitoring
+  dns                = var.dns
+  virtual_network_id = var.azure_virtual_network.data.infrastructure.id
+  contact_email      = var.md_metadata.target.contact_email
+  md_metadata        = var.md_metadata
+  tags               = var.md_metadata.default_tags
+
   network = {
     auto = true
   }
@@ -11,12 +18,4 @@ module "application" {
     path = "/health"
     port = 80
   }
-  monitoring = {
-    mode = "AUTOMATED"
-  }
-  dns                = var.dns
-  virtual_network_id = var.azure_virtual_network.data.infrastructure.id
-  location           = var.azure_virtual_network.specs.azure.region
-  contact_email      = var.md_metadata.target.contact_email
-  md_metadata        = var.md_metadata
 }

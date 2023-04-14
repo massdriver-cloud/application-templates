@@ -206,26 +206,24 @@ params:
               default: 50
               minimum: 25
               maximum: 100
-    docker:
-      title: Container Configuration
-      description: "Set the tag for the image"
+    image:
+      title: Container image configuration
       type: object
       required:
       - registry
-      - image
+      - name
       - tag
       properties:
         registry:
+          title: Registry
+          description: "Container registry to use for this application. For example: demo.azurecr.io"
+          type: string
           $md.immutable: true
-          title: Docker registry
-          # Massdriver automatically configures your app service to have access to your cloud container repositories.
-          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
-          description: Docker registry to use for this application.
+        name:
+          title: Image Name
+          description: "Name of the container image to use for this application. Include namespace if applicable, for example: namespace/image-name"
           type: string
-        image:
-          title: Docker image
-          description: Docker image to use for this application.
-          type: string
+          $md.immutable: true
         tag:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
@@ -319,12 +317,6 @@ connections:
     {{ conn.name }}:
       $ref: {{ conn.artifact_definition -}}
   {% endfor %}
-
-artifacts:
-  required: []
-  properties:
-    endpoint:
-      $ref: massdriver/api
 
 ui:
   ui:order:
