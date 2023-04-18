@@ -165,7 +165,6 @@ params:
                 message:
                   pattern: Must begin with a '/' and be a valid HTTP endpoint
             required:
-            - host
             - path
     # Uncomment the section below to begin adding any application-specific configuration that is appropriate. See the app.envs section above for how to set environment values from these settings.
     # configuration:
