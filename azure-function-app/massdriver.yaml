@@ -122,11 +122,11 @@ params:
       application:
         sku_name: S1
         minimum_worker_count: 1
-        maximum_worker_count: 3
+        maximum_worker_count: 5
     - __name: Production
       application:
         sku_name: P3v3
-        minimum_worker_count: 2
+        minimum_worker_count: 1
         maximum_worker_count: 30
     - __name: Wizard
       application:
@@ -139,9 +139,9 @@ params:
           retention_period_days: 0
           disk_quota_mb: 25
       image:
-        registry: https://index.docker.io/v1
-        name: massdriver-cloud/fizzbuzz # placeholder
-        tag: latest
+        registry: https://index.docker.io
+        name: massdrivercloud/fizzbuzzapi
+        tag: azurefunctions
       dns:
         enable_dns: false
       monitoring:
@@ -323,18 +323,24 @@ connections:
   required:
     - azure_service_principal
     - azure_virtual_network
-  {%- for conn in connections %}
-    - {{ conn.name -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   - {{ conn.name -}}
+  # {% endfor %}
   properties:
     azure_service_principal:
       $ref: massdriver/azure-service-principal
     azure_virtual_network:
       $ref: massdriver/azure-virtual-network
-  {%- for conn in connections %}
-    {{ conn.name }}:
-      $ref: {{ conn.artifact_definition -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   {{ conn.name }}:
+  #     $ref: {{ conn.artifact_definition -}}
+  # {% endfor %}
+
+artifacts:
+  required: []
+  properties:
+    endpoint:
+      $ref: massdriver/api
 
 ui:
   ui:order:
