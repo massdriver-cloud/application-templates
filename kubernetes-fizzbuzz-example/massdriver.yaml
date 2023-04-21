@@ -35,6 +35,7 @@ params:
         replicaCount: 1
       ingress:
         enabled: true
+        path: /
   required:
     - namespace
     - image
