@@ -22,50 +22,75 @@ app:
 params:
   examples: []
   required:
+    - platform
     - container
-    - max_instances
     - endpoint
   properties:
-    log_level:
-      type: string
-      title: Log Level
-      description: "The log level to log at. This is an example value, this could be anything!"
-      enum:
-        - error
-        - warning
-        - info
+    # log_level:
+    #   type: string
+    #   title: Log Level
+    #   description: "The log level to log at. This is an example value, this could be anything!"
+    #   enum:
+    #     - error
+    #     - warning
+    #     - info
+    platform:
+      type: object
+      title: Platform
+      required:
+        - max_instances
+      properties:
+        max_instances:
+          type: integer
+          title: Max Instances
+          description: The maximum number of instances to run at once.
+          default: 5
     container:
       type: object
       title: Container
       required:
-      - repository
       - image
-      - tag
+      - port
+      - concurrency
       properties:
-        repository:
-          type: string
-          title: Repository
-          # You'll generally want to hard code your container repository in your bundle code,
-          # but it can be helpful to show it in your schema as well.
-          description: Container repository to use for this application.
         image:
-          type: string
-          title: Image
-        tag:
-          title: Image Tag
-          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
-          default: latest
-    max_instances:
-      type: integer
-      title: Max Instances
-      description: The maximum number of instances to run at once.
-      default: 5
-    container_concurrency:
-      type: integer
-      title: Container Concurrency
-      description: The maximum allowed in-flight (concurrent) requests per container.
-      default: 0
-      minimum: 0
+          type: object
+          title: Image repository
+          required:
+            - repository
+            - image
+            - tag
+          properties:
+            repository:
+              type: string
+              title: Repository
+              description: Container repository to use for this application.
+              oneOf:
+                - const: docker.io
+                  title: Docker Hub
+                - const: gcr.io
+                  title: Google Container Registry
+            name:
+              type: string
+              title: Image name
+              description: "The name of the image to use. For example: 'nginx' or ''" 
+            tag:
+              title: Image tag
+              $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+              default: latest
+        port:
+          type: integer
+          title: Port
+          description: The port to expose on the container.
+          default: 8080
+          minimum: 1
+          maximum: 65535
+        concurrency:
+          type: integer
+          title: Container concurrency
+          description: The maximum allowed in-flight (concurrent) requests per container.
+          default: 0
+          minimum: 0
     endpoint:
       type: object
       title: Endpoint
@@ -116,21 +141,40 @@ connections:
       $ref: {{ conn.artifact_definition -}}
   {% endfor %}
 
+artifacts:
+  required: []
+  properties:
+    endpoint:
+      $ref: massdriver/api
+
 ui:
   ui:order:
+    - platform
     - container
     - endpoint
     - "*"
+  platform:
+    ui:order:
+      - max_instances
+      - "*"
   container:
     ui:order:
-      - repository
       - image
-      - tag
+      - port
+      - concurrency
+      - "*"
+    image:
+      ui:order:
+        - repository
+        - name
+        - tag
+        - "*"
   endpoint:
     ui:order:
       - enabled
       - zone
       - subdomain
+      - "*"
     zone:
       name:
         ui:field: dnsZonesDropdown
