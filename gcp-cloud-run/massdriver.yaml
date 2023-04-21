@@ -73,7 +73,7 @@ params:
             name:
               type: string
               title: Image name
-              description: "The name of the image to use. For example: 'nginx' or ''" 
+              description: "The name of the image to use. For example: 'library/nginx' or 'massdrivercloud/fizzbuzzapi'" 
             tag:
               title: Image tag
               $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
