@@ -58,22 +58,13 @@ params:
           title: Image repository
           required:
             - repository
-            - image
             - tag
           properties:
             repository:
               type: string
               title: Repository
-              description: Container repository to use for this application.
-              oneOf:
-                - const: docker.io
-                  title: Docker Hub
-                - const: gcr.io
-                  title: Google Container Registry
-            name:
-              type: string
-              title: Image name
-              description: "The name of the image to use. For example: 'library/nginx' or 'massdrivercloud/fizzbuzzapi'" 
+              description: "Container repository to use for this application. For example: 'nginx' or 'gcr.io/google-samples/node-hello'. **Cannot be changed after deployment.**"
+              $md.immutable: true
             tag:
               title: Image tag
               $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
@@ -166,7 +157,6 @@ ui:
     image:
       ui:order:
         - repository
-        - name
         - tag
         - "*"
   endpoint:

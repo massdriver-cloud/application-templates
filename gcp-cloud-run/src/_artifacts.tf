@@ -17,7 +17,7 @@ resource "massdriver_artifact" "endpoint" {
       }
       specs = {
         api = {
-          version = "${var.container.image.name}:${var.container.image.tag}"
+          version = "${var.container.image.repository}:${var.container.image.tag}"
         }
       }
     }

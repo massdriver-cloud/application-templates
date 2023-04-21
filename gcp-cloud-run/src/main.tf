@@ -1,5 +1,5 @@
 module "application_cloud_run" {
-  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-cloud-run?ref=abd42ad"
+  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-cloud-run?ref=9829a65"
   md_metadata = var.md_metadata
   platform = {
     location      = local.gcp_region
@@ -8,7 +8,6 @@ module "application_cloud_run" {
   container = {
     image = {
       repository = var.container.image.repository
-      name       = var.container.image.name
       tag        = var.container.image.tag
     }
     port        = var.container.port
