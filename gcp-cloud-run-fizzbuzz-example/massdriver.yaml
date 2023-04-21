@@ -6,34 +6,28 @@ access: private
 type: application
 
 app:
-  envs:
-    # Use jq expressions to build environment variables from input params or connections
-    LOG_LEVEL: .params.log_level
-    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+  envs: {}
   policies: []
-    # Use jq expressions to select policies from artifact security blocks
-    # - .connections.sqs.data.security.iam.subscribe
   secrets: {}
-    # ENV_NAME:
-    #   required: # true or false - whether massdriver should enforce this value being set
-    #   title: # Set the title
-    #   description: # Set a description
 
 params:
-  examples: []
+  examples:
+    - __name: Wizard
+      platform:
+        max_instances: 5
+      container:
+        image:
+          repository: massdrivercloud/fizzbuzzapi
+          tag: k8s
+        port: 3000
+        concurrency: 0
+      endpoint:
+        enabled: false
   required:
     - platform
     - container
     - endpoint
   properties:
-    # log_level:
-    #   type: string
-    #   title: Log Level
-    #   description: "The log level to log at. This is an example value, this could be anything!"
-    #   enum:
-    #     - error
-    #     - warning
-    #     - info
     platform:
       type: object
       title: Platform
