@@ -1,11 +1,18 @@
 module "application_cloud_run" {
-  source                = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-cloud-run?ref=0346144"
-  md_metadata           = var.md_metadata
-  location              = local.gcp_region
-  container_image       = "${var.container.repository}/${var.container.image}:${var.container.tag}"
-  container_port        = 8080
+  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-cloud-run?ref=9829a65"
+  md_metadata = var.md_metadata
+  platform = {
+    location      = local.gcp_region
+    max_instances = var.platform.max_instances
+  }
+  container = {
+    image = {
+      repository = var.container.image.repository
+      tag        = var.container.image.tag
+    }
+    port        = var.container.port
+    concurrency = var.container.concurrency
+  }
   endpoint              = var.endpoint
-  max_instances         = var.max_instances
   vpc_connector         = var.gcp_subnetwork.data.infrastructure.vpc_access_connector
-  container_concurrency = var.container_concurrency
 }
