@@ -1,6 +1,6 @@
 schema: draft-07
-name: michael # {{ name }}
-description: michael # {{ description }}
+name: {{ name }}
+description: {{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -110,18 +110,18 @@ connections:
   required:
     - gcp_authentication
     - gcp_subnetwork
-  # {%- for conn in connections %}
-  #   - {{ conn.name -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    - {{ conn.name -}}
+  {% endfor %}
   properties:
     gcp_authentication:
       $ref: massdriver/gcp-service-account
     gcp_subnetwork:
       $ref: massdriver/gcp-subnetwork
-  # {%- for conn in connections %}
-  #   {{ conn.name }}:
-  #     $ref: {{ conn.artifact_definition -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
+  {% endfor %}
 
 artifacts:
   required: []
