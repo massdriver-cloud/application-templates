@@ -1,8 +1,8 @@
 locals {
 
   host     = "${local.api_id}.execute-api.${var.api_gateway.specs.aws.region}.amazonaws.com/${local.stage_name}/${var.api.path}"
-  port     = 80
-  protocol = "http"
+  port     = 443
+  protocol = "https"
   public_artifact_data = {
     api = {
       # The publicly accessible ingress hostname and path
