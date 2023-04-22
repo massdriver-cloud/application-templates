@@ -24,6 +24,9 @@ params:
   examples:
     - __name: Wizard
       region: us-west-2
+      api:
+        path: fizzbuzz
+        http_method: POST
       runtime:
         image: 
           uri: 083014189801.dkr.ecr.us-west-2.amazonaws.com/massdrivercloud/fizzbuzzapi
