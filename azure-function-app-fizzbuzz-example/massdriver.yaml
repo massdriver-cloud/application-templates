@@ -118,16 +118,24 @@ MonitorAlarmMetric: &monitor_alarm_metric
 
 params:
   examples:
-    - __name: Development
+    - __name: Wizard
       application:
         sku_name: S1
         minimum_worker_count: 1
         maximum_worker_count: 5
-    - __name: Production
-      application:
-        sku_name: P3v3
-        minimum_worker_count: 1
-        maximum_worker_count: 30
+        zone_balancing: false
+        health_check_path: /health
+        logs:
+          retention_period_days: 0
+          disk_quota_mb: 25
+      image:
+        registry: docker.io
+        name: massdrivercloud/fizzbuzzapi
+        tag: azurefunctions
+      dns:
+        enable_dns: false
+      monitoring:
+        mode: AUTOMATED
   required:
     - application
     - image
