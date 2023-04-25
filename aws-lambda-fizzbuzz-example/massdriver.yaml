@@ -166,7 +166,6 @@ params:
               const: 365
             - title: Never expire
               const: 0
-                  monitoring:
         mode:
           title: Alarm Mode
           description: Enable and customize APIGateway metric alarms.
