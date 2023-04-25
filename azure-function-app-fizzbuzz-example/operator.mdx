@@ -12,4 +12,17 @@ Azure Functions is a serverless solution that allows you to write less code, mai
 * Create reliable message queue systems using [Event Hubs](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-event-hubs)
 * [And more](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview#scenarios)...
 ### Use your preferred language
-Write functions in any language you want using a custom Docker image. 
+Write functions in any language you want using a custom Docker image.
+
+## Design
+### Auto-CIDR Feature
+The Masssdriver Auto CIDR feature takes the burden of selecting a CIDR range away from you by determining the next available CIDR range and automatically provisions it. You still have the option to manually set your CIDR range if you prefer.
+
+## Best Practices
+### Health checking
+Health checks are enabled by default using a path of `/health` and port 80. You can change the path and port by updating the configuration in `src/main.tf` of your template.
+
+## Security
+
+## Observability
+Massdriver gives you visibility into the health of your systems. By default, Azure Function Apps will be created with alarms to monitor at key performance degradation or failure thresholds. You will be notified when latency exceeds 1000ms.

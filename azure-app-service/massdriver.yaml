@@ -291,6 +291,13 @@ connections:
       $ref: {{ conn.artifact_definition -}}
   {% endfor %}
 
+artifacts:
+  required:
+    - endpoint
+  properties:
+    endpoint:
+      $ref: massdriver/api
+
 ui:
   ui:order:
     - application
