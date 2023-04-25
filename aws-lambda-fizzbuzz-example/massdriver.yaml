@@ -5,6 +5,38 @@ source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
 
+CloudWatchAlarmMetricInteger: &cloudwatch_alarm_metric_integer
+  required:
+    - threshold
+    - period
+  properties:
+    threshold:
+      type: integer
+      title: Threshold
+    period:
+      type: integer
+      title: Period
+      minimum: 1
+      maximum: 86400
+      default: 300
+      description: The length of time associated with this statistic
+
+CloudWatchAlarmMetricFloat: &cloudwatch_alarm_metric_float
+  required:
+    - threshold
+    - period
+  properties:
+    threshold:
+      type: number
+      title: Threshold
+    period:
+      type: integer
+      title: Period
+      minimum: 1
+      maximum: 86400
+      default: 300
+      description: The length of time associated with this statistic
+
 app:
   # Environment variables can be pulled from params or connections using jq
   envs: {}
@@ -37,6 +69,7 @@ params:
         x-ray:
           enabled: false 
         retention_days: 7
+        mode: AUTOMATED
   properties:
     api:
       type: object
@@ -133,6 +166,50 @@ params:
               const: 365
             - title: Never expire
               const: 0
+                  monitoring:
+        mode:
+          title: Alarm Mode
+          description: Enable and customize APIGateway metric alarms.
+          type: string
+          default: AUTOMATED
+          oneOf:
+            - const: AUTOMATED
+              title: Automated
+            - const: CUSTOM
+              title: Custom
+            - const: DISABLED
+              title: Disabled
+      dependencies:
+        mode:
+          oneOf:
+            - properties:
+                mode:
+                  const: AUTOMATED
+            - properties:
+                mode:
+                  const: DISABLED
+            - properties:
+                mode:
+                  const: CUSTOM
+                alarms:
+                  type: object
+                  title: Alarms
+                  properties:
+                    errors:
+                      title: Error Percent
+                      description: "Error rate"
+                      type: object
+                      <<: *cloudwatch_alarm_metric_float
+                    max_duration:
+                      title: Max Duration 
+                      description: "The length of the longest lambda execution in seconds"
+                      type: object
+                      <<: *cloudwatch_alarm_metric_integer
+                    avg_duration:
+                      title: Average Duration
+                      description: "Average duration of executions in seconds"
+                      type: object
+                      <<: *cloudwatch_alarm_metric_integer
 
 connections:
   required:
