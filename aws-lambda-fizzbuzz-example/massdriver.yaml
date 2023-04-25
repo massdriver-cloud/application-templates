@@ -1,7 +1,7 @@
 schema: draft-07
-name: {{ name }}
-description: {{ description }}
-source_url: github.com/YOUR_ORG/{{ name }}
+name: alarm-lambda
+description: test alarm lambda
+source_url: github.com/YOUR_ORG/alarm-lambda
 access: private
 type: application
 
@@ -214,18 +214,11 @@ connections:
   required:
     - aws_authentication
     - api_gateway
-  {%- for conn in connections %}
-    - {{ conn.name -}}
-  {% endfor %}
   properties:
     aws_authentication:
       $ref: massdriver/aws-iam-role
     api_gateway:
       $ref: massdriver/aws-api-gateway-rest-api
-  {%- for conn in connections %}
-    {{ conn.name }}:
-      $ref: {{ conn.artifact_definition -}}
-  {% endfor %}
 
 artifacts:
   required:
