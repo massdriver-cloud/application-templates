@@ -313,18 +313,18 @@ connections:
   required:
     - azure_service_principal
     - azure_virtual_network
-  # {%- for conn in connections %}
-  #   - {{ conn.name -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    - {{ conn.name -}}
+  {% endfor %}
   properties:
     azure_service_principal:
       $ref: massdriver/azure-service-principal
     azure_virtual_network:
       $ref: massdriver/azure-virtual-network
-  # {%- for conn in connections %}
-  #   {{ conn.name }}:
-  #     $ref: {{ conn.artifact_definition -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
+  {% endfor %}
 
 artifacts:
   required: []
