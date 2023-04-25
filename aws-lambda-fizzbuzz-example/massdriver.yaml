@@ -263,3 +263,5 @@ ui:
     ui:order:
       - retention_days
       - x-ray
+      - mode
+      - alarms
