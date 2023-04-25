@@ -1,5 +1,5 @@
 module "application" {
-  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-cloud-run?ref=779f770"
+  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-cloud-run?ref=23a47fa"
   md_metadata = var.md_metadata
   platform = {
     location      = local.gcp_region
