@@ -167,7 +167,7 @@ params:
                 const: true
               host:
                 title: HTTP Hostname
-                description: The hostname which this application should be accessable on, such as www.example.com. You must own this domain and have it associated with this kubernetes cluster if you would like automatic DNS record and SSL certificate management.
+                description: The hostname which this application should be accessible on, such as www.example.com. You must own this domain and have it associated with this kubernetes cluster if you would like automatic DNS record and SSL certificate management.
                 type: string
                 pattern: ^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
                 message:
