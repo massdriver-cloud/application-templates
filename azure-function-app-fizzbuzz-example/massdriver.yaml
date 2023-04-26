@@ -217,10 +217,7 @@ params:
         path:
           type: string
           title: Path
-          description: Last path segment of this API resource. Entering {proxy+} will respond to all paths.
-          pattern: "((^[a-zA-Z0-9-_]+$)|(^\\{[a-zA-Z0-9-_]+\\}$)|(^\\{proxy\\+\\}$))"
-          message:
-            pattern: "Correct format of a path is lowercase letters, numbers, dashes and underscores. For capturing paths the same rules apply but the path must start with and end with curly braces."
+          description: Last path segment of this API resource.
     image:
       title: Container image configuration
       type: object
