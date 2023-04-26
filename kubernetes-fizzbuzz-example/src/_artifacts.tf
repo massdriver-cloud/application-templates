@@ -1,7 +1,7 @@
 locals {
-  host     = var.ingress.host == "" ? "${data.kubernetes_ingress_v1.main.status.0.load_balancer.0.ingress.0.hostname}${var.ingress.path}" : "${var.ingress.host}${var.ingress.path}"
-  port     = var.ingress.host == "" ? 80 : 443
-  protocol = var.ingress.host == "" ? "http" : "https"
+  host     = try(var.ingress.host, "") == "" ? "${data.kubernetes_ingress_v1.main.status.0.load_balancer.0.ingress.0.hostname}${var.ingress.path}" : "${var.ingress.host}${var.ingress.path}"
+  port     = try(var.ingress.host, "") == "" ? 80 : 443
+  protocol = try(var.ingress.host, "") == "" ? "http" : "https"
   public_artifact_data = {
     api = {
       # The publicly accessible ingress hostname and path
