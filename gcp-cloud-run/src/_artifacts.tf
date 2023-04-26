@@ -5,7 +5,7 @@ locals {
 
 resource "massdriver_artifact" "endpoint" {
   field                = "endpoint"
-  provider_resource_id = module.application.identity
+  provider_resource_id = module.application.grn
   name                 = "GCP Cloud Run endpoint for ${var.md_metadata.name_prefix}"
   artifact = jsonencode(
     {
