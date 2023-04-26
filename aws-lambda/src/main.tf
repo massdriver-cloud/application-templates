@@ -1,5 +1,5 @@
 module "lambda_application" {
-  source            = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-lambda?ref=b81fea7"
+  source            = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-lambda?ref=23a47fa"
   md_metadata       = var.md_metadata
   image             = var.runtime.image
   x_ray_enabled     = var.observability.x-ray.enabled

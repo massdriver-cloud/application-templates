@@ -1,5 +1,5 @@
 module "application" {
-  source               = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-vm?ref=343d3e4"
+  source               = "github.com/massdriver-cloud/terraform-modules//massdriver-application-gcp-vm?ref=23a47fa"
   location             = var.location
   container_image      = "${var.container.repository}/${var.container.image}:${var.container.tag}"
   compute_image_family = var.compute_image_family
