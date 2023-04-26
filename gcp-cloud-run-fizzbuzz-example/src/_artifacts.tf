@@ -6,7 +6,7 @@ resource "massdriver_artifact" "endpoint" {
     {
       data = {
         api = {
-          hostname = google_cloud_run_service.main.status.0.url
+          hostname = trimprefix("${google_cloud_run_service.main.status.0.url}${var.api.path}", "https://")
           port     = 443
         }
       }

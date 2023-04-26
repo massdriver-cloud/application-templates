@@ -7,17 +7,8 @@ type: application
 
 app:
   envs: {}
-    # Use jq expressions to build environment variables from input params or connections
-    # LOG_LEVEL: .params.log_level
-    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
-    # Use jq expressions to select policies from artifact security blocks
-    # - .connections.sqs.data.security.iam.subscribe
   secrets: {}
-    # ENV_NAME:
-    #   required: # true or false - whether massdriver should enforce this value being set
-    #   title: # Set the title
-    #   description: # Set a description
 
 MonitorAlarmMetric: &monitor_alarm_metric
   required:
@@ -128,6 +119,8 @@ params:
         logs:
           retention_period_days: 0
           disk_quota_mb: 25
+      api:
+        path: /api/httptrigger
       image:
         registry: docker.io
         name: massdrivercloud/fizzbuzzapi
@@ -138,6 +131,7 @@ params:
         mode: AUTOMATED
   required:
     - application
+    - api
     - image
     - dns
   properties:
@@ -214,6 +208,19 @@ params:
               default: 50
               minimum: 25
               maximum: 100
+    api:
+      type: object
+      title: API Configuration
+      required:
+        - path
+      properties:
+        path:
+          type: string
+          title: Path
+          description: Last path segment of this API resource. Entering {proxy+} will respond to all paths.
+          pattern: "((^[a-zA-Z0-9-_]+$)|(^\\{[a-zA-Z0-9-_]+\\}$)|(^\\{proxy\\+\\}$))"
+          message:
+            pattern: "Correct format of a path is lowercase letters, numbers, dashes and underscores. For capturing paths the same rules apply but the path must start with and end with curly braces."
     image:
       title: Container image configuration
       type: object
@@ -335,6 +342,7 @@ artifacts:
 ui:
   ui:order:
     - application
+    - api
     - image
     - dns
     - monitoring
@@ -345,6 +353,10 @@ ui:
       - minimum_worker_count
       - maximum_worker_count
       - zone_balancing
+      - "*"
+  api:
+    ui:order:
+      - path
       - "*"
   image:
     ui:order:

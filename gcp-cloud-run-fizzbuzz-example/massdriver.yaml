@@ -15,6 +15,8 @@ params:
     - __name: Wizard
       platform:
         max_instances: 5
+      api:
+        path: /fizzbuzz
       container:
         image:
           repository: massdrivercloud/fizzbuzzapi
@@ -25,6 +27,7 @@ params:
         enabled: false
   required:
     - platform
+    - api
     - container
     - endpoint
   properties:
@@ -39,6 +42,19 @@ params:
           title: Max Instances
           description: The maximum number of instances to run at once.
           default: 5
+    api:
+      type: object
+      title: API Configuration
+      required:
+        - path
+      properties:
+        path:
+          type: string
+          title: Path
+          description: Last path segment of this API resource. Entering {proxy+} will respond to all paths.
+          pattern: "((^[a-zA-Z0-9-_]+$)|(^\\{[a-zA-Z0-9-_]+\\}$)|(^\\{proxy\\+\\}$))"
+          message:
+            pattern: "Correct format of a path is lowercase letters, numbers, dashes and underscores. For capturing paths the same rules apply but the path must start with and end with curly braces."
     container:
       type: object
       title: Container
@@ -132,12 +148,17 @@ artifacts:
 ui:
   ui:order:
     - platform
+    - api
     - container
     - endpoint
     - "*"
   platform:
     ui:order:
       - max_instances
+      - "*"
+  api:
+    ui:order:
+      - path
       - "*"
   container:
     ui:order:
