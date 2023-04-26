@@ -11,7 +11,7 @@ resource "massdriver_artifact" "endpoint" {
     {
       data = {
         api = {
-          hostname = local.endpoint
+          hostname = "${local.endpoint}${var.api.path}"
           port     = 443
         }
       }

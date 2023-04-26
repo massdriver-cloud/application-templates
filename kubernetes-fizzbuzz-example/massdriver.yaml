@@ -35,7 +35,7 @@ params:
         replicaCount: 1
       ingress:
         enabled: true
-        path: /
+        path: /fizzbuzz
   required:
     - namespace
     - image
