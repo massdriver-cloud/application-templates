@@ -1,11 +1,11 @@
 locals {
-  host     = try(var.ingress.host, "") == "" ? "${data.kubernetes_ingress_v1.main.status.0.load_balancer.0.ingress.0.hostname}${var.ingress.path}" : "${var.ingress.host}${var.ingress.path}"
+  host     = try(var.ingress.host, null) == null ? coalesce("${data.kubernetes_service_v1.main.status.0.load_balancer.0.ingress.0.hostname}", "${data.kubernetes_service_v1.main.status.0.load_balancer.0.ingress.0.ip}") : "${var.ingress.host}${var.ingress.path}"
   port     = try(var.ingress.host, "") == "" ? 80 : 443
   protocol = try(var.ingress.host, "") == "" ? "http" : "https"
   public_artifact_data = {
     api = {
       # The publicly accessible ingress hostname and path
-      hostname = var.ingress.enabled ? local.host : ""
+      hostname = var.ingress.enabled ? "${local.host}${var.ingress.path}" : ""
       # By default this all traffic is redirected to HTTPS on port 443
       port     = local.port
       protocol = local.protocol

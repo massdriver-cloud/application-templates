@@ -7,9 +7,9 @@ module "helm" {
   additional_envs    = []
 }
 
-data "kubernetes_ingress_v1" "main" {
+data "kubernetes_service_v1" "main" {
   metadata {
-    name      = var.md_metadata.name_prefix
-    namespace = var.namespace
+    name      = "ingress-nginx-controller"
+    namespace = "md-core-services"
   }
 }
