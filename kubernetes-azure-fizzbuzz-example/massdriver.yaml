@@ -1,0 +1,262 @@
+schema: draft-07
+name: {{ name }}
+description: {{ description }}
+source_url: github.com/YOUR_ORG/{{ name }}
+access: private
+type: application
+
+app:
+  envs: {}
+    # Use jq expressions to build environment variables from input params or connections
+    # LOG_LEVEL: .params.configuration.log_level
+    # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
+  policies: []
+    # Use jq expressions to select policies from artifact security blocks
+    # - .connections.sqs.data.security.iam.subscribe
+  secrets: {}
+    # ENV_NAME:
+    #   required: # true or false - whether massdriver should enforce this value being set
+    #   title: # Set the title
+    #   description: # Set a description
+
+params:
+  examples:
+    - __name: wizard
+      namespace: default
+      image:
+        repository: "massdrivercloud/fizzbuzzapi"
+        tag: "k8s"
+      resourceRequests:
+        cpu: 0.5
+        memory: 536870912
+      port: 3000
+      replicas:
+        autoscalingEnabled: false
+        replicaCount: 1
+      ingress:
+        enabled: true
+        path: /fizzbuzz
+  required:
+    - namespace
+    - image
+    - resourceRequests
+    - replicas
+    - ingress
+  properties:
+    namespace:
+      title: Kubernetes Namespace
+      description: Application will be deployed into this namespace. If the namespace doesn't exist, it will be created.
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/k8s-resource-name.json
+      default: default
+    image:
+      title: Container Image
+      type: object
+      required:
+      - repository
+      - tag
+      properties:
+        repository:
+          $md.immutable: true
+          title: Repository
+          # Massdriver automatically configures your Kubernetes clusters to have access to your cloud container repositories.
+          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
+          description: Container repository to use for this application.
+          type: string
+        tag:
+          title: Image Tag
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+          default: latest
+    command:
+      title: Command
+      description: Command to execute as the entrypoint of the container. If left unspecified, the container default will be used (referred to as 'entrypoint' in some container runtimes, such as Docker). Formatted as an array of strings so that 'exec' form is used.
+      type: array
+      items:
+        type: string
+    args:
+      title: Arguments
+      description: Arguments to pass to the entrypoint command of the container. If left unspecified, the container default will be used (referred to as 'command' in some container runtimes, such as Docker). Formatted as an array of strings so that 'exec' form is used.
+      type: array
+      items:
+        type: string
+    resourceRequests:
+      title: Resources
+      type: object
+      required:
+        - cpu
+        - memory
+      properties:
+        cpu:
+          title: CPU Cores
+          description: The expected CPU cores required for this application. Fractional numbers are allowed (0.5 is one half of a CPU core).
+          type: number
+          minimum: 0.001
+        memory:
+          title: Memory
+          description: The expected Memory resources required for this application.
+          type: integer
+    port:
+      title: Port
+      description: The container port the application will listen on.
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/port.json
+    replicas:
+      title: Replicas
+      description: Manage the number of concurrent replicas of your application
+      type: object
+      properties:
+        autoscalingEnabled:
+          title: Enable Horizontal Pod Autoscaling
+          description: A Horizontal Pod Autoscaler will enable your application to automatically add or remove replicas based on resource utilization.
+          type: boolean
+          default: false
+      dependencies:
+        autoscalingEnabled:
+          oneOf:
+          - properties:
+              autoscalingEnabled:
+                const: false
+              replicaCount:
+                title: Number of Replicas
+                description: Fixed number of replicas to constantly maintain
+                type: integer
+                minimum: 1
+                default: 1
+            required:
+            - replicaCount
+          - properties:
+              autoscalingEnabled:
+                const: true
+              minReplicas:
+                title: Minimum Replicas
+                description: Minimum number of replicas the autoscaler will maintain, based on target resource utilization
+                type: integer
+                minimum: 1
+                default: 1
+              maxReplicas:
+                title: Maximum Replicas
+                description: Maximum number of replicas the autoscaler will provision, based on target resource utilization
+                type: integer
+                minimum: 1
+                default: 10
+              targetCPUUtilizationPercentage:
+                title: Target CPU Utilization Percentage
+                description: The percentage of allocated CPU resources the autoscaler should target, based on the values specified in the 'Resources' section. If utilization rises sufficiently above this percentage, replicas will be added. If utilization drops sufficiently below this percentage, replicas will be removed.
+                type: integer
+                minimum: 1
+                default: 80
+            required:
+            - minReplicas
+            - maxReplicas
+            - targetCPUUtilizationPercentage
+    ingress:
+      title: Ingress
+      description: Configure the application for public internet accessibility
+      type: object
+      properties:
+        enabled:
+          title: Enable Public Internet Access
+          type: boolean
+          default: false
+      dependencies:
+        enabled:
+          oneOf:
+          - properties:
+              enabled:
+                const: false
+          - properties:
+              enabled:
+                const: true
+              host:
+                title: HTTP Hostname
+                description: The hostname which this application should be accessible on, such as www.example.com. You must own this domain and have it associated with this kubernetes cluster if you would like automatic DNS record and SSL certificate management.
+                type: string
+                pattern: ^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+                message:
+                  pattern: Hostname should consist of letters, numbers, periods and hyphens, such as www.example.com
+              path:
+                title: HTTP Path
+                description: The HTTP path which, when appended to the host above, this application will serve traffic on
+                type: string
+                default: "/"
+                pattern: ^\/.*$
+                message:
+                  pattern: Must begin with a '/' and be a valid HTTP endpoint
+            required:
+            - path
+    # Uncomment the section below to begin adding any application-specific configuration that is appropriate. See the app.envs section above for how to set environment values from these settings.
+    # configuration:
+    #   title: Configuration
+    #   description: Application specific configuration settings
+    #   type: object
+    #   properties:
+    #     log_level:
+    #       title: Log Level
+    #       type: string
+
+
+connections:
+  required:
+    - kubernetes_cluster
+  {%- for conn in connections %}
+    - {{ conn.name -}}
+  {% endfor %}
+  properties:
+    kubernetes_cluster:
+      $ref: massdriver/kubernetes-cluster
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    azure_authentication:
+      $ref: massdriver/azure-service-principal
+  {%- for conn in connections %}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
+  {% endfor %}
+
+
+#########
+### Uncomment below to enable producing artifacts for your web service.
+### You only need to uncomment the following if you intend to connect your internal services in Massdriver.
+### You will also need to uncomment the contents of `src/_artifacts.tf`.
+#########
+#
+artifacts:
+  required:
+    - public
+#   - internal
+  properties:
+    public:
+      $ref: massdriver/api
+#     internal:
+#       $ref: massdriver/api
+
+
+ui:
+  ui:order:
+    - namespace
+    - image
+    - command
+    - args
+    - resourceRequests
+    - replicas
+    - port
+    - ingress
+    - "*"
+  resourceRequests:
+    memory:
+      ui:field: conversionFieldData
+      unit: Bytes
+  replicas:
+    ui:order:
+      - autoscalingEnabled
+      - replicaCount
+      - minReplicas
+      - maxReplicas
+      - targetCPUUtilizationPercentage
+      - "*"
+  ingress:
+    ui:order:
+      - enabled
+      - host
+      - path
+      - "*"
