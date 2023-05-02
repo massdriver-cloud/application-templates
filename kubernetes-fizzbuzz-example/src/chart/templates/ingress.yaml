@@ -26,7 +26,11 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "application.labels" . | nindent 4 }}
+    {{- if .Values.ingress.host }}
+      {{- with .Values.ingress.annotations}}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.ingress.className }}

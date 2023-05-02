@@ -5,11 +5,6 @@
 {{- $path := .Values.ingress.path -}}
 {{- $pathType := .Values.ingress.pathType -}}
 {{- $tls := (printf "%s-%s" $fullName "tls") -}}
-{{- if .Values.ingress.host }}
-  {{- $filteredAnnotations := .Values.ingress.annotations}}
-{{- else }}
-  {{- $filteredAnnotations := omit .Values.ingress.annotations "nginx.ingress.kubernetes.io/force-ssl-redirect"}}
-{{- end }}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
@@ -26,7 +21,11 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "application.labels" . | nindent 4 }}
+    {{- if .Values.ingress.host }}
+      {{- with .Values.ingress.annotations}}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.ingress.className }}
