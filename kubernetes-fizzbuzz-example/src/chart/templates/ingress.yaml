@@ -26,8 +26,8 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-  {{- if .Values.ingress.host }}
-    {{- with .Values.ingress.annotations}}
+    {{- include "application.labels" . | nindent 4 }}
+  {{- with $filteredAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
