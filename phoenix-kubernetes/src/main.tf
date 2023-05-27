@@ -4,7 +4,7 @@ module "helm" {
   namespace          = var.namespace
   chart              = "elixir-phoenix"
   helm_repository    = "https://massdriver-cloud.github.io/helm-charts/"
-  helm_version       = "0.1.4"
+  helm_version       = "0.1.5"
   kubernetes_cluster = var.kubernetes_cluster
   additional_envs    = []
   helm_additional_values = {
