@@ -21,3 +21,11 @@ module "helm" {
     # }
   }
 }
+
+module "application_alarms" {
+  source            = "github.com/massdriver-cloud/terraform-modules//massdriver/k8s-application-alarms?ref=cc4fc5c"
+  md_metadata       = var.md_metadata
+  deployment_alarms = true
+  job_alarms        = true
+  hpa_alarms        = var.replicas.autoscalingEnabled
+}
