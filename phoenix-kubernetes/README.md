@@ -44,7 +44,7 @@ from your project's root folder to create a best-practices Dockerfile which you 
 
 ### GitHub Workflows
 
-Once your application is deployed with Massdriver, you can use simple GitHub Workflows to implement Continuous Deployment for your application.
+Once your application is deployed with Massdriver, you can use a simple GitHub Workflow to implement Continuous Deployment for your application.
 
 From this folder, run
 
