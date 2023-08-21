@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: {{ include "application.fullname" . }}
+  labels:
+    {{- include "application.labels" . | nindent 4 }}
+spec:
+  route:
+    groupBy:
+    - 'alertname'
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: {{ include "application.fullname" . }}
+    matchers:
+      - name: "md_package"
+        value: {{ index .Values.md_metadata.default_tags "md-package" }}
+  receivers:
+  - name: {{ include "application.fullname" . }}
+    webhookConfigs:
+    - url: {{ .Values.md_metadata.observability.alarm_webhook_url }}
+      sendResolved: true

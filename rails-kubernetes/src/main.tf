@@ -4,10 +4,13 @@ module "helm" {
   namespace          = var.namespace
   chart              = "ruby-on-rails"
   helm_repository    = "https://massdriver-cloud.github.io/helm-charts/"
-  helm_version       = "0.2.4"
+  helm_version       = "0.3.0"
   kubernetes_cluster = var.kubernetes_cluster
-  additional_envs    = []
   helm_additional_values = {
+    "massdriver-alarm-channel" = {
+      "enabled"     = true
+      "md_metadata" = var.md_metadata
+    }
     # # The default command, args, and migration settings are below. Any
     # # values in values.yaml can be overwritten by adding a parameter to your massdriver.yaml
     # # or by hard coding the value here
@@ -24,12 +27,4 @@ module "helm" {
     #       ]
     #     }
   }
-}
-
-module "application_alarms" {
-  source            = "github.com/massdriver-cloud/terraform-modules//massdriver/k8s-application-alarms?ref=cc4fc5c"
-  md_metadata       = var.md_metadata
-  deployment_alarms = true
-  job_alarms        = true
-  hpa_alarms        = var.replicas.autoscalingEnabled
 }
