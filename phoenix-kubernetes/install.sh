@@ -20,5 +20,11 @@ echo
 
 if [[ -f $DOCKERFILE_DIRECTORY/Dockerfile ]]; then
     echo "This bundle also contains a Dockerfile in the $DOCKERFILE_DIRECTORY directory."
-    echo "If you do not yet have a Dockerfile for your project, you can use the provided one to get you started."
+    read -p "Copy to project folder [y/n]?" -n 1 -r COPY_DOCKERFILE
+    if [[ $COPY_DOCKERFILE =~ ^[Yy]$ ]]; then
+        cp -R $DOCKERFILE_DIRECTORY/. .
+        rm -rf $DOCKERFILE_DIRECTORY
+        echo
+    fi
 fi
+
