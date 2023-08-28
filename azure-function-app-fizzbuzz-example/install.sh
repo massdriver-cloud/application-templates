@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WORKFLOW_DIRECTORY=./.github/workflows
+WORKFLOW_DIRECTORY=../.github/workflows
 WORKFLOW_NAME=md_bundle_publish.yaml
 
 DOCKERFILE_DIRECTORY=./examples
@@ -22,7 +22,7 @@ if [[ -f $DOCKERFILE_DIRECTORY/Dockerfile ]]; then
     echo "This bundle also contains a Dockerfile in the $DOCKERFILE_DIRECTORY directory."
     read -p "Copy to project folder [y/n]?" -n 1 -r COPY_DOCKERFILE
     if [[ $COPY_DOCKERFILE =~ ^[Yy]$ ]]; then
-        cp -R $DOCKERFILE_DIRECTORY/. .
+        cp -R $DOCKERFILE_DIRECTORY/. ..
         rm -rf $DOCKERFILE_DIRECTORY
         echo
     fi
