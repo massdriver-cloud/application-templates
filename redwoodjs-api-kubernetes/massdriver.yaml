@@ -1,0 +1,259 @@
+schema: draft-07
+name: "{{ name }}"
+description: "{{ description }}"
+source_url: github.com/YOUR_ORG/{{ name }}
+access: private
+type: application
+
+app:
+  envs: {}
+    ### Redis Connection String
+    # REDIS_URL: '@test "rediss://" + .connections.redis.data.authentication.password + "@" + .connections.redis.data.authentication.hostname + ":" + (.connections.redis.data.authentication.port|tostring)'
+    #
+    ### Postgres Connection String
+    # DATABASE_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+    #
+    ### MySQL Connection String
+    # DATABASE_URL: '@text "mysql2://" + .connections.mysql.data.authentication.username + ":" + .connections.mysql.data.authentication.password + "@" + .connections.mysql.data.authentication.hostname + ":" + (.connections.mysql.data.authentication.port|tostring) + "/" + .params.database_name'
+    #
+  # secrets: {}
+  # policies:
+  # - .connections.sqs.iam.read-write
+
+params:
+  examples:
+    - __name: Demo
+      namespace: default
+      image:
+        repository: massdrivercloud/rw-api
+        tag: latest
+      port: 8911
+      resourceRequests:
+        cpu: 0.2
+        memory: 262144000
+      ingress:
+        enabled: true
+        host: enter-a-domain-you-own-here.example.com
+      migration:
+        image:
+          repository: massdrivercloud/rw-console
+          tag: latest
+  required:
+    - namespace
+    - image
+    - resourceRequests
+    - replicas
+    - ingress
+    - migration
+  properties:
+    namespace:
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/json-schemas/main/k8s/namespace.json
+    migration:
+      type: object
+      required:
+        - repository
+        - tag    
+      properties:    
+        repository:
+          $md.immutable: true
+          title: Repository
+          # Massdriver automatically configures your Kubernetes clusters to have access to your cloud container repositories.
+          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
+          description: Container repository to use for this application.
+          type: string
+        tag:
+          title: Image Tag
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+          default: latest
+    image:
+      title: Container Image
+      type: object
+      required:
+        - repository
+        - tag
+      properties:
+        repository:
+          $md.immutable: true
+          title: Repository
+          # Massdriver automatically configures your Kubernetes clusters to have access to your cloud container repositories.
+          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
+          description: Container repository to use for this application.
+          type: string
+        tag:
+          title: Image Tag
+          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+          default: latest
+    command:
+      title: Command
+      description: Command to execute as the entrypoint of the container. If left unspecified, the container default will be used (referred to as 'entrypoint' in some container runtimes, such as Docker). Formatted as an array of strings so that 'exec' form is used.
+      type: array
+      items:
+        type: string
+    args:
+      title: Arguments
+      description: Arguments to pass to the entrypoint command of the container. If left unspecified, the container default will be used (referred to as 'command' in some container runtimes, such as Docker). Formatted as an array of strings so that 'exec' form is used.
+      type: array
+      items:
+        type: string
+    resourceRequests:
+      title: Resources
+      type: object
+      required:
+        - cpu
+        - memory
+      properties:
+        cpu:
+          title: CPU Cores
+          description: The expected CPU cores required for this application. Fractional numbers are allowed (0.5 is one half of a CPU core).
+          type: number
+          minimum: 0.001
+        memory:
+          title: Memory
+          description: The expected Memory resources required for this application.
+          type: integer
+    port:
+      title: Port
+      description: The container port the application will listen on.
+      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/port.json
+    replicas:
+      title: Replicas
+      description: Manage the number of concurrent replicas of your application
+      type: object
+      properties:
+        autoscalingEnabled:
+          title: Enable Horizontal Pod Autoscaling
+          description: A Horizontal Pod Autoscaler will enable your application to automatically add or remove replicas based on resource utilization.
+          type: boolean
+          default: false
+      dependencies:
+        autoscalingEnabled:
+          oneOf:
+            - properties:
+                autoscalingEnabled:
+                  const: false
+                replicaCount:
+                  title: Number of Replicas
+                  description: Fixed number of replicas to constantly maintain
+                  type: integer
+                  minimum: 1
+                  default: 1
+              required:
+                - replicaCount
+            - properties:
+                autoscalingEnabled:
+                  const: true
+                minReplicas:
+                  title: Minimum Replicas
+                  description: Minimum number of replicas the autoscaler will maintain, based on target resource utilization
+                  type: integer
+                  minimum: 1
+                  default: 1
+                maxReplicas:
+                  title: Maximum Replicas
+                  description: Maximum number of replicas the autoscaler will provision, based on target resource utilization
+                  type: integer
+                  minimum: 1
+                  default: 10
+                targetCPUUtilizationPercentage:
+                  title: Target CPU Utilization Percentage
+                  description: The percentage of allocated CPU resources the autoscaler should target, based on the values specified in the 'Resources' section. If utilization rises sufficiently above this percentage, replicas will be added. If utilization drops sufficiently below this percentage, replicas will be removed.
+                  type: integer
+                  minimum: 1
+                  default: 80
+              required:
+                - minReplicas
+                - maxReplicas
+                - targetCPUUtilizationPercentage
+    ingress:
+      title: Ingress
+      description: Configure the application for public internet accessibility
+      type: object
+      properties:
+        enabled:
+          title: Enable Public Internet Access
+          type: boolean
+          default: false
+      dependencies:
+        enabled:
+          oneOf:
+            - properties:
+                enabled:
+                  const: false
+            - properties:
+                enabled:
+                  const: true
+                host:
+                  title: HTTP Hostname
+                  description: The hostname which this application should be accessable on, such as www.example.com. You must own this domain and have it associated with this kubernetes cluster if you would like automatic DNS record and SSL certificate management.
+                  type: string
+                  pattern: ^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+                  message:
+                    pattern: Hostname should consist of letters, numbers, periods and hyphens, such as www.example.com
+                path:
+                  title: HTTP Path
+                  description: The HTTP path which, when appended to the host above, this application will serve traffic on
+                  type: string
+                  default: "/"
+                  pattern: ^\/.*$
+                  message:
+                    pattern: Must begin with a '/' and be a valid HTTP endpoint
+              required:
+                - host
+                - path
+
+connections:
+  required:
+    - kubernetes_cluster
+  {%- for conn in connections %}
+    - {{ conn.name -}}
+  {% endfor %}
+  properties:
+    kubernetes_cluster:
+      $ref: massdriver/kubernetes-cluster
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
+    gcp_authentication:
+      $ref: massdriver/gcp-service-account
+    azure_authentication:
+      $ref: massdriver/azure-service-principal
+  {%- for conn in connections %}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
+  {% endfor %}
+
+artifacts:
+  properties:
+    service:
+      $ref: massdriver/api
+
+ui:
+  ui:order:
+    - namespace
+    - image
+    - port
+    - command
+    - args
+    - resourceRequests
+    - replicas
+    - ingress
+    - "*"
+  resourceRequests:
+    memory:
+      ui:field: conversionFieldData
+      unit: Bytes
+  replicas:
+    ui:order:
+      - autoscalingEnabled
+      - replicaCount
+      - minReplicas
+      - maxReplicas
+      - targetCPUUtilizationPercentage
+      - "*"
+  ingress:
+    ui:order:
+      - enabled
+      - host
+      - path
+      - "*"
+
+      
