@@ -5,10 +5,9 @@ module "helm" {
 
   chart           = "redwoodjs"
   helm_repository = "https://massdriver-cloud.github.io/helm-charts/"
-  helm_version    = "0.1.0"
+  helm_version    = "0.1"
 
   kubernetes_cluster = var.kubernetes_cluster
-
 
   helm_additional_values = {
     # # The default command, args, and migration settings are below. Any
@@ -19,5 +18,8 @@ module "helm" {
     args = [
       "node_modules/.bin/rw-server", "web", "--apiHost", "https://${var.blog_api.data.api.hostname}"
     ]
+    migration = {
+      enabled = false
+    }
   }
 }

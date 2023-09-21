@@ -17,7 +17,7 @@ module "helm" {
   namespace       = var.namespace
   chart           = "redwoodjs"
   helm_repository = "https://massdriver-cloud.github.io/helm-charts/"
-  helm_version    = "0.1.0"
+  helm_version    = "0.1"
 
   kubernetes_cluster = var.kubernetes_cluster
 

@@ -11,10 +11,10 @@ app:
     # REDIS_URL: '@test "rediss://" + .connections.redis.data.authentication.password + "@" + .connections.redis.data.authentication.hostname + ":" + (.connections.redis.data.authentication.port|tostring)'
     #
     ### Postgres Connection String
-    # DATABASE_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.database_name'
+    # DATABASE_URL: '@text "postgres://" + .connections.postgres.data.authentication.username + ":" + .connections.postgres.data.authentication.password + "@" + .connections.postgres.data.authentication.hostname + ":" + (.connections.postgres.data.authentication.port|tostring) + "/" + .params.app.database_name'
     #
     ### MySQL Connection String
-    # DATABASE_URL: '@text "mysql2://" + .connections.mysql.data.authentication.username + ":" + .connections.mysql.data.authentication.password + "@" + .connections.mysql.data.authentication.hostname + ":" + (.connections.mysql.data.authentication.port|tostring) + "/" + .params.database_name'
+    # DATABASE_URL: '@text "mysql2://" + .connections.mysql.data.authentication.username + ":" + .connections.mysql.data.authentication.password + "@" + .connections.mysql.data.authentication.hostname + ":" + (.connections.mysql.data.authentication.port|tostring) + "/" + .params.app.database_name'
     #
   # secrets: {}
   # policies:
@@ -48,6 +48,16 @@ params:
   properties:
     namespace:
       $ref: https://raw.githubusercontent.com/massdriver-cloud/json-schemas/main/k8s/namespace.json
+    app:
+      type: object
+      title: App Config
+      required:
+      - database_name
+      properties:
+        database_name:
+          type: string
+          title: Database Schema Name
+          minLength: 3
     migration:
       type: object
       title: Database Migrations
@@ -238,6 +248,8 @@ ui:
   ui:order:
     - namespace
     - image
+    - app    
+    - migration
     - port
     - command
     - args
