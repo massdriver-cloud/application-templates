@@ -189,10 +189,13 @@ params:
 connections:
   required:
     - kubernetes_cluster
+    - blog_api
   {%- for conn in connections %}
     - {{ conn.name -}}
   {% endfor %}
   properties:
+    blog_api:
+      $ref: massdriver/api
     kubernetes_cluster:
       $ref: massdriver/kubernetes-cluster
     aws_authentication:
