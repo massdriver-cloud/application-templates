@@ -50,21 +50,29 @@ params:
       $ref: https://raw.githubusercontent.com/massdriver-cloud/json-schemas/main/k8s/namespace.json
     migration:
       type: object
+      title: Database Migrations
       required:
-        - repository
-        - tag    
-      properties:    
-        repository:
-          $md.immutable: true
-          title: Repository
-          # Massdriver automatically configures your Kubernetes clusters to have access to your cloud container repositories.
-          # Just set the full URI here or remove this field and hard code it in your values.yaml file.
-          description: Container repository to use for this application.
-          type: string
-        tag:
-          title: Image Tag
-          $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
-          default: latest
+      - image
+      properties:
+        image:
+          title: Container Image
+          description: Container image to run database migrations in.
+          type: object
+          required:
+            - repository
+            - tag    
+          properties:    
+            repository:
+              $md.immutable: true
+              title: Repository
+              # Massdriver automatically configures your Kubernetes clusters to have access to your cloud container repositories.
+              # Just set the full URI here or remove this field and hard code it in your values.yaml file.
+              description: Container repository to use for this application.
+              type: string
+            tag:
+              title: Image Tag
+              $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
+              default: latest
     image:
       title: Container Image
       type: object

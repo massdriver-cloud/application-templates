@@ -5,8 +5,8 @@ locals {
     command = ["bash", "-c"]
     args    = ["yarn rw prisma migrate deploy"]
     image = {
-      repository = var.migration.repository
-      tag        = var.migration.tag
+      repository = var.migration.image.repository
+      tag        = var.migration.image.tag
     }
   }
 }
@@ -32,8 +32,8 @@ module "helm" {
     migration = {
       enabled = local.migration.enabled
       image = {
-        repository = local.image.repository
-        tag        = local.image.tag
+        repository = local.migration.image.repository
+        tag        = local.migration.image.tag
       }
       command = local.migration.command
       args    = local.migration.args

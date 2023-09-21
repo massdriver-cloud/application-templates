@@ -27,4 +27,3 @@ if [[ -f $DOCKERFILE_DIRECTORY/Dockerfile ]]; then
         echo
     fi
 fi
-
