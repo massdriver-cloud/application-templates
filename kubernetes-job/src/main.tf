@@ -6,9 +6,5 @@ module "helm" {
   chart              = "${path.module}/chart"
   kubernetes_cluster = var.kubernetes_cluster
 
-  helm_additional_values = {
-    "massdriver-alarm-channel" = {
-      "md_metadata" = var.md_metadata
-    }
-  }
+  helm_additional_values = {}
 }
