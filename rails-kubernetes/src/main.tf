@@ -6,7 +6,6 @@ module "helm" {
   helm_repository    = "https://massdriver-cloud.github.io/helm-charts/"
   helm_version       = "0.2.4"
   kubernetes_cluster = var.kubernetes_cluster
-  additional_envs    = []
   helm_additional_values = {
     # # The default command, args, and migration settings are below. Any
     # # values in values.yaml can be overwritten by adding a parameter to your massdriver.yaml
