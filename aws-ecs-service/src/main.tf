@@ -1,5 +1,5 @@
 module "application" {
-  source               = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-ecs-service?ref=d7b440e"
+  source               = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-ecs-service?ref=23a47fa"
   md_metadata          = var.md_metadata
   ecs_cluster          = var.ecs_cluster
   force_new_deployment = var.force_new_deployment
@@ -13,7 +13,7 @@ module "application" {
   autoscaling = var.autoscaling
   containers = [
     {
-      name             = "nginx"
+      name             = "main"
       image_repository = var.image.repository
       image_tag        = var.image.tag
       ports = [for port in var.ports : {
