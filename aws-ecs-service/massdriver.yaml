@@ -22,6 +22,7 @@ app:
 params:
   required:
     - image
+    - force_new_deployment
     - runtime
     - autoscaling
     - ports
@@ -43,6 +44,11 @@ params:
           title: Image Tag
           $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/docker-image-tag.json
           default: latest
+    force_new_deployment:
+      title: Force New Deployment
+      description: "Enable to force a new task deployment of the service. This can be used to update tasks to use a newer Docker image with same image/tag combination (e.g., myimage:latest)"
+      type: boolean
+      default: false
     runtime:
       title: Runtime Configuration
       type: object
@@ -275,6 +281,7 @@ connections:
 ui:
   ui:order:
     - image
+    - force_new_deployment
     - runtime
     - autoscaling
     - ports

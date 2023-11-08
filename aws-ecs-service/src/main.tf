@@ -1,10 +1,11 @@
 module "application" {
-  source      = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-ecs-service?ref=23a47fa"
-  md_metadata = var.md_metadata
-  ecs_cluster = var.ecs_cluster
-  launch_type = var.runtime.launch_type
-  task_cpu    = var.runtime.cpu
-  task_memory = var.runtime.memory
+  source               = "github.com/massdriver-cloud/terraform-modules//massdriver-application-aws-ecs-service?ref=d7b440e"
+  md_metadata          = var.md_metadata
+  ecs_cluster          = var.ecs_cluster
+  force_new_deployment = var.force_new_deployment
+  launch_type          = var.runtime.launch_type
+  task_cpu             = var.runtime.cpu
+  task_memory          = var.runtime.memory
   logging = {
     driver    = var.monitoring.logging.destination
     retention = lookup(var.monitoring.logging, "retention", null)
