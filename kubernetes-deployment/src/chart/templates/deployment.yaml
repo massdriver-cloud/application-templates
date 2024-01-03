@@ -19,6 +19,7 @@ spec:
       {{- end }}
       labels:
         {{- include "application.labels" . | nindent 8 }}
+        {{- .Values.pod.labels | toYaml | nindent 8}}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
