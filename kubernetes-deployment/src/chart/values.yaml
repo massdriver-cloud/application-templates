@@ -34,3 +34,4 @@ commonLabels: {}
 
 pod:
   annotations: {}
+  labels: {}
