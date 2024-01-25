@@ -8,6 +8,9 @@ type: "{{ type }}"
 
 # schema-params.json
 # JSON Schema sans-fields above
+{%- if paramsSchema.size > 0 %}
+{{ paramsSchema }}
+{% else %}
 params:
   # Examples will show up as configuration presets in the UI _and_
   # they will be used to test configurations of the bundle.
@@ -27,6 +30,7 @@ params:
       examples:
         - US-West 2 VPC
         - US-East 1 VPC
+{% endif %}
 
 # schema-connections.json
 # Named list of input connections (artifacts) (map[name]artifact)
