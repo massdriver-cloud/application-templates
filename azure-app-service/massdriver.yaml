@@ -178,12 +178,12 @@ params:
       title: Container image configuration
       type: object
       required:
-      - repository
+      - name
       - tag
       properties:
-        repository:
-          title: Image Name
-          description: "Name of the container image to use for this application. Include namespace if applicable, for example: namespace/image-name"
+        name:
+          title: Image repository
+          description: "Repository of the container image to use for this application. Include namespace if applicable, for example: massdriverwestus1234.azurecr.io/namespace/image-name"
           type: string
           $md.immutable: true
         tag:
@@ -309,7 +309,7 @@ ui:
       - "*"
   image:
     ui:order:
-      - repository
+      - name
       - tag
       - "*"
   dns:
