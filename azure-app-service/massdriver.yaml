@@ -178,10 +178,10 @@ params:
       title: Container image configuration
       type: object
       required:
-      - name
+      - repository
       - tag
       properties:
-        name:
+        repository:
           title: Image Name
           description: "Name of the container image to use for this application. Include namespace if applicable, for example: namespace/image-name"
           type: string
@@ -309,7 +309,7 @@ ui:
       - "*"
   image:
     ui:order:
-      - name
+      - repository
       - tag
       - "*"
   dns:
