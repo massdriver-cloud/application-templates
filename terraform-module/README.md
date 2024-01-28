@@ -34,7 +34,6 @@ Security and compliance scanning of our bundles is performed using [Bridgecrew](
 | Benchmark                                                                                                                                                                                                                                                       | Description                        |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | [![Infrastructure Security](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/general)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=INFRASTRUCTURE+SECURITY) | Infrastructure Security Compliance |
-
 {% if cloudPrefix == "k8s" -%}
 | [![CIS KUBERNETES](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/cis_kubernetes>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=CIS+KUBERNETES+V1.5) | Center for Internet Security, KUBERNETES Compliance |
 {% elsif cloudPrefix == "aws" -%}
