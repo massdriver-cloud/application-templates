@@ -1,0 +1,25 @@
+name: Publish to Massdriver
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish_to_massdriver:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download massdriver cli
+        uses: dsaltares/fetch-gh-release-asset@0.0.8
+        with:
+          repo: "massdriver-cloud/massdriver-cli"
+          file: "^mass-.*-linux-amd64\\.tar\\.gz$"
+          regex: true
+
+      - name: Publish
+        env:
+          MASSDRIVER_API_KEY: ${{"{{"}} secrets.MASSDRIVER_API_KEY {{"}}"}}
+        run: tar -xzf mass-*.tar.gz -C /usr/local/bin && rm -rf mass-*.tar.gz .git* && mass bundle build && mass bundle publish
