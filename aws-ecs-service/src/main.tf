@@ -74,7 +74,7 @@ resource "aws_ecs_task_definition" "main" {
         }
       ]
 
-      logConfiguration = {
+      logConfiguration = var.monitoring.logging.destination == "disabled" ? null : {
         logDriver = var.monitoring.logging.destination
         options   = lookup(local.logging_options, var.monitoring.logging.destination, {})
       }
