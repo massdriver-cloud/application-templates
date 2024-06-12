@@ -1,6 +1,6 @@
 schema: draft-07
-name: {{ name }}
-description: {{ description }}
+name: move-foo #{{ name }}
+description: foo #{{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -216,7 +216,7 @@ params:
       properties:
         registry:
           title: Registry
-          description: "Container registry to use for this application. For example: demo.azurecr.io"
+          description: "Container registry to use for this application. For example: demo.azurecr.io or docker.io"
           type: string
           $md.immutable: true
         name:
@@ -305,24 +305,32 @@ connections:
   required:
     - azure_service_principal
     - azure_virtual_network
-  {%- for conn in connections %}
-    - {{ conn.name -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   - {{ conn.name -}}
+  # {% endfor %}
   properties:
     azure_service_principal:
       $ref: massdriver/azure-service-principal
     azure_virtual_network:
       $ref: massdriver/azure-virtual-network
-  {%- for conn in connections %}
-    {{ conn.name }}:
-      $ref: {{ conn.artifact_definition -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   {{ conn.name }}:
+  #     $ref: {{ conn.artifact_definition -}}
+  # {% endfor %}
 
-artifacts:
-  required: []
-  properties:
-    endpoint:
-      $ref: massdriver/api
+
+#########
+### Uncomment below to enable producing artifacts for your web service.
+### You only need to uncomment the following if you intend to connect your internal services in Massdriver.
+### You will also need to uncomment the contents of `src/_artifacts.tf`.
+#########
+#
+# artifacts:
+#   required:
+#     - endpoint
+#   properties:
+#     endpoint:
+#       $ref: massdriver/api
 
 ui:
   ui:order:
