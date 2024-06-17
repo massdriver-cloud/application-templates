@@ -1,5 +1,9 @@
 terraform {
   required_providers {
+    jq = {
+      source = "massdriver-cloud/jq"
+    }
+
     mdxc = {
       source  = "massdriver-cloud/mdxc"
       version = ">= 0.10.3"
