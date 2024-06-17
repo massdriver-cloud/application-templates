@@ -1,6 +1,6 @@
 schema: draft-07
-name: move-app #{{ name }}
-description: move-app #{{ description }}
+name: {{ name }}
+description: {{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -272,18 +272,18 @@ connections:
   required:
     - azure_service_principal
     - azure_virtual_network
-  # {%- for conn in connections %}
-  #   - {{ conn.name -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    - {{ conn.name -}}
+  {% endfor %}
   properties:
     azure_service_principal:
       $ref: massdriver/azure-service-principal
     azure_virtual_network:
       $ref: massdriver/azure-virtual-network
-  # {%- for conn in connections %}
-  #   {{ conn.name }}:
-  #     $ref: {{ conn.artifact_definition -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
+  {% endfor %}
 
 #########
 ### Uncomment below to enable producing artifacts for your web service.
