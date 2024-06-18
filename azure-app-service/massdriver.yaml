@@ -285,12 +285,18 @@ connections:
       $ref: {{ conn.artifact_definition -}}
   {% endfor %}
 
-artifacts:
-  required:
-    - endpoint
-  properties:
-    endpoint:
-      $ref: massdriver/api
+#########
+### Uncomment below to enable producing artifacts for your web service.
+### You only need to uncomment the following if you intend to connect your internal services in Massdriver.
+### You will also need to uncomment the contents of `src/_artifacts.tf`.
+#########
+#
+# artifacts:
+#   required:
+#     - endpoint
+#   properties:
+#     endpoint:
+#       $ref: massdriver/api
 
 ui:
   ui:order:
