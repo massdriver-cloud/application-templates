@@ -6,9 +6,9 @@ access: private
 type: application
 
 app:
-  envs:
+  envs: {}
     # Use jq expressions to build environment variables from input params or connections
-    LOG_LEVEL: .params.log_level
+    # LOG_LEVEL: .params.log_level
     # MONGO_DSN: .connections.mongo_authentication.data.authentication.username + ":" + .connections.mongo_authentication.data.authentication.password + "@" + .connections.mongo_authentication.data.authentication.hostname + ":" + (.connections.mongo_authentication.data.authentication.port|tostring)
   policies: []
     # Use jq expressions to select policies from artifact security blocks
@@ -20,7 +20,6 @@ app:
     #   description: # Set a description
 
 params:
-  examples: []
   required:
     - platform
     - container
@@ -99,7 +98,6 @@ params:
               properties:
                 enabled:
                   const: true
-                  title: Enabled
                 zone:
                   $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-dns-managed-zone.json
                   title: DNS Zone
@@ -110,7 +108,6 @@ params:
             - properties:
                 enabled:
                   const: false
-                  title: Enabled
 
 connections:
   required:
@@ -129,11 +126,18 @@ connections:
       $ref: {{ conn.artifact_definition -}}
   {% endfor %}
 
-artifacts:
-  required: []
-  properties:
-    endpoint:
-      $ref: massdriver/api
+#########
+### Uncomment below to enable producing artifacts for your web service.
+### You only need to uncomment the following if you intend to connect your internal services in Massdriver.
+### You will also need to uncomment the contents of `src/_artifacts.tf`.
+#########
+#
+# artifacts:
+#   required:
+#     - endpoint
+#   properties:
+#     endpoint:
+#       $ref: massdriver/api
 
 ui:
   ui:order:

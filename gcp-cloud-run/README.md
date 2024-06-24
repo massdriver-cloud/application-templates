@@ -1,12 +1,46 @@
-# {{ name }}
+# massdriver-application-gcp-cloud-run
 
-{{ description }}
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
 
-## Massdriver `gcp-cloud-run` Template
+No requirements.
 
-The `gcp-cloud-run` template will run your application on GCP's Cloud Run.
+## Providers
 
-**Files**:
+| Name | Version |
+|------|---------|
+| <a name="provider_google"></a> [google](#provider\_google) | 5.7.0 |
 
-- a [terraform module](./src) is included that configurings IAM permissions and sets up you environment variables. You likely _do not_ need to modify these files. This module is simply rigging code to integrate with Massdriver Cloud.
-- the [`massdriver.yaml`](./massdriver.yaml) controls the UI to expose for configuring your application and its dependencies. By default there are a lot of fields in your [`params`](https://docs.massdriver.cloud/bundles/configuration#bundle-params) section, feel free to remove fields that you do not want exposed in your configuration form in Massdriver Cloud. Values that you do not want to change (e.g.: your image repository) can be hard coded in the [main.tf](./src/main.tf) file.
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_apis"></a> [apis](#module\_apis) | github.com/massdriver-cloud/terraform-modules//gcp-enable-apis | 735929b |
+| <a name="module_application"></a> [application](#module\_application) | github.com/massdriver-cloud/terraform-modules//massdriver-application | 61a38e9 |
+| <a name="module_serverless_endpoint"></a> [serverless\_endpoint](#module\_serverless\_endpoint) | github.com/massdriver-cloud/terraform-modules//gcp-serverless-endpoint | c00db94 |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [google_cloud_run_service.main](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_service) | resource |
+| [google_cloud_run_service_iam_member.public-access](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_service_iam_member) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_container"></a> [container](#input\_container) | n/a | <pre>object({<br>    image = object({<br>      repository = string<br>      tag        = string<br>    })<br>    port        = number<br>    concurrency = number<br>  })</pre> | n/a | yes |
+| <a name="input_endpoint"></a> [endpoint](#input\_endpoint) | n/a | `any` | n/a | yes |
+| <a name="input_md_metadata"></a> [md\_metadata](#input\_md\_metadata) | Massdriver metadata which is provided by the Massdriver deployment runtime | `any` | n/a | yes |
+| <a name="input_platform"></a> [platform](#input\_platform) | n/a | <pre>object({<br>    location      = string<br>    max_instances = number<br>  })</pre> | n/a | yes |
+| <a name="input_vpc_connector"></a> [vpc\_connector](#input\_vpc\_connector) | n/a | `string` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_grn"></a> [grn](#output\_grn) | GCP Cloud Run GRN |
+| <a name="output_hostname"></a> [hostname](#output\_hostname) | Default hostname for the application. |
+| <a name="output_identity"></a> [identity](#output\_identity) | Cloud ID for application IAM. For GCP this is the Service Account email. |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
