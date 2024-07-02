@@ -1,6 +1,6 @@
 schema: draft-07
-name: {{ name }}
-description: {{ description }}
+name: test-gcp-func #{{ name }}
+description: test description foo foo boo hoo #{{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -176,18 +176,18 @@ connections:
   required:
     - gcp_authentication
     - gcp_subnetwork
-  {%- for conn in connections %}
-    - {{ conn.name -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   - {{ conn.name -}}
+  # {% endfor %}
   properties:
     gcp_authentication:
       $ref: massdriver/gcp-service-account
     gcp_subnetwork:
       $ref: massdriver/gcp-subnetwork
-  {%- for conn in connections %}
-    {{ conn.name }}:
-      $ref: {{ conn.artifact_definition -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   {{ conn.name }}:
+  #     $ref: {{ conn.artifact_definition -}}
+  # {% endfor %}
 
 ui:
   ui:order:

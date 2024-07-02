@@ -78,6 +78,6 @@ resource "google_cloudfunctions_function" "main" {
   timeout = 120
 
   depends_on = [
-    module.apis
+    google_project_service.main
   ]
 }
