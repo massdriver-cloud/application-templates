@@ -1,6 +1,6 @@
 schema: draft-07
-name: {{ name }}
-description: {{ description }}
+name: test-gcp-func #{{ name }}
+description: test description foo foo boo hoo #{{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -25,7 +25,115 @@ params:
     - endpoint
   properties:
     cloud_function_configuration:
-      $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/gcp-cloud-function-configuration.json
+      type: object
+      title: Cloud Function Configuration
+      description: Configure the runtime and scaling of the Cloud Function.
+      required:
+        - runtime
+        - entrypoint
+        - memory_mb
+        - minimum_instances
+        - maximum_instances
+      properties:
+        runtime:
+          type: string
+          title: Runtime
+          description: The runtime to use for the Cloud Function.
+          default: nodejs20
+          oneOf:
+            - title: Node.js 20
+              const: nodejs20
+            - title: Node.js 18
+              const: nodejs18
+            - title: Node.js 16
+              const: nodejs16
+            - title: Node.js 14
+              const: nodejs14
+            - title: Node.js 12
+              const: nodejs12
+            - title: Ruby 3.2
+              const: ruby32
+            - title: Ruby 3.0
+              const: ruby30
+            - title: Ruby 2.7
+              const: ruby27
+            - title: Ruby 2.6
+              const: ruby26
+            - title: Python 3.12
+              const: python312
+            - title: Python 3.11
+              const: python311
+            - title: Python 3.10
+              const: python310
+            - title: Python 3.9
+              const: python39
+            - title: Python 3.8
+              const: python38
+            - title: PHP 8.3
+              const: php83
+            - title: PHP 8.2
+              const: php82
+            - title: PHP 8.1
+              const: php81
+            - title: PHP 7.4
+              const: php74
+            - title: Java 21
+              const: java21
+            - title: Java 17
+              const: java17
+            - title: Java 11
+              const: java11
+            - title: Go 1.22
+              const: go122
+            - title: Go 1.21
+              const: go121
+            - title: Go 1.20
+              const: go120
+            - title: Go 1.19
+              const: go119
+            - title: Go 1.18
+              const: go118
+            - title: Go 1.16
+              const: go116
+            - title: Go 1.13
+              const: go113
+            - title: .NET 8.0
+              const: dotnet8
+            - title: .NET 6.0
+              const: dotnet6
+            - title: .NET Core 3.1
+              const: dotnet3
+        entrypoint:
+          type: string
+          title: Entrypoint
+          description: "The entrypoint to use for your specific runtime and function. *Note: If deploying cloud function without code, set to **HelloWorld** for the base hello world function. If deploying with code, set to the name of the function in your code.*"
+          default: HelloWorld
+        memory_mb:
+          type: integer
+          title: Memory (MB)
+          description: The amount of memory to allocate to the Cloud Function.
+          default: 256
+          enum:
+            - 128
+            - 256
+            - 512
+            - 1024
+            - 2048
+            - 4096
+        minimum_instances:
+          type: integer
+          title: Minimum Instances
+          description: The minimum number of instances to run for the Cloud Function.
+          default: 0
+          minimum: 0
+          maximum: 3000
+        maximum_instances:
+          type: integer
+          title: Maximum Instances
+          description: The maximum number of instances to run for the Cloud Function.
+          default: 5
+          minimum: 1
+          maximum: 3000
     source_archive_path:
       type: string
       title: Source Archive Path
@@ -68,18 +176,18 @@ connections:
   required:
     - gcp_authentication
     - gcp_subnetwork
-  {%- for conn in connections %}
-    - {{ conn.name -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   - {{ conn.name -}}
+  # {% endfor %}
   properties:
     gcp_authentication:
       $ref: massdriver/gcp-service-account
     gcp_subnetwork:
       $ref: massdriver/gcp-subnetwork
-  {%- for conn in connections %}
-    {{ conn.name }}:
-      $ref: {{ conn.artifact_definition -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   {{ conn.name }}:
+  #     $ref: {{ conn.artifact_definition -}}
+  # {% endfor %}
 
 ui:
   ui:order:
@@ -89,18 +197,18 @@ ui:
     - "*"
   cloud_function_configuration:
     ui:order:
+      - runtime
       - entrypoint
       - memory_mb
       - minimum_instances
       - maximum_instances
       - "*"
-    runtime:
-      ui:widget: hidden
   endpoint:
     ui:order:
       - enabled
       - zone
       - subdomain
+      - "*"
     zone:
       name:
         ui:field: dnsZonesDropdown
