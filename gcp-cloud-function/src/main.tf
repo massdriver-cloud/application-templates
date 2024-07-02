@@ -56,14 +56,13 @@ module "application" {
 }
 
 resource "google_cloudfunctions_function" "main" {
-  name                  = var.md_metadata.name_prefix
-  service_account_email = module.application.identity
-  labels                = var.md_metadata.default_tags
-  region                = local.gcp_region
-  runtime               = var.cloud_function_configuration.runtime
-  environment_variables = module.application.envs
-  trigger_http          = true
-  # need to set this as a ternary lookup for if var.entrypoing == "HelloWorld" ? local.entrypoint_map[local.runtime_map] : var.entrypoint
+  name                          = var.md_metadata.name_prefix
+  service_account_email         = module.application.identity
+  labels                        = var.md_metadata.default_tags
+  region                        = local.gcp_region
+  runtime                       = var.cloud_function_configuration.runtime
+  environment_variables         = module.application.envs
+  trigger_http                  = true
   entry_point                   = var.cloud_function_configuration.entrypoint == "HelloWorld" ? local.entrypoint_map[local.runtime_map[var.cloud_function_configuration.runtime]] : var.cloud_function_configuration.entrypoint
   available_memory_mb           = var.cloud_function_configuration.memory_mb
   min_instances                 = var.cloud_function_configuration.minimum_instances
