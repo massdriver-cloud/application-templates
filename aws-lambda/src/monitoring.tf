@@ -1,8 +1,8 @@
 locals {
-  function_split = split(":", module.lambda_application.function_arn)
+  function_split = split(":", aws_lambda_function.main.arn)
   function_name  = element(local.function_split, length(local.function_split) - 1)
   automated_alarms = {
-    # (Errors SUM / Invocations SUM) > Threshold 
+    # (Errors SUM / Invocations SUM) > Threshold
     error_rate = {
       threshold = 0.1
       period    = 120
@@ -27,17 +27,18 @@ locals {
     "CUSTOM"    = lookup(var.observability, "alarms", {})
   }
 
-  alarms = lookup(local.alarms_map, var.observability.mode, {})
+  alarms             = lookup(local.alarms_map, var.observability.mode, {})
+  monitoring_enabled = var.observability.mode != "DISABLED" ? 1 : 0
 }
 
 module "alarm_channel" {
-  source      = "github.com/massdriver-cloud/terraform-modules//aws/alarm-channel?ref=f08f8d6"
+  source      = "github.com/massdriver-cloud/terraform-modules//aws/alarm-channel?ref=a1b2019"
   md_metadata = var.md_metadata
 }
 
 module "error_rate" {
-  count               = lookup(local.alarms, "error_rate", null) == null ? 0 : 1
-  source              = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm-expression?ref=f08f8d6"
+  count               = local.monitoring_enabled
+  source              = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm-expression?ref=a1b2019"
   sns_topic_arn       = module.alarm_channel.arn
   md_metadata         = var.md_metadata
   alarm_name          = "${var.md_metadata.name_prefix}-ErrorRate"
@@ -84,7 +85,8 @@ module "error_rate" {
 }
 
 module "max_duration" {
-  source              = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=f08f8d6"
+  count               = local.monitoring_enabled
+  source              = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=a1b2019"
   sns_topic_arn       = module.alarm_channel.arn
   md_metadata         = var.md_metadata
   metric_name         = "Duration"
@@ -104,7 +106,8 @@ module "max_duration" {
 }
 
 module "avg_duration" {
-  source              = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=f08f8d6"
+  count               = local.monitoring_enabled
+  source              = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=a1b2019"
   sns_topic_arn       = module.alarm_channel.arn
   md_metadata         = var.md_metadata
   metric_name         = "Duration"
