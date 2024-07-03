@@ -1,6 +1,6 @@
 schema: draft-07
-name: test-lambda #{{ name }}
-description: test lambda desc #{{ description }}
+name: {{ name }}
+description: {{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -177,16 +177,16 @@ params:
 connections:
   required:
     - aws_authentication
-  # {%- for conn in connections %}
-  #   - {{ conn.name -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    - {{ conn.name -}}
+  {% endfor %}
   properties:
     aws_authentication:
       $ref: massdriver/aws-iam-role
-  # {%- for conn in connections %}
-  #   {{ conn.name }}:
-  #     $ref: {{ conn.artifact_definition -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
+  {% endfor %}
 
 ui:
   ui:order:
