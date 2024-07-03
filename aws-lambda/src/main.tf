@@ -31,7 +31,7 @@ resource "aws_lambda_function" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "function_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.main.function_name}"
+  name              = "/aws/lambda/${var.md_metadata.name_prefix}"
   retention_in_days = var.observability.retention_days
   lifecycle {
     prevent_destroy = false
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_log_group" "function_log_group" {
 }
 
 resource "aws_iam_policy" "function_logging_policy" {
-  name   = "${aws_lambda_function.main.function_name}-logging-policy"
+  name   = "${var.md_metadata.name_prefix}-logging-policy"
   policy = <<EOF
 {
   "Version" : "2012-10-17",
