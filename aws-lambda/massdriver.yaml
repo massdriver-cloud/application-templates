@@ -26,13 +26,14 @@ CloudWatchAlarmMetricInteger: &cloudwatch_alarm_metric_integer
     threshold:
       type: integer
       title: Threshold
+      description: Duration in seconds.
     period:
       type: integer
       title: Period
       minimum: 1
       maximum: 86400
       default: 300
-      description: The length of time associated with this statistic
+      description: The length of time associated with this statistic. Minimum of 1, maximum of 86400 seconds.
 
 CloudWatchAlarmMetricFloat: &cloudwatch_alarm_metric_float
   required:
@@ -42,13 +43,14 @@ CloudWatchAlarmMetricFloat: &cloudwatch_alarm_metric_float
     threshold:
       type: number
       title: Threshold
+      description: Percentage in decimal form.
     period:
       type: integer
       title: Period
       minimum: 1
       maximum: 86400
       default: 300
-      description: The length of time associated with this statistic
+      description: The length of time associated with this statistic. Minimum of 1, maximum of 86400 seconds.
 
 params:
   required:
