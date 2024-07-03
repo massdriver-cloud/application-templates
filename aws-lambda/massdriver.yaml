@@ -26,7 +26,7 @@ CloudWatchAlarmMetricInteger: &cloudwatch_alarm_metric_integer
     threshold:
       type: integer
       title: Threshold
-      description: Duration in seconds.
+      description: Threshold to trigger the alarm.
     period:
       type: integer
       title: Period
@@ -43,7 +43,7 @@ CloudWatchAlarmMetricFloat: &cloudwatch_alarm_metric_float
     threshold:
       type: number
       title: Threshold
-      description: Percentage in decimal form.
+      description: Threshold to trigger the alarm.
     period:
       type: integer
       title: Period
