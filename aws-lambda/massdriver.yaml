@@ -1,6 +1,6 @@
 schema: draft-07
-name: {{ name }}
-description: {{ description }}
+name: test-lambda #{{ name }}
+description: test lambda desc #{{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -57,6 +57,7 @@ params:
     region:
       title: AWS Region
       $ref: https://raw.githubusercontent.com/massdriver-cloud/artifact-definitions/main/definitions/types/aws-region.json
+      $md.immutable: true
     runtime:
       type: object
       title: Runtime Settings
@@ -76,6 +77,7 @@ params:
               title: ECR URI
               description: Container which will provide the runtime for each execution of the function.
               type: string
+              $md.immutable: true
             tag:
               title: ECR image tag
               description: Specific version of the container to pull on each deployment of the lambda function.
@@ -160,7 +162,7 @@ params:
                       type: object
                       <<: *cloudwatch_alarm_metric_float
                     max_duration:
-                      title: Max Duration 
+                      title: Max Duration
                       description: "The length of the longest lambda execution in seconds"
                       type: object
                       <<: *cloudwatch_alarm_metric_integer
@@ -173,16 +175,16 @@ params:
 connections:
   required:
     - aws_authentication
-  {%- for conn in connections %}
-    - {{ conn.name -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   - {{ conn.name -}}
+  # {% endfor %}
   properties:
     aws_authentication:
       $ref: massdriver/aws-iam-role
-  {%- for conn in connections %}
-    {{ conn.name }}:
-      $ref: {{ conn.artifact_definition -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   {{ conn.name }}:
+  #     $ref: {{ conn.artifact_definition -}}
+  # {% endfor %}
 
 ui:
   ui:order:
