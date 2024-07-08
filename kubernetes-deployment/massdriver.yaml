@@ -1,6 +1,6 @@
 schema: draft-07
-name: move-k8s-app #{{ name }}
-description: move k8s app #{{ description }}
+name: {{ name }}
+description: {{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -182,9 +182,9 @@ params:
 connections:
   required:
     - kubernetes_cluster
-  # {%- for conn in connections %}
-  #   - {{ conn.name -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    - {{ conn.name -}}
+  {% endfor %}
   properties:
     kubernetes_cluster:
       $ref: massdriver/kubernetes-cluster
@@ -194,10 +194,10 @@ connections:
       $ref: massdriver/gcp-service-account
     azure_authentication:
       $ref: massdriver/azure-service-principal
-  # {%- for conn in connections %}
-  #   {{ conn.name }}:
-  #     $ref: {{ conn.artifact_definition -}}
-  # {% endfor %}
+  {%- for conn in connections %}
+    {{ conn.name }}:
+      $ref: {{ conn.artifact_definition -}}
+  {% endfor %}
 
 
 #########
