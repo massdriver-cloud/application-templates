@@ -5,7 +5,7 @@ module "serverless_endpoint" {
   labels                 = var.md_metadata.default_tags
   zone                   = var.endpoint.zone.name
   subdomain              = var.endpoint.subdomain
-  location               = var.gcp_subnetwork.specs.gcp.region
+  location               = local.gcp_region
   cloud_run_service_name = google_cloud_run_service.main.name
   depends_on = [
     module.apis

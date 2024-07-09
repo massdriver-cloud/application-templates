@@ -6,7 +6,7 @@ module "application" {
 
 resource "google_cloud_run_service" "main" {
   name     = var.md_metadata.name_prefix
-  location = var.gcp_subnetwork.specs.gcp.region
+  location = local.gcp_region
 
   template {
     metadata {
