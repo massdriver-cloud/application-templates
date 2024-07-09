@@ -5,16 +5,20 @@ terraform {
       source = "massdriver-cloud/mdxc"
     }
     massdriver = {
-      source = "massdriver-cloud/massdriver"
+      source  = "massdriver-cloud/massdriver"
+      version = "~> 1.1"
     }
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
+      verison = "~> 4.0"
     }
     google-beta = {
-      source = "hashicorp/google-beta"
+      source  = "hashicorp/google-beta"
+      version = "~> 4.0"
     }
     null = {
-      source = "hashicorp/null"
+      source  = "hashicorp/null"
+      version = "~> 3.0"
     }
   }
 }
