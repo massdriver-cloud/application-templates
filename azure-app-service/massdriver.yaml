@@ -178,12 +178,18 @@ params:
       title: Container image configuration
       type: object
       required:
-      - name
-      - tag
+        - registry
+        - name
+        - tag
       properties:
+        registry:
+          title: Image registry
+          description: "Registry of the container image to use for this application. For example: yourregistry.azurecr.io or docker.io"
+          type: string
+          $md.immutable: true
         name:
-          title: Image repository
-          description: "Repository of the container image to use for this application. Include namespace if applicable, for example: yourregistry.azurecr.io/namespace/image-name"
+          title: Image name
+          description: "Repository of the container image to use for this application. Include namespace if applicable, for example: namespace/image-name"
           type: string
           $md.immutable: true
         tag:
@@ -315,6 +321,7 @@ ui:
       - "*"
   image:
     ui:order:
+      - registry
       - name
       - tag
       - "*"

@@ -1,7 +1,3 @@
-locals {
-  docker_registry_url = strcontains(var.image.name, "azurecr.io") ? "https://mcr.microsoft.com" : "https://index.docker.io"
-}
-
 module "application" {
   source              = "github.com/massdriver-cloud/terraform-modules//massdriver-application?ref=a1b2019"
   name                = var.md_metadata.name_prefix
@@ -99,7 +95,7 @@ resource "azurerm_linux_web_app" "main" {
     }
 
     application_stack {
-      docker_registry_url = local.docker_registry_url
+      docker_registry_url = "https://${var.image.registry}"
       docker_image_name   = "${var.image.name}:${var.image.tag}"
     }
   }
