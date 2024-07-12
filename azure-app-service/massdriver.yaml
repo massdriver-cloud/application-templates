@@ -1,6 +1,6 @@
 schema: draft-07
-name: {{ name }}
-description: {{ description }}
+name: test #{{ name }}
+description: test #{{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
@@ -178,18 +178,12 @@ params:
       title: Container image configuration
       type: object
       required:
-        - registry
-        - name
+        - repository
         - tag
       properties:
-        registry:
-          title: Image registry
-          description: "Registry of the container image to use for this application. For example: yourregistry.azurecr.io or docker.io"
-          type: string
-          $md.immutable: true
-        name:
-          title: Image name
-          description: "Repository of the container image to use for this application. Include namespace if applicable, for example: namespace/image-name"
+        repository:
+          title: Image repository
+          description: "Repository URI of the container image to use for this application. Include namespace if applicable, for example: yourregistry.azurecr.io/namespace/image"
           type: string
           $md.immutable: true
         tag:
@@ -278,18 +272,18 @@ connections:
   required:
     - azure_service_principal
     - azure_virtual_network
-  {%- for conn in connections %}
-    - {{ conn.name -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   - {{ conn.name -}}
+  # {% endfor %}
   properties:
     azure_service_principal:
       $ref: massdriver/azure-service-principal
     azure_virtual_network:
       $ref: massdriver/azure-virtual-network
-  {%- for conn in connections %}
-    {{ conn.name }}:
-      $ref: {{ conn.artifact_definition -}}
-  {% endfor %}
+  # {%- for conn in connections %}
+  #   {{ conn.name }}:
+  #     $ref: {{ conn.artifact_definition -}}
+  # {% endfor %}
 
 #########
 ### Uncomment below to enable producing artifacts for your web service.
@@ -321,8 +315,7 @@ ui:
       - "*"
   image:
     ui:order:
-      - registry
-      - name
+      - repository
       - tag
       - "*"
   dns:

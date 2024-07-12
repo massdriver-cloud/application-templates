@@ -1,3 +1,11 @@
+locals {
+  image_split    = split("/", var.image.repository)
+  image_protocol = startswith(var.image.repository, "https")
+  image_registry = local.image_protocol ? "https://${local.image_split[2]}" : "https://${local.image_split[0]}"
+  image_name     = local.image_protocol ? join("/", slice(local.image_split, 3, 5)) : join("/", slice(local.image_split, 1, 3))
+  image_source   = length(local.image_split) > 2 ? local.image_registry : "https://docker.io/"
+}
+
 module "application" {
   source              = "github.com/massdriver-cloud/terraform-modules//massdriver-application?ref=a1b2019"
   name                = var.md_metadata.name_prefix
@@ -95,8 +103,8 @@ resource "azurerm_linux_web_app" "main" {
     }
 
     application_stack {
-      docker_registry_url = "https://${var.image.registry}"
-      docker_image_name   = "${var.image.name}:${var.image.tag}"
+      docker_registry_url = local.image_source
+      docker_image_name   = "${local.image_name}:${var.image.tag}"
     }
   }
 
