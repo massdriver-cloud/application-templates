@@ -1,9 +1,8 @@
 locals {
-  image_split    = split("/", var.image.repository)
-  image_protocol = startswith(var.image.repository, "https")
-  image_registry = local.image_protocol ? "https://${local.image_split[2]}" : "https://${local.image_split[0]}"
-  image_name     = local.image_protocol ? join("/", slice(local.image_split, 3, 5)) : join("/", slice(local.image_split, 1, 3))
-  image_source   = length(local.image_split) > 2 ? local.image_registry : "https://docker.io/"
+  image_match    = regexall("^((?:(?:https|http):\\/\\/))?(?:([a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9]+)+)\\/)?([^:.]+)$", var.image.repository)
+  image_protocol = local.image_match[0][0] == null ? "https://" : local.image_match[0][0]
+  image_registry = local.image_match[0][1] == null ? "docker.io" : local.image_match[0][1]
+  image_name     = length(local.image_match[0]) > 1 ? local.image_match[0][2] : local.image_match[0][0]
 }
 
 module "application" {
@@ -103,7 +102,7 @@ resource "azurerm_linux_web_app" "main" {
     }
 
     application_stack {
-      docker_registry_url = local.image_source
+      docker_registry_url = "${local.image_protocol}${local.image_registry}"
       docker_image_name   = "${local.image_name}:${var.image.tag}"
     }
   }
