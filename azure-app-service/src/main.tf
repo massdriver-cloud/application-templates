@@ -1,5 +1,8 @@
 locals {
-  docker_registry_url = strcontains(var.image.name, "azurecr.io") ? "https://mcr.microsoft.com" : "https://index.docker.io"
+  image_match    = regexall("^((?:(?:https|http):\\/\\/))?(?:([a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9]+)+)\\/)?([^:.]+)$", var.image.repository)
+  image_protocol = local.image_match[0][0] == null ? "https://" : local.image_match[0][0]
+  image_registry = local.image_match[0][1] == null ? "docker.io" : local.image_match[0][1]
+  image_name     = length(local.image_match[0]) > 1 ? local.image_match[0][2] : local.image_match[0][0]
 }
 
 module "application" {
@@ -99,8 +102,8 @@ resource "azurerm_linux_web_app" "main" {
     }
 
     application_stack {
-      docker_registry_url = local.docker_registry_url
-      docker_image_name   = "${var.image.name}:${var.image.tag}"
+      docker_registry_url = "${local.image_protocol}${local.image_registry}"
+      docker_image_name   = "${local.image_name}:${var.image.tag}"
     }
   }
 
