@@ -10,7 +10,7 @@ type: "{{ type }}"
 # JSON Schema sans-fields above
 steps:
   - path: src
-    provisioner: terraform
+    provisioner: opentofu
 
 {%- if paramsSchema.size > 0 %}
 {{ paramsSchema }}
