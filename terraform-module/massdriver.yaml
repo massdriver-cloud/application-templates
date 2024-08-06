@@ -11,6 +11,9 @@ type: "{{ type }}"
 {%- if paramsSchema.size > 0 %}
 {{ paramsSchema }}
 {% else %}
+steps:
+  - path: src
+    provisioner: terraform
 params:
   # Examples will show up as configuration presets in the UI _and_
   # they will be used to test configurations of the bundle.
