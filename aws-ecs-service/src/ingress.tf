@@ -5,7 +5,7 @@ locals {
     port != null && lookup(port, "ingresses", null) != null ? [
       for ingress in lookup(port, "ingresses", []) : {
         container_name = "main"
-        container_port = port
+        container_port = port.port
         hostname       = ingress.hostname
         path           = ingress.path
         create_dns     = ingress.create_dns
