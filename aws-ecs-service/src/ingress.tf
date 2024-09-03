@@ -1,7 +1,8 @@
 locals {
   // Flatten the list of ingresses in the ECS service config
   container_ingress = flatten([
-    for port in var.ports: [
+    for port in var.ports :
+    port != null && lookup(port, "ingresses", null) != null ? [
       for ingress in lookup(port, "ingresses", []) : {
         container_name = "main"
         container_port = port
@@ -11,7 +12,7 @@ locals {
         # strip the first subdomain block so we are left with just the domain
         domain = trimprefix(ingress.hostname, "${element(split(".", ingress.hostname), 0)}.")
       }
-    ]
+    ] : []
   ])
 
   // Create a map with the unique pairings of container and port. This is needed for creating and associating target groups
