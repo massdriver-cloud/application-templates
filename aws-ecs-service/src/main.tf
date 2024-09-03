@@ -70,7 +70,7 @@ resource "aws_ecs_task_definition" "main" {
 
       portMappings = [for port in var.ports :
         {
-          containerPort = port
+          containerPort = port.port
         }
       ]
 
