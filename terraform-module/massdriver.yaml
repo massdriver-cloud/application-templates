@@ -4,7 +4,7 @@ name: "{{ name }}"
 description: "{{ description }}"
 source_url: github.com/YOUR_NAME_HERE/{{ name }}
 access: private
-type: "{{ type }}"
+type: "infrastructure"
 
 # schema-params.json
 # JSON Schema sans-fields above
