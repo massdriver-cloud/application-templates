@@ -43,7 +43,6 @@
 | <a name="input_application"></a> [application](#input\_application) | n/a | <pre>object({<br>    sku_name             = string<br>    minimum_worker_count = number<br>    maximum_worker_count = number<br>    zone_balancing       = bool<br>    logs = object({<br>      retention_period_days = number<br>      disk_quota_mb         = number<br>    })<br>  })</pre> | n/a | yes |
 | <a name="input_contact_email"></a> [contact\_email](#input\_contact\_email) | n/a | `string` | n/a | yes |
 | <a name="input_dns"></a> [dns](#input\_dns) | n/a | `any` | n/a | yes |
-| <a name="input_health_check"></a> [health\_check](#input\_health\_check) | n/a | <pre>object({<br>    port = optional(number, 80)<br>    path = optional(string, "/")<br>  })</pre> | n/a | yes |
 | <a name="input_image"></a> [image](#input\_image) | n/a | <pre>object({<br>    registry = string<br>    name     = string<br>    tag      = string<br>  })</pre> | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | n/a | yes |
 | <a name="input_md_metadata"></a> [md\_metadata](#input\_md\_metadata) | n/a | `any` | n/a | yes |

@@ -1,6 +1,11 @@
 locals {
   max_length           = 24
   storage_account_name = substr(replace(var.md_metadata.name_prefix, "/[^a-z0-9]/", ""), 0, local.max_length)
+  contains_azurecr_io  = length(regexall("azurecr\\.io", var.image.repository)) > 0
+  # Checks var.image.registry if "azurecr.io" exists. If so, captures and sets *.azurecr.io as registry_url.
+  registry_url         = local.contains_azurecr_io ? regex("^(.*?azurecr\\.io)", var.image.repository)[0] : "https://index.docker.io"
+  # Checks var.image.registry if "azurecr.io" exists. If so, captures and sets following namespace/image as image_name
+  image_name           = local.contains_azurecr_io ? regex("^.*?azurecr\\.io/(.*)$", var.image.repository)[0] : var.image.repository
 }
 
 module "application" {
@@ -68,8 +73,8 @@ resource "azurerm_linux_function_app" "main" {
 
     application_stack {
       docker {
-        registry_url = var.image.registry
-        image_name   = var.image.name
+        registry_url = local.registry_url
+        image_name   = local.image_name
         image_tag    = var.image.tag
       }
     }

@@ -142,7 +142,6 @@ params:
         - minimum_worker_count
         - maximum_worker_count
         - zone_balancing
-        - health_check_path
         - logs
       properties:
         sku_name:
@@ -176,14 +175,6 @@ params:
           $md.immutable: true
           type: boolean
           default: false
-        health_check_path:
-          title: Health check path
-          description: The path to use for app health checks.
-          type: string
-          default: /health
-          pattern: ^\/.*$
-          message:
-            pattern: "Must start with /"
         logs:
           title: App logs
           description: Configure logging for the function app.
@@ -210,18 +201,12 @@ params:
       title: Container image configuration
       type: object
       required:
-      - registry
-      - name
-      - tag
+        - repository
+        - tag
       properties:
-        registry:
-          title: Registry
-          description: "Container registry to use for this application. For example: demo.azurecr.io or docker.io"
-          type: string
-          $md.immutable: true
-        name:
-          title: Image Name
-          description: "Name of the container image to use for this application. Include namespace if applicable, for example: namespace/image-name"
+        repository:
+          title: Image Repository
+          description: "Repository URI of the container image to use for this application. Include namespace if applicable, for example: `yourregistry.azurecr.io/namespace/image` or `nginx`"
           type: string
           $md.immutable: true
         tag:
@@ -334,8 +319,8 @@ connections:
 
 ui:
   ui:order:
-    - application
     - image
+    - application
     - dns
     - monitoring
     - "*"
@@ -348,8 +333,7 @@ ui:
       - "*"
   image:
     ui:order:
-      - registry
-      - name
+      - repository
       - tag
       - "*"
   dns:

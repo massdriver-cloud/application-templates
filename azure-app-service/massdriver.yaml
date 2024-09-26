@@ -183,7 +183,7 @@ params:
       properties:
         repository:
           title: Image repository
-          description: "Repository URI of the container image to use for this application. Include namespace if applicable, for example: yourregistry.azurecr.io/namespace/image"
+          description: "Repository URI of the container image to use for this application. Include namespace if applicable, for example: `yourregistry.azurecr.io/namespace/image` or `nginx`"
           type: string
           $md.immutable: true
         tag:
@@ -300,8 +300,8 @@ connections:
 
 ui:
   ui:order:
-    - application
     - image
+    - application
     - dns
     - monitoring
     - "*"
