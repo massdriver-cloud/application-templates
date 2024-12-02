@@ -1,9 +1,13 @@
 schema: draft-07
-name: "{{ name }}"
-description: "{{ description }}"
+name: {{ name }}
+description: {{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
+
+steps:
+  - path: src
+    provisioner: opentofu
 
 app:
   ### Use jq expressions to build environment variables from input params or connections
