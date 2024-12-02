@@ -5,6 +5,10 @@ source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
 
+steps:
+  - path: src
+    provisioner: opentofu
+
 app:
   envs: {}
     # Use jq expressions to build environment variables from input params or connections
@@ -15,9 +19,9 @@ app:
     # - .connections.sqs.data.security.iam.subscribe
   secrets: {}
     # ENV_NAME:
-    #   required: # true or false - whether massdriver should enforce this value being set
-    #   title: # Set the title
-    #   description: # Set a description
+    #   required:  # true or false - whether massdriver should enforce this value being set
+    #   title:  # Set the title
+    #   description:  # Set a description
 
 params:
   required:
@@ -140,12 +144,12 @@ ui:
     - args
     - resourceRequests
     - job
-    - "*"
+    - '*'
   job:
     ui:order:
       - completions
       - parallelism
-      - "*"
+      - '*'
   resourceRequests:
     memory:
       ui:field: conversionFieldData

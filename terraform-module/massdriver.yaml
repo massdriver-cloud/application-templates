@@ -1,7 +1,7 @@
 # This file will be used to generate all of the schema-*.json files in a bundle
 schema: draft-07
-name: "{{ name }}"
-description: "{{ description }}"
+name: {{ name }}
+description: {{ description }}
 source_url: github.com/YOUR_NAME_HERE/{{ name }}
 access: private
 type: "infrastructure"

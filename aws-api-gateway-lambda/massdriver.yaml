@@ -15,9 +15,9 @@ app:
 
 steps:
   - path: src
-    provisioner: terraform
+    provisioner: opentofu
   - path: deployment
-    provisioner: terraform
+    provisioner: opentofu
     skip_on_delete: true
 
 params:
