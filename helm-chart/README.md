@@ -27,31 +27,6 @@ Bundles are the basic building blocks of infrastructure, applications, and archi
 
 ## Bundle
 
-<!-- COMPLIANCE:START -->
-
-Security and compliance scanning of our bundles is performed using [Bridgecrew](https://www.bridgecrew.cloud/). Massdriver also offers security and compliance scanning of operational infrastructure configured and deployed using the platform.
-
-| Benchmark                                                                                                                                                                                                                                                       | Description                        |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| [![Infrastructure Security](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/general)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=INFRASTRUCTURE+SECURITY) | Infrastructure Security Compliance |
-
-{% if cloudPrefix == "k8s" -%}
-| [![CIS KUBERNETES](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/cis_kubernetes>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=CIS+KUBERNETES+V1.5) | Center for Internet Security, KUBERNETES Compliance |
-{% elsif cloudPrefix == "aws" -%}
-| [![CIS AWS](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/cis_aws>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=CIS+AWS+V1.2) | Center for Internet Security, AWS Compliance |
-{% elsif cloudPrefix == "azure" -%}
-| [![CIS AZURE](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/cis_azure>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=CIS+AZURE+V1.1) | Center for Internet Security, AZURE Compliance |
-{% elsif cloudPrefix == "gcp" -%}
-| [![CIS GCP](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/cis_gcp>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=CIS+GCP+V1.1) | Center for Internet Security, GCP Compliance |
-{% endif %}
-| [![PCI-DSS](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/pci>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=PCI-DSS+V3.2) | Payment Card Industry Data Security Standards Compliance |
-| [![NIST-800-53](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/nist>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=NIST-800-53) | National Institute of Standards and Technology Compliance |
-| [![ISO27001](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/iso>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=ISO27001) | Information Security Management System, ISO/IEC 27001 Compliance |
-| [![SOC2](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/soc2>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=SOC2)| Service Organization Control 2 Compliance |
-| [![HIPAA](https://www.bridgecrew.cloud/badges/github/massdriver-cloud/{{name}}/hipaa>)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo={{repoNameEncoded}}&benchmark=HIPAA) | Health Insurance Portability and Accountability Compliance |
-
-<!-- COMPLIANCE:END -->
-
 ### Params
 
 Form input parameters for configuring a bundle for deployment.
@@ -142,18 +117,18 @@ Please connect with us!
 [github]: https://github.com/massdriver-cloud
 [linkedin]: https://www.linkedin.com/company/massdriver/
 
-[contributors_shield]: https://img.shields.io/github/contributors/massdriver-cloud/{{name}}.svg?style=for-the-badge>
-[contributors_url]: https://github.com/massdriver-cloud/{{name}}/graphs/contributors>
-[forks_shield]: https://img.shields.io/github/forks/massdriver-cloud/{{name}}.svg?style=for-the-badge>
-[forks_url]: https://github.com/massdriver-cloud/{{name}}/network/members>
-[stars_shield]: https://img.shields.io/github/stars/massdriver-cloud/{{name}}.svg?style=for-the-badge>
-[stars_url]: https://github.com/massdriver-cloud/{{name}}/stargazers>
-[issues_shield]: https://img.shields.io/github/issues/massdriver-cloud/{{name}}.svg?style=for-the-badge>
-[issues_url]: https://github.com/massdriver-cloud/{{name}}/issues>
-[release_url]: https://github.com/massdriver-cloud/{{name}}/releases/latest>
-[release_shield]: https://img.shields.io/github/release/massdriver-cloud/{{name}}.svg?style=for-the-badge>
-[license_shield]: https://img.shields.io/github/license/massdriver-cloud/{{name}}.svg?style=for-the-badge>
-[license_url]: https://github.com/massdriver-cloud/{{name}}/blob/main/LICENSE>
+[contributors_shield]: https://img.shields.io/github/contributors/massdriver-cloud/{{name}}.svg?style=for-the-badge
+[contributors_url]: https://github.com/massdriver-cloud/{{name}}/graphs/contributors
+[forks_shield]: https://img.shields.io/github/forks/massdriver-cloud/{{name}}.svg?style=for-the-badge
+[forks_url]: https://github.com/massdriver-cloud/{{name}}/network/members
+[stars_shield]: https://img.shields.io/github/stars/massdriver-cloud/{{name}}.svg?style=for-the-badge
+[stars_url]: https://github.com/massdriver-cloud/{{name}}/stargazers
+[issues_shield]: https://img.shields.io/github/issues/massdriver-cloud/{{name}}.svg?style=for-the-badge
+[issues_url]: https://github.com/massdriver-cloud/{{name}}/issues
+[release_url]: https://github.com/massdriver-cloud/{{name}}/releases/latest
+[release_shield]: https://img.shields.io/github/release/massdriver-cloud/{{name}}.svg?style=for-the-badge
+[license_shield]: https://img.shields.io/github/license/massdriver-cloud/{{name}}.svg?style=for-the-badge
+[license_url]: https://github.com/massdriver-cloud/{{name}}/blob/main/LICENSE
 
 [email_url]: mailto:support@massdriver.cloud
 [email_shield]: https://img.shields.io/badge/email-Massdriver-black.svg?style=for-the-badge&logo=mail.ru&color=000000
