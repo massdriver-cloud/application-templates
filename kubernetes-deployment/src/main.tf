@@ -18,6 +18,9 @@ resource "helm_release" "application" {
   create_namespace  = true
   force_update      = true
   dependency_update = true
+  wait              = true
+  wait_for_jobs     = true
+  timeout           = 300
 
   values = [
     fileexists("${path.module}/chart/values.yaml") ? file("${path.module}/chart/values.yaml") : "",
