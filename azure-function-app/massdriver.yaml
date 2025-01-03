@@ -5,6 +5,10 @@ source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
 
+steps:
+  - path: src
+    provisioner: opentofu
+
 app:
   envs: {}
     # Use jq expressions to build environment variables from input params or connections
