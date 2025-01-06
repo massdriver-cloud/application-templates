@@ -5,6 +5,10 @@ source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
 
+steps:
+  - path: src
+    provisioner: opentofu
+
 app:
   # Environment variables can be pulled from params or connections using jq
   envs: {}

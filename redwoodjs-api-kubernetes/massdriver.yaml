@@ -1,9 +1,13 @@
 schema: draft-07
-name: "{{ name }}"
-description: "{{ description }}"
+name: {{ name }}
+description: {{ description }}
 source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
+
+steps:
+  - path: src
+    provisioner: opentofu
 
 app:
   envs: {}
@@ -70,8 +74,8 @@ params:
           type: object
           required:
             - repository
-            - tag    
-          properties:    
+            - tag
+          properties:
             repository:
               $md.immutable: true
               title: Repository
@@ -248,7 +252,7 @@ ui:
   ui:order:
     - namespace
     - image
-    - app    
+    - app
     - migration
     - port
     - command
@@ -275,5 +279,3 @@ ui:
       - host
       - path
       - "*"
-
-      

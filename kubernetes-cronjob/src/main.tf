@@ -1,10 +1,27 @@
+module "application" {
+  source  = "github.com/massdriver-cloud/terraform-modules//massdriver-application?ref=48e6b4a"
+  name    = var.md_metadata.name_prefix
+  service = "kubernetes"
 
-module "helm" {
-  source             = "github.com/massdriver-cloud/terraform-modules//massdriver-application-helm?ref=40bbc7b"
-  name               = var.md_metadata.name_prefix
-  namespace          = var.namespace
-  chart              = "${path.module}/chart"
-  kubernetes_cluster = var.kubernetes_cluster
+  kubernetes = {
+    namespace        = var.namespace
+    cluster_artifact = var.kubernetes_cluster
+  }
+  resource_group_name = local.azure_resource_group_name
+  location            = local.azure_location
+}
 
-  helm_additional_values = {}
+resource "helm_release" "application" {
+  name              = var.md_metadata.name_prefix
+  chart             = "${path.module}/chart"
+  namespace         = var.namespace
+  create_namespace  = true
+  force_update      = true
+  dependency_update = true
+
+  values = [
+    fileexists("${path.module}/chart/values.yaml") ? file("${path.module}/chart/values.yaml") : "",
+    yamlencode(module.application.params),
+    yamlencode(module.application.connections),
+  ]
 }

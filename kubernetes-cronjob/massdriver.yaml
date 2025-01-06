@@ -5,6 +5,10 @@ source_url: github.com/YOUR_ORG/{{ name }}
 access: private
 type: application
 
+steps:
+  - path: src
+    provisioner: opentofu
+
 app:
   envs: {}
     # Use jq expressions to build environment variables from input params or connections
@@ -15,9 +19,9 @@ app:
     # - .connections.sqs.data.security.iam.subscribe
   secrets: {}
     # ENV_NAME:
-    #   required: # true or false - whether massdriver should enforce this value being set
-    #   title: # Set the title
-    #   description: # Set a description
+    #   required:  # true or false - whether massdriver should enforce this value being set
+    #   title:  # Set the title
+    #   description:  # Set a description
 
 params:
   required:
@@ -90,10 +94,10 @@ params:
           title: Schedule
           description: The schedule in Cron format, see https://en.wikipedia.org/wiki/Cron.
           type: string
-          default: "* * * * *"
+          default: '* * * * *'
           pattern: ^(@(annually|yearly|monthly|weekly|daily|hourly))|((((\d+,)+\d+|((\d+|\*)(\/|-)\d+)|\d+|\*) ){4}((\d+,)+\d+|((\d+|\*)(\/|-)\d+)|\d+|\*))$
           message:
-            pattern: "Value must be in the standard cron format: See https://en.wikipedia.org/wiki/Cron"
+            pattern: 'Value must be in the standard cron format: See https://en.wikipedia.org/wiki/Cron'
         concurrencyPolicy:
           title: Concurrency Policy
           description: "Specifies how to treat concurrent executions of a Job. This occurs when the previous job hasn't completed before the next job is scheduled. Valid values are: - 'Allow': allows CronJobs to run concurrently; - 'Forbid': forbids concurrent runs, skipping next run if previous run hasn't finished yet; - 'Replace': cancels currently running job and replaces it with a new one"
@@ -124,7 +128,6 @@ params:
     #     log_level:
     #       title: Log Level
     #       type: string
-
 
 connections:
   required:
@@ -160,14 +163,14 @@ ui:
     - args
     - resourceRequests
     - job
-    - "*"
+    - '*'
   job:
     ui:order:
       - schedule
       - concurrencyPolicy
       - completions
       - parallelism
-      - "*"
+      - '*'
   resourceRequests:
     memory:
       ui:field: conversionFieldData
