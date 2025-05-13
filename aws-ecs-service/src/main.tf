@@ -61,12 +61,10 @@ resource "aws_ecs_task_definition" "main" {
       memory    = var.runtime.memory
       essential = true
 
-      environment = [for name, value in module.application.envs :
-        {
-          name  = name
-          value = value
-        }
-      ]
+      environment = concat(
+        [for key, val in module.application.envs : { name = key, value = tostring(val) }],
+        [for key, val in module.application.secrets : { name = key, value = tostring(val) }]
+      )
 
       portMappings = [for port in var.ports :
         {
