@@ -28,7 +28,7 @@ resource "google_cloud_run_service" "main" {
           container_port = var.container.port
         }
         dynamic "env" {
-          for_each = module.application.envs
+          for_each = merge(module.application.envs, module.application.secrets)
           content {
             name  = env.key
             value = env.value

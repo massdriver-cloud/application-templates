@@ -22,3 +22,7 @@ job:
   parallelism:
 
 commonLabels: {}
+
+pod:
+  annotations: {}
+  labels: {}

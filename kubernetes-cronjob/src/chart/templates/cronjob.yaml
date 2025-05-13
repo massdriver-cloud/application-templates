@@ -15,8 +15,12 @@ spec:
       parallelism: {{ .Values.job.parallelism }}
       template:
         metadata:
+          {{- with .Values.pod.annotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           labels:
-            {{- include "application.labels" . | nindent 12 }}
+            {{- include "application.podLabels" . | nindent 8 }}
         spec:
           restartPolicy: OnFailure
           serviceAccountName: {{ include "application.fullname" . }}

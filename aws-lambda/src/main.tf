@@ -19,7 +19,7 @@ resource "aws_lambda_function" "main" {
   timeout       = var.runtime.execution_timeout
 
   environment {
-    variables = module.application.envs
+    variables = merge(module.application.envs, module.application.secrets)
   }
 
   dynamic "tracing_config" {

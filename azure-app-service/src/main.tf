@@ -40,7 +40,7 @@ resource "azurerm_linux_web_app" "main" {
   client_certificate_mode    = "Optional"
   tags                       = var.md_metadata.default_tags
 
-  app_settings = merge(module.application.envs, {
+  app_settings = merge(module.application.envs, module.application.secrets, {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.main.instrumentation_key}",
     "APPINSIGHTS_CONNECTION_STRING"  = "${azurerm_application_insights.main.connection_string}",
     # This environment variable enables application insights: (https://github.com/hashicorp/terraform-provider-azurerm/issues/19653#issuecomment-1347802887)

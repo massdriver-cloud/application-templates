@@ -22,7 +22,10 @@ locals {
       }
       labels = local.cloud_pod_labels[module.application.cloud]
     }
-    envs = [for key, val in module.application.envs : { name = key, value = tostring(val) }]
+    envs = concat(
+      [for key, val in module.application.envs : { name = key, value = tostring(val) }],
+      [for key, val in module.application.secrets : { name = key, value = tostring(val) }]
+    )
     ingress = {
       className = "nginx" // TODO: eventually this should come from the kubernetes artifact
       annotations = {
