@@ -31,3 +31,13 @@ Selector labels
 {{- define "application.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "application.fullname" . }}
 {{- end }}
+
+{{/*
+Pod labels
+*/}}
+{{- define "application.podLabels" -}}
+{{ include "application.labels" . }}
+{{- with .Values.pod.labels }}
+{{ toYaml . }}
+{{- end }}
+{{- end }}

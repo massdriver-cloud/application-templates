@@ -10,8 +10,12 @@ spec:
   ttlSecondsAfterFinished: 600
   template:
     metadata:
+      {{- with .Values.pod.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        {{- include "application.labels" . | nindent 8 }}
+        {{- include "application.podLabels" . | nindent 8 }}
     spec:
       restartPolicy: OnFailure
       serviceAccountName: {{ include "application.fullname" . }}
