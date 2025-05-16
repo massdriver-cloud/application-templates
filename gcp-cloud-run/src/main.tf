@@ -1,5 +1,5 @@
 module "application" {
-  source  = "github.com/massdriver-cloud/terraform-modules//massdriver-application?ref=48e6b4a"
+  source  = "github.com/massdriver-cloud/terraform-modules//massdriver-application?ref=1cc739c"
   name    = var.md_metadata.name_prefix
   service = "function"
 }
@@ -28,7 +28,7 @@ resource "google_cloud_run_service" "main" {
           container_port = var.container.port
         }
         dynamic "env" {
-          for_each = merge(module.application.envs, module.application.secrets)
+          for_each = module.application.envs_and_secrets
           content {
             name  = env.key
             value = env.value

@@ -7,7 +7,7 @@ locals {
 }
 
 module "application" {
-  source  = "github.com/massdriver-cloud/terraform-modules//massdriver-application?ref=48e6b4a"
+  source  = "github.com/massdriver-cloud/terraform-modules//massdriver-application?ref=1cc739c"
   name    = var.md_metadata.name_prefix
   service = "container"
 }
@@ -61,10 +61,7 @@ resource "aws_ecs_task_definition" "main" {
       memory    = var.runtime.memory
       essential = true
 
-      environment = concat(
-        [for key, val in module.application.envs : { name = key, value = tostring(val) }],
-        [for key, val in module.application.secrets : { name = key, value = tostring(val) }]
-      )
+      environment = [for key, val in module.application.envs_and_secrets : { name = key, value = tostring(val) }]
 
       portMappings = [for port in var.ports :
         {
