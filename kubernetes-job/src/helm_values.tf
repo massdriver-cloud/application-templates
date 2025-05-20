@@ -7,9 +7,6 @@ locals {
       }
       labels = local.cloud_pod_labels[module.application.cloud]
     }
-    envs = concat(
-      [for key, val in module.application.envs : { name = key, value = tostring(val) }],
-      [for key, val in module.application.secrets : { name = key, value = tostring(val) }]
-    )
+    envs = [for key, val in module.application.envs_and_secrets : { name = key, value = tostring(val) }]
   }
 }
