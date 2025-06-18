@@ -2,6 +2,7 @@ terraform {
   required_providers {
     jq = {
       source = "massdriver-cloud/jq"
+      version = "~> 0.0"
     }
 
     mdxc = {
@@ -11,10 +12,12 @@ terraform {
 
     massdriver = {
       source = "massdriver-cloud/massdriver"
+      version = "~> 1.0"
     }
 
     utility = {
       source = "massdriver-cloud/utility"
+      version = "~> 0.0"
     }
 
     azurerm = {

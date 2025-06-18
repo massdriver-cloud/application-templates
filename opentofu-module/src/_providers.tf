@@ -5,9 +5,6 @@ terraform {
       source  = "massdriver-cloud/massdriver"
       version = "~> 1.0"
     }
-    # utility = {
-    #   source = "massdriver-cloud/utility"
-    # }
     # aws = {
     #   source  = "hashicorp/aws"
     #   version = "~> 4.0"
