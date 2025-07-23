@@ -1,7 +1,6 @@
 schema: draft-07
 name: {{ name }}
 description: {{ description }}
-source_url: github.com/YOUR_ORG/{{ name }}
 type: application
 
 steps:

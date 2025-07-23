@@ -2,7 +2,6 @@
 schema: draft-07
 name: "{{ name }}"
 description: "{{ description }}"
-source_url: github.com/YOUR_NAME_HERE/{{ name }}
 type: "{{ type }}"
 
 steps:
