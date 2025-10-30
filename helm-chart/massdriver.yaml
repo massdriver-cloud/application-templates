@@ -2,7 +2,6 @@
 schema: draft-07
 name: "{{ name }}"
 description: "{{ description }}"
-type: "{{ type }}"
 
 steps:
   - path: chart

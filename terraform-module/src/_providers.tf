@@ -7,33 +7,21 @@ terraform {
     }
     # aws = {
     #   source  = "hashicorp/aws"
-    #   version = "~> 4.0"
+    #   version = "~> 6.0"
     # }
     # azurerm = {
     #   source  = "hashicorp/azurerm"
-    #   version = "~> 3.0"
+    #   version = "~> 4.0"
     # }
     # google = {
     #   source  = "hashicorp/google"
-    #   version = "~> 4.0"
-    # }
-    # google-beta = {
-    #   source  = "hashicorp/google-beta"
-    #   version = "~> 4.0"
-    # }
-    # helm = {
-    #   source  = "hashicorp/helm"
-    #   version = "~> 2.0"
-    # }
-    # kubernetes = {
-    #   source  = "hashicorp/kubernetes"
-    #   version = "~> 2.0"
+    #   version = "~> 7.0"
     # }
   }
 }
 
 # provider "aws" {
-#   region     = var.network.specs.aws.region
+#   region     = var.region
 #   assume_role {
 #     role_arn    = var.aws_authentication.data.arn
 #     external_id = var.aws_authentication.data.external_id
@@ -55,23 +43,5 @@ terraform {
 # provider "google" {
 #   project     = var.gcp_authentication.data.project_id
 #   credentials = jsonencode(var.gcp_authentication.data)
-#   region      = var.mrc.specs.gcp.region
-# }
-
-# provider "google-beta" {
-#   project     = var.gcp_authentication.data.project_id
-#   credentials = jsonencode(var.gcp_authentication.data)
-#   region      = var.mrc.specs.gcp.region
-# }
-
-# provider "helm" {
-#   kubernetes {
-#     config_context = "default"
-#     config_path = "kube.yaml"
-#   }
-# }
-
-# provider "kubernetes" {
-#   config_context = "default"
-#   config_path = "kube.yaml"
+#   region      = var.region
 # }
