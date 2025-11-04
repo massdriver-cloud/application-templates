@@ -1,39 +1,37 @@
-# This file will be used to generate all of the schema-*.json files in a bundle
 schema: draft-07
 name: "{{ name }}"
 description: "{{ description }}"
 
-# schema-params.json
-# JSON Schema sans-fields above
+# steps to execute in order to provision this bundle (order is reversed for decommissioning)
 steps:
   - path: src
     provisioner: opentofu
 
+# Configuration parameters for this bundle
 {%- if paramsSchema.size > 0 %}
 {{ paramsSchema }}
 {% else %}
 params:
-  # Examples will show up as configuration presets in the UI _and_
-  # they will be used to test configurations of the bundle.
-  examples:
-    - __name: Development
-      foo: bar
-    - __name: Production
-      foo: foo
-  required:
-    - foo
-  properties:
-    foo:
-      type: string
-      title: Foo
-      description: Name of {{ name }}
-      default: ""
-      examples:
-        - US-West 2 VPC
-        - US-East 1 VPC
+  properties: {}
+  # # Examples will show up as configuration presets in the UI _and_ they will be used to test configurations of the bundle.
+  # examples:
+  #   - __name: Development
+  #     foo: bar
+  #   - __name: Production
+  #     foo: foo
+  # required:
+  #   - foo
+  # properties:
+  #   foo:
+  #     type: string
+  #     title: Foo
+  #     description: Name of {{ name }}
+  #     default: ""
+  #     examples:
+  #       - US-West 2 VPC
+  #       - US-East 1 VPC
 {% endif %}
 
-# schema-connections.json
 # Named list of input connections (artifacts) (map[name]artifact)
 connections:
 {%- if connections.size > 0 %}
@@ -50,7 +48,6 @@ connections:
   properties: {}
 {% endif %}
 
-# schema-artifacts.json
 # Named list of output artifacts  (map[name]artifact)
 artifacts:
   properties: {}
@@ -60,7 +57,6 @@ artifacts:
   #   network:
   #     $ref: massdriver/aws-vpc
 
-# schema-ui.json
 # List of form customizations for params-schema
 # learn more about widgets & fields: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
 ui:
