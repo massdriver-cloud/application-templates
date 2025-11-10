@@ -1,6 +1,7 @@
 schema: draft-07
 name: {{ name }}
 description: {{ description }}
+version: "1.0.0"
 
 steps:
   - path: src
