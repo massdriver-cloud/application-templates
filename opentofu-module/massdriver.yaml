@@ -1,6 +1,7 @@
 schema: draft-07
 name: "{{ name }}"
 description: "{{ description }}"
+version: "1.0.0"
 
 # steps to execute in order to provision this bundle (order is reversed for decommissioning)
 steps:
@@ -50,12 +51,19 @@ connections:
 
 # Named list of output artifacts  (map[name]artifact)
 artifacts:
+{%- if artifacts.size > 0 %}
+  required:
+  {%- for art in artifacts %}
+  - {{ art.name -}}
+  {% endfor %}
+  properties:
+  {%- for art in artifacts %}
+    {{ art.name }}:
+      $ref: {{ art.artifact_definition -}}
+  {% endfor %}
+{% else %}
   properties: {}
-  # required:
-  #   - network
-  # properties:
-  #   network:
-  #     $ref: massdriver/aws-vpc
+{% endif %}
 
 # List of form customizations for params-schema
 # learn more about widgets & fields: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields

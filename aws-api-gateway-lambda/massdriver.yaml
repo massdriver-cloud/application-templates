@@ -1,6 +1,7 @@
 schema: draft-07
 name: {{ name }}
 description: {{ description }}
+version: "1.0.0"
 
 app:
   # Environment variables can be pulled from params or connections using jq

@@ -2,8 +2,8 @@
 schema: draft-07
 name: "{{ name }}"
 description: "{{ description }}"
+version: "1.0.0"
 
-# schema-params.json
 # JSON Schema sans-fields above
 steps:
   - path: src
@@ -13,27 +13,26 @@ steps:
 {{ paramsSchema }}
 {% else %}
 params:
-  # Examples will show up as configuration presets in the UI _and_
-  # they will be used to test configurations of the bundle.
-  examples:
-    - __name: Development
-      foo: bar
-    - __name: Production
-      foo: foo
-  required:
-    - foo
-  properties:
-    foo:
-      type: string
-      title: Foo
-      description: Name of {{ name }}
-      default: ""
-      examples:
-        - US-West 2 VPC
-        - US-East 1 VPC
+  properties: {}
+  # # Examples will show up as configuration presets in the UI _and_ they will be used to test configurations of the bundle.
+  # examples:
+  #   - __name: Development
+  #     foo: bar
+  #   - __name: Production
+  #     foo: foo
+  # required:
+  #   - foo
+  # properties:
+  #   foo:
+  #     type: string
+  #     title: Foo
+  #     description: Name of {{ name }}
+  #     default: ""
+  #     examples:
+  #       - US-West 2 VPC
+  #       - US-East 1 VPC
 {% endif %}
 
-# schema-connections.json
 # Named list of input connections (artifacts) (map[name]artifact)
 connections:
 {%- if connections.size > 0 %}
@@ -50,17 +49,22 @@ connections:
   properties: {}
 {% endif %}
 
-# schema-artifacts.json
 # Named list of output artifacts  (map[name]artifact)
 artifacts:
+{%- if artifacts.size > 0 %}
+  required:
+  {%- for art in artifacts %}
+  - {{ art.name -}}
+  {% endfor %}
+  properties:
+  {%- for art in artifacts %}
+    {{ art.name }}:
+      $ref: {{ art.artifact_definition -}}
+  {% endfor %}
+{% else %}
   properties: {}
-  # required:
-  #   - network
-  # properties:
-  #   network:
-  #     $ref: massdriver/aws-vpc
+{% endif %}
 
-# schema-ui.json
 # List of form customizations for params-schema
 # learn more about widgets & fields: https://docs.massdriver.cloud/bundles/custom-widgets-and-fields
 ui:
